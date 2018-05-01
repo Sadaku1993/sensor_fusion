@@ -84,9 +84,9 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
     image_geometry::PinholeCameraModel cam_model_;
     cam_model_.fromCameraInfo(cinfo_msg);
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr trans_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    PointCloudXYZRGB::Ptr coloured = PointCloudXYZRGB::Ptr(new PointCloudXYZRGB);
-
+    pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_cloud(new pcl::PointCloud<pcl::PointXYZ>); // From ROS Msg
+    pcl::PointCloud<pcl::PointXYZ>::Ptr trans_cloud(new pcl::PointCloud<pcl::PointXYZ>); // After transformation
+    PointCloudXYZRGB::Ptr coloured = PointCloudXYZRGB::Ptr(new PointCloudXYZRGB); // For coloring purposes
     fromROSMsg(pc_msg, *trans_cloud);
 
     trans_cloud->header.frame_id = target_frame;
@@ -96,17 +96,22 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
     for (pcl::PointCloud<pcl::PointXYZRGB>::iterator pt = coloured->points.begin(); pt < coloured->points.end(); pt++)
     {
         if ((*pt).x<0) continue;
-        //cv::Point3d pt_cv((*pt).x, (*pt).y, (*pt).z);
         cv::Point3d pt_cv(-(*pt).y, -(*pt).z, (*pt).x);
         cv::Point2d uv;
         uv = cam_model_.project3dToPixel(pt_cv);
 
         if(uv.x>0 && uv.x < image.cols && uv.y > 0 && uv.y < image.rows){
-            (*pt).b = image.at<cv::Vec3d>(uv)[0];
-            (*pt).g = image.at<cv::Vec3d>(uv)[1];
-            (*pt).r = image.at<cv::Vec3d>(uv)[2];
+            (*pt).b = image.at<cv::Vec3b>(uv)[0];
+            (*pt).g = image.at<cv::Vec3b>(uv)[1];
+            (*pt).r = image.at<cv::Vec3b>(uv)[2];
+        }
+        else{
+            (*pt).b = 255;
+            (*pt).g = 255;
+            (*pt).r = 255;
         }
     }
+    ROS_INFO("Publish coloured PC");
 
     // Publish Coloured PointCloud
     sensor_msgs::PointCloud2 pcl_coloured;
