@@ -57,19 +57,19 @@ void area(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
     sensor_msgs::PointCloud2 pc_center;
     pcl::toROSMsg(pcl_center, pc_center);
     pc_center.header.stamp = ros::Time::now();
-    pc_center.header.frame_id = "/velodyne";
+    pc_center.header.frame_id = "/centerlaser";
     pub_center.publish(pc_center);
 
     sensor_msgs::PointCloud2 pc_left;
     pcl::toROSMsg(pcl_left, pc_left);
     pc_left.header.stamp = ros::Time::now();
-    pc_left.header.frame_id = "/velodyne";
+    pc_left.header.frame_id = "/centerlaser";
     pub_left.publish(pc_left);
 
     sensor_msgs::PointCloud2 pc_right;
     pcl::toROSMsg(pcl_right, pc_right);
     pc_right.header.stamp = ros::Time::now();
-    pc_right.header.frame_id = "/velodyne";
+    pc_right.header.frame_id = "/centerlaser";
     pub_right.publish(pc_right);
 
 }
@@ -82,9 +82,9 @@ int main(int argc, char** argv)
 
     ros::Subscriber pc_callback = n.subscribe("/sq_lidar/points/tf",10,pcCallback);
 
-    pub_center = n.advertise<sensor_msgs::PointCloud2>("/velodyne_points/center",10);
-    pub_left   = n.advertise<sensor_msgs::PointCloud2>("/velodyne_points/left",10);
-    pub_right  = n.advertise<sensor_msgs::PointCloud2>("/velodyne_points/right",10);
+    pub_center = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/center",10);
+    pub_left   = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/left",10);
+    pub_right  = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/right",10);
 
     ros::Rate rate(20);
     while(ros::ok())
