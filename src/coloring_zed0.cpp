@@ -31,6 +31,7 @@ ros::Time t;
 
 ros::Publisher pub;
 
+// Frame Name
 string target_frame = "/zed0/zed_left_camera";
 string source_frame = "/centerlaser";
 
@@ -95,7 +96,8 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
     for (pcl::PointCloud<pcl::PointXYZRGB>::iterator pt = coloured->points.begin(); pt < coloured->points.end(); pt++)
     {
         if ((*pt).x<0) continue;
-        cv::Point3d pt_cv(-(*pt).y, (*pt).z, (*pt).x);
+        //cv::Point3d pt_cv((*pt).x, (*pt).y, (*pt).z);
+        cv::Point3d pt_cv(-(*pt).y, -(*pt).z, (*pt).x);
         cv::Point2d uv;
         uv = cam_model_.project3dToPixel(pt_cv);
 
