@@ -30,7 +30,7 @@ typedef pcl::PointCloud<pcl::PointXYZRGB> PointCloudXYZRGB;
 ros::Time t;
 
 string target_frame = "/zed0/zed_left_camera";
-string source_frame = "/centerlaser_";
+string source_frame = "/centerlaser";
 
 // subscribe data確認用flag
 bool pc_flag = false;
@@ -77,7 +77,7 @@ int main(int argc, char** argv)
     tf::TransformListener listener;
     tf::StampedTransform transform;
 
-    ros::Subscriber pc_sub    = n.subscribe("centerlaser", 10, pcCallback); 
+    ros::Subscriber pc_sub    = n.subscribe("/sq_lidar/points/center", 10, pcCallback); 
     ros::Subscriber cinfo_sub = n.subscribe("/zed0/zed/left/camera_info", 10, cameraCallback);
     ros::Subscriber image_sub = n.subscribe("/zed0/zed/left/image_rect_color", 10, imageCallback);
 
