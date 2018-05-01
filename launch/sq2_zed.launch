@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+	<arg name="stdout" default="screen" />
+
+	<node pkg="tf" type="static_transform_publisher" name="baselink_2_zed0" args="0 0 1.0 0     0 0 base_link zed0/zed_center 1000" />
+	<node pkg="tf" type="static_transform_publisher" name="baselink_2_zed1" args="0 0 1.0 -2.09  0 0 base_link zed1/zed_center 1000" />
+	<node pkg="tf" type="static_transform_publisher" name="baselink_2_zed2" args="0 0 1.0 2.09 0 0 base_link zed2/zed_center 1000" />
+
+</launch>
+
