@@ -78,8 +78,8 @@ int main(int argc, char** argv)
     tf::StampedTransform transform;
 
     ros::Subscriber pc_sub    = n.subscribe("/sq_lidar/points/right", 10, pcCallback); 
-    ros::Subscriber cinfo_sub = n.subscribe("/zed1/zed/left/camera_info", 10, cameraCallback);
-    ros::Subscriber image_sub = n.subscribe("/zed1/zed/left/image_rect_color", 10, imageCallback);
+    ros::Subscriber cinfo_sub = n.subscribe("/zed1/left/camera_info", 10, cameraCallback);
+    ros::Subscriber image_sub = n.subscribe("/zed1/left/image_rect_color", 10, imageCallback);
 
     ros::Rate rate(20);
 
