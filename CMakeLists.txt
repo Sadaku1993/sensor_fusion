@@ -155,9 +155,9 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(coloring_zed0 src/coloring_zed0.cpp)
-add_executable(coloring_zed1 src/coloring_zed1.cpp)
-add_executable(coloring_zed2 src/coloring_zed2.cpp)
+add_executable(colouring_zed0 src/colouring_zed0.cpp)
+add_executable(colouring_zed1 src/colouring_zed1.cpp)
+add_executable(colouring_zed2 src/colouring_zed2.cpp)
 add_executable(division src/division.cpp)
 add_executable(transform_pointcloud src/transform_pointcloud.cpp)
 
@@ -172,17 +172,17 @@ add_executable(transform_pointcloud src/transform_pointcloud.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(coloring_zed0
+target_link_libraries(colouring_zed0
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
-target_link_libraries(coloring_zed1
+target_link_libraries(colouring_zed1
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
-target_link_libraries(coloring_zed2
+target_link_libraries(colouring_zed2
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
