@@ -126,7 +126,7 @@ int main(int argc, char** argv)
     tf::TransformListener listener;
     tf::StampedTransform transform;
 
-    ros::Subscriber pc_sub    = n.subscribe("/sq_lidar/points/center", 10, pcCallback); 
+    ros::Subscriber pc_sub    = n.subscribe("/sq_lidar/points/left", 10, pcCallback); 
     ros::Subscriber cinfo_sub = n.subscribe("/zed2/left/camera_info", 10, cameraCallback);
     ros::Subscriber image_sub = n.subscribe("/zed2/left/image_rect_color", 10, imageCallback);
 
