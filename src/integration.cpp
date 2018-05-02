@@ -27,18 +27,35 @@ using namespace message_filters;
 
 ros::Publisher pub;
 
+bool flag0 = false;
+bool flag1 = false;
+bool flag2 = false;
 
-void callback(const PointCloud2ConstPtr& pc0, const PointCloud2ConstPtr& pc1, const PointCloud2ConstPtr& pc2)
+pcl::PointCloud<pcl::PointXYZRGB>::Ptr pcl0(new pcl::PointCloud<pcl::PointXYZRGB>);
+pcl::PointCloud<pcl::PointXYZRGB>::Ptr pcl1(new pcl::PointCloud<pcl::PointXYZRGB>);
+pcl::PointCloud<pcl::PointXYZRGB>::Ptr pcl2(new pcl::PointCloud<pcl::PointXYZRGB>);
+
+void zed0_callback(const PointCloud2ConstPtr& msg)
+{
+    fromROSMsg(*msg, *pcl0);
+    flag0 = true;
+}
+
+void zed1_callback(const PointCloud2ConstPtr& msg)
+{
+    fromROSMsg(*msg, *pcl1);
+    flag1 = true;
+}
+
+void zed2_callback(const PointCloud2ConstPtr& msg)
+{
+    fromROSMsg(*msg, *pcl2);
+    flag2 = true;
+}
+
+void integrate()
 {
     printf("ALL GREEN\n");
-
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr pcl0(new pcl::PointCloud<pcl::PointXYZRGB>);
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr pcl1(new pcl::PointCloud<pcl::PointXYZRGB>);
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr pcl2(new pcl::PointCloud<pcl::PointXYZRGB>);
-
-    fromROSMsg(*pc0, *pcl0);
-    fromROSMsg(*pc1, *pcl1);
-    fromROSMsg(*pc2, *pcl2);
 
     pcl::PointCloud<pcl::PointXYZRGB> pcl_integrate;
 
@@ -57,6 +74,10 @@ void callback(const PointCloud2ConstPtr& pc0, const PointCloud2ConstPtr& pc1, co
     pc2_integrate.header.stamp = ros::Time::now();
     pc2_integrate.header.frame_id = "/centerlaser";
     pub.publish(pc2_integrate);
+
+    flag0 = false;
+    flag1 = false;
+    flag2 = false;
 }
 
 
@@ -65,16 +86,18 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "integration");
     ros::NodeHandle n;
 
-    message_filters::Subscriber<PointCloud2> zed0_sub(n, "/sq_lidar/points/tf/zed0", 1);
-    message_filters::Subscriber<PointCloud2> zed1_sub(n, "/sq_lidar/points/tf/zed1", 1);
-    message_filters::Subscriber<PointCloud2> zed2_sub(n, "/sq_lidar/points/tf/zed2", 1);
+    ros::Subscriber sub0 = n.subscribe("/sq_lidar/points/tf/zed0", 10, zed0_callback);
+    ros::Subscriber sub1 = n.subscribe("/sq_lidar/points/tf/zed1", 10, zed1_callback);
+    ros::Subscriber sub2 = n.subscribe("/sq_lidar/points/tf/zed2", 10, zed2_callback);
 
     pub = n.advertise<PointCloud2>("/sq_lidar/points/coloured", 1);
 
-    TimeSynchronizer<PointCloud2, PointCloud2, PointCloud2> sync(zed0_sub, zed1_sub, zed2_sub, 10);
-    sync.registerCallback(boost::bind(&callback, _1, _2, _3));
-
-    ros::spin();
-
+    ros::Rate rate(30);
+    while(ros::ok())
+    {
+        if(flag0 && flag1 && flag2) integrate();
+        ros::spinOnce();
+        rate.sleep();
+    }
     return 0;
 }
