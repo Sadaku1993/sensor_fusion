@@ -21,7 +21,7 @@ using namespace std;
 ros::Time t;
 
 string target_frame = "/centerlaser";
-string source_frame = "/centerlaser_";
+string source_frame = "/zed1/zed_left_camera";
 
 sensor_msgs::PointCloud pc_;
 void Callback(const sensor_msgs::PointCloud2ConstPtr& msg)
@@ -32,14 +32,14 @@ void Callback(const sensor_msgs::PointCloud2ConstPtr& msg)
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "sq_transform");
+    ros::init(argc, argv, "sq_transform_zed1");
     ros::NodeHandle n;
     
     tf::TransformListener listener;
     tf::StampedTransform transform;
 
-    ros::Subscriber sub = n.subscribe("/sq_lidar/points", 10, Callback);
-    ros::Publisher  pub = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/tf", 10);
+    ros::Subscriber sub = n.subscribe("/zed1/coloured_points", 10, Callback);
+    ros::Publisher  pub = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/tf/zed1", 10);
 
     ros::Rate rate(30);
 

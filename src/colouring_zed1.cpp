@@ -132,7 +132,7 @@ int main(int argc, char** argv)
 
     pub = n.advertise<sensor_msgs::PointCloud2>("/zed1/coloured_points", 10);
 
-    ros::Rate rate(20);
+    ros::Rate rate(30);
 
     while(ros::ok())
     {
