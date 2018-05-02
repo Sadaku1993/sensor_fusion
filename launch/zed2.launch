@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="sensor_fusion" type="colouring_zed2" name="colouring_zed2" />
+    <node pkg="sensor_fusion" type="transform_pointcloud_zed2" name="transform_pointcloud_zed2" />
+</launch>
