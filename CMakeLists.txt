@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_geometry
   image_transport
   laser_geometry
+  message_filters
   tf
   pcl_ros
 )
@@ -160,6 +161,10 @@ add_executable(colouring_zed1 src/colouring_zed1.cpp)
 add_executable(colouring_zed2 src/colouring_zed2.cpp)
 add_executable(division src/division.cpp)
 add_executable(transform_pointcloud src/transform_pointcloud.cpp)
+add_executable(transform_pointcloud_zed0 src/transform_pointcloud_zed0.cpp)
+add_executable(transform_pointcloud_zed1 src/transform_pointcloud_zed1.cpp)
+add_executable(transform_pointcloud_zed2 src/transform_pointcloud_zed2.cpp)
+add_executable(integration src/integration.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -193,6 +198,26 @@ target_link_libraries(division
   ${PCL_LIBRARIES}
 )
 target_link_libraries(transform_pointcloud
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(transform_pointcloud_zed0
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(transform_pointcloud_zed1
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(transform_pointcloud_zed2
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(integration
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
