@@ -90,6 +90,8 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
 
     pcl::copyPointCloud(*trans_cloud, *coloured);
     
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr area(new pcl::PointCloud<pcl::PointXYZRGB>);
+
     for (pcl::PointCloud<pcl::PointXYZRGB>::iterator pt = coloured->points.begin(); pt < coloured->points.end(); pt++)
     {
         if ((*pt).x<0) continue;
@@ -101,7 +103,8 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
             (*pt).b = image.at<cv::Vec3b>(uv)[0];
             (*pt).g = image.at<cv::Vec3b>(uv)[1];
             (*pt).r = image.at<cv::Vec3b>(uv)[2];
-        }
+			area->points.push_back(*pt);
+		}
         else{
             (*pt).b = 255;
             (*pt).g = 255;
@@ -112,8 +115,9 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
 
     // Publish Coloured PointCloud
     sensor_msgs::PointCloud2 pcl_coloured;
-    pcl::toROSMsg(*coloured, pcl_coloured);
-    pcl_coloured.header.frame_id = target_frame;
+    // pcl::toROSMsg(*coloured, pcl_coloured);
+	pcl::toROSMsg(*area, pcl_coloured);
+	pcl_coloured.header.frame_id = target_frame;
     pcl_coloured.header.stamp = t;
     pub.publish(pcl_coloured);
 
