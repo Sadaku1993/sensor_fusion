@@ -123,9 +123,6 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
     pcl_coloured.header.stamp = t;
     pub.publish(pcl_coloured);
 
-    //Publish Depth Image
-    sensor_msgs::ImagePtr depth_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", depth_image).toImageMsg();
-
 	pc_flag = false;
 	camera_flag = false;
 	image_flag = false;
