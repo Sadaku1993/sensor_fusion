@@ -116,8 +116,8 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
 
     // Publish Coloured PointCloud
     sensor_msgs::PointCloud2 pcl_coloured;
-    pcl::toROSMsg(*coloured, pcl_coloured);
-	//pcl::toROSMsg(*area, pcl_coloured);
+    // pcl::toROSMsg(*coloured, pcl_coloured);
+	pcl::toROSMsg(*area, pcl_coloured);
 	pcl_coloured.header.frame_id = target_frame;
     pcl_coloured.header.stamp = t;
     pub.publish(pcl_coloured);
