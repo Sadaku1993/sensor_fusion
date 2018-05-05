@@ -166,6 +166,7 @@ add_executable(transform_pointcloud_zed1 src/transform_pointcloud_zed1.cpp)
 add_executable(transform_pointcloud_zed2 src/transform_pointcloud_zed2.cpp)
 add_executable(integration src/integration.cpp)
 add_executable(save_points src/save_points.cpp)
+add_executable(colouring_realsense src/colouring_realsense.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -224,6 +225,11 @@ target_link_libraries(integration
   ${PCL_LIBRARIES}
 )
 target_link_libraries(save_points
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(colouring_realsense
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
