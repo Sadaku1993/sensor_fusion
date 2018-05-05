@@ -136,7 +136,7 @@ int main(int argc, char** argv)
     ros::Subscriber cinfo_sub = n.subscribe("/camera/color/camera_info", 10, cameraCallback);
     ros::Subscriber image_sub = n.subscribe("/camera/color/image_raw", 10, imageCallback);
 
-    pub = n.advertise<sensor_msgs::PointCloud2>("/zed0/coloured_points", 10);
+    pub = n.advertise<sensor_msgs::PointCloud2>("/realsense/coloured_points", 10);
 
     ros::Rate rate(30);
 
