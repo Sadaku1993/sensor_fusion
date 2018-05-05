@@ -137,7 +137,7 @@ int main(int argc, char** argv)
 
     ros::Subscriber pc_sub    = n.subscribe("/sq_lidar/points/right", 10, pcCallback); 
     ros::Subscriber cinfo_sub = n.subscribe("/zed1/left/camera_info", 10, cameraCallback);
-    ros::Subscriber image_sub = n.subscribe("/zed1/left/image_rect_color", 10, imageCallback);
+    ros::Subscriber image_sub = n.subscribe("/zed1/left/image_rect_color/republish", 10, imageCallback);
 
     pub = n.advertise<sensor_msgs::PointCloud2>("/zed1/coloured_points", 10);
 
