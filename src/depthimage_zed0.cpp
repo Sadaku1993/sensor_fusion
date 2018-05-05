@@ -72,20 +72,6 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
     image_flag = true;
 }
 
-// depth to color
-int depth2color(double depth)
-{
-    int color = 0;
-
-    if(0 < depth && depth<30){
-        color = 255*(30-depth)/30;
-    }
-    else{
-        color = 0;
-    }
-    return color;
-}
-
 // gradation depth data
 COLOUR GetColour(double v, double vmin, double vmax)
 {
@@ -128,10 +114,11 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
       ROS_ERROR("cv_bridge exception: %s", e.what());
       return;
     }
+
     cv::Mat image(cv_img_ptr->image.rows, cv_img_ptr->image.cols, cv_img_ptr->image.type());
     image = cv_bridge::toCvShare(image_msg)->image;
 
-	cv::Mat depth_image = cv::Mat::zeros(cv_img_ptr->image.rows, cv_img_ptr->image.cols, CV_8UC1);
+	// cv::Mat depth_image = cv::Mat::zeros(cv_img_ptr->image.rows, cv_img_ptr->image.cols, CV_8UC1);
 		
     image_geometry::PinholeCameraModel cam_model_;
     cam_model_.fromCameraInfo(cinfo_msg);
@@ -152,12 +139,8 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
 
         if(uv.x>0 && uv.x < image.cols && uv.y > 0 && uv.y < image.rows){
             double range = sqrt( pow((*pt).x, 2.0) + pow((*pt).y, 2.0) + pow((*pt).z, 2.0));
-            COLOUR c = GetColour(int(range/20*255.0), 0, 255);
-            // cv::circle(image, cv::Point(uv.x, uv.y), 1, cv::Scalar(0, 255, 0), -1, 4);
+            COLOUR c = GetColour(int(range/10*255.0), 0, 255);
             cv::circle(image, uv, 3, cv::Scalar(int(255*c.b),int(255*c.g),int(255*c.r)), -1);
-
-            int distance = depth2color((*pt).x);
-            depth_image.at<uchar>(uv.y, uv.x) = distance;
 		}
     }
     ROS_INFO("Publish coloured PC");
@@ -165,8 +148,6 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
     cv::imshow("projection", image);
     cv::waitKey(1);
 
-	cv::imshow("depth", depth_image);
-	cv::waitKey(1);
 	pc_flag = false;
 	camera_flag = false;
 	image_flag = false;
