@@ -43,6 +43,10 @@ bool pc_flag = false;
 bool camera_flag = false;
 bool image_flag = false;
 
+typedef struct{
+    double r, g, b;
+} COLOUR;
+
 // Callback (SQ_LiDAR)
 sensor_msgs::PointCloud pc_;
 void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
@@ -82,6 +86,35 @@ int depth2color(double depth)
     return color;
 }
 
+// gradation depth data
+COLOUR GetColour(double v, double vmin, double vmax)
+{
+    COLOUR c = {1.0, 1.0, 1.0}; // while
+    double dv;
+
+   if (v < vmin)
+   v = vmin;
+   if (v > vmax)
+   v = vmax;
+   dv = vmax - vmin;
+
+   if (v < (vmin + 0.25 * dv)) {
+      c.r = 0;
+      c.g = 4 * (v - vmin) / dv;
+   } else if (v < (vmin + 0.5 * dv)) {
+      c.r = 0;
+      c.b = 1 + 4 * (vmin + 0.25 * dv - v) / dv;
+   } else if (v < (vmin + 0.75 * dv)) {
+      c.r = 4 * (v - vmin - 0.5 * dv) / dv;
+      c.b = 0;
+   } else {
+      c.g = 1 + 4 * (vmin + 0.75 * dv - v) / dv;
+      c.b = 0;
+   }
+
+   return(c);
+}
+
 
 // Colouring Function
 void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoConstPtr& cinfo_msg, const sensor_msgs::ImageConstPtr& image_msg)
@@ -118,9 +151,13 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
         uv = cam_model_.project3dToPixel(pt_cv);
 
         if(uv.x>0 && uv.x < image.cols && uv.y > 0 && uv.y < image.rows){
+            double range = sqrt( pow((*pt).x, 2.0) + pow((*pt).y, 2.0) + pow((*pt).z, 2.0));
+            COLOUR c = GetColour(int(range/20*255.0), 0, 255);
+            // cv::circle(image, cv::Point(uv.x, uv.y), 1, cv::Scalar(0, 255, 0), -1, 4);
+            cv::circle(image, uv, 3, cv::Scalar(int(255*c.b),int(255*c.g),int(255*c.r)), -1);
+
             int distance = depth2color((*pt).x);
-            cv::circle(image, cv::Point(uv.x, uv.y), 1, cv::Scalar(0, 255, 0), -1, 4);
-			depth_image.at<uchar>(uv.y, uv.x) = distance;
+            depth_image.at<uchar>(uv.y, uv.x) = distance;
 		}
     }
     ROS_INFO("Publish coloured PC");
