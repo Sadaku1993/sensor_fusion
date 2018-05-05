@@ -15,6 +15,8 @@ subscribe sq_lidar pointcloud
 #include <pcl/common/transforms.h>
 #include <pcl_ros/transforms.h>
 #include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 #include <image_geometry/pinhole_camera_model.h>
@@ -70,14 +72,16 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 int depth2color(double depth)
 {
     int color = 0;
+
     if(0 < depth && depth<30){
-        color = 255*depth/30;
+        color = 255*(30-depth)/30;
     }
     else{
-        color = 255;
+        color = 0;
     }
     return color;
 }
+
 
 // Colouring Function
 void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoConstPtr& cinfo_msg, const sensor_msgs::ImageConstPtr& image_msg)
@@ -94,6 +98,8 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
     cv::Mat image(cv_img_ptr->image.rows, cv_img_ptr->image.cols, cv_img_ptr->image.type());
     image = cv_bridge::toCvShare(image_msg)->image;
 
+	cv::Mat depth_image = cv::Mat::zeros(cv_img_ptr->image.rows, cv_img_ptr->image.cols, CV_8UC1);
+		
     image_geometry::PinholeCameraModel cam_model_;
     cam_model_.fromCameraInfo(cinfo_msg);
 
@@ -112,19 +118,18 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
         uv = cam_model_.project3dToPixel(pt_cv);
 
         if(uv.x>0 && uv.x < image.cols && uv.y > 0 && uv.y < image.rows){
-            int distance = depth2color((*pt).z);
+            int distance = depth2color((*pt).x);
             cv::circle(image, cv::Point(uv.x, uv.y), 1, cv::Scalar(0, 255, 0), -1, 4);
+			depth_image.at<uchar>(uv.y, uv.x) = distance;
 		}
     }
     ROS_INFO("Publish coloured PC");
 
-    //Publish Depth Image
-    sensor_msgs::ImagePtr depth_msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
-    image_pub.publish(depth_msg);
-
     cv::imshow("projection", image);
     cv::waitKey(1);
 
+	cv::imshow("depth", depth_image);
+	cv::waitKey(1);
 	pc_flag = false;
 	camera_flag = false;
 	image_flag = false;
@@ -138,11 +143,9 @@ int main(int argc, char** argv)
     tf::TransformListener listener;
     tf::StampedTransform transform;
 
-    ros::Subscriber pc_sub    = n.subscribe("/sq_lidar/points/right", 10, pcCallback); 
+    ros::Subscriber pc_sub    = n.subscribe("/sq_lidar/points/center", 10, pcCallback); 
     ros::Subscriber cinfo_sub = n.subscribe("/zed0/left/camera_info", 10, cameraCallback);
     ros::Subscriber image_sub = n.subscribe("/zed0/left/image_rect_color/republish", 10, imageCallback);
-
-    image_pub = it.advertise("/zed0/left/depth/sq", 10);
 
     ros::Rate rate(10);
 
