@@ -28,7 +28,6 @@ typedef pcl::PointCloud<pcl::PointXYZRGB> PointCloudXYZRGB;
 ros::Time t;
 
 ros::Publisher pub;
-image_transport::Publisher image_pub;
 
 // Frame Name
 string target_frame = "/zed1/zed_left_camera";
@@ -62,21 +61,6 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
     image_ = msg;
     image_flag = true;
-}
-
-// depth to color
-int depth2color(double x, double y)
-{
-    double depth = sqrt(pow(x, 2) + pow(y, 2));
-    int color = 0;
-    if(0 < depth && depth<30){
-        color = 255*depth/30;
-    }
-    else{
-        color = 255;
-    }
-
-    return color;
 }
 
 // Colouring Function
@@ -122,9 +106,6 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
             (*pt).g = image.at<cv::Vec3b>(uv)[1];
             (*pt).r = image.at<cv::Vec3b>(uv)[2];
  			area->points.push_back(*pt);
-
-            int distance = depth2color((*pt).x, (*pt).y);
-            depth_image.at<uchar>(uv.y, uv.x) = distance;
 		}
         else{
             (*pt).b = 255;
@@ -144,7 +125,6 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
 
     //Publish Depth Image
     sensor_msgs::ImagePtr depth_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", depth_image).toImageMsg();
-    image_pub.publish(depth_msg);
 
 	pc_flag = false;
 	camera_flag = false;
@@ -165,7 +145,6 @@ int main(int argc, char** argv)
     ros::Subscriber image_sub = n.subscribe("/zed1/left/image_rect_color/republish", 10, imageCallback);
 
     pub = n.advertise<sensor_msgs::PointCloud2>("/zed1/coloured_points", 10);
-    image_pub = it.advertise("/zed1/left/depth/sq", 10);
 
     ros::Rate rate(30);
 
