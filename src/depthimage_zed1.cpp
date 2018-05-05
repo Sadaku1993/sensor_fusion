@@ -67,9 +67,8 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 }
 
 // depth to color
-int depth2color(double x, double y)
+int depth2color(double depth)
 {
-    double depth = sqrt(pow(x, 2) + pow(y, 2));
     int color = 0;
     if(0 < depth && depth<30){
         color = 255*depth/30;
@@ -116,7 +115,7 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
         uv = cam_model_.project3dToPixel(pt_cv);
 
         if(uv.x>0 && uv.x < image.cols && uv.y > 0 && uv.y < image.rows){
-            int distance = depth2color((*pt).x, (*pt).y);
+            int distance = depth2color((*pt).z);
             depth_image.at<uchar>(uv.y, uv.x) = distance;
             update = true;
 		}
