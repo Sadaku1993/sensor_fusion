@@ -75,9 +75,9 @@ void integrate()
     pc2_integrate.header.frame_id = "/centerlaser";
     pub.publish(pc2_integrate);
 
-    flag0 = false;
-    flag1 = false;
-    flag2 = false;
+    // flag0 = false;
+    // flag1 = false;
+    // flag2 = false;
 }
 
 

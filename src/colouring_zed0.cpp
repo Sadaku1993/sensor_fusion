@@ -122,6 +122,10 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
     pcl_coloured.header.stamp = t;
     pub.publish(pcl_coloured);
 
+	pc_flag = false;
+	camera_flag = false;
+	image_flag = false;
+
 }
 
 int main(int argc, char** argv)
