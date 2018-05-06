@@ -38,11 +38,11 @@ int main(int argc, char** argv)
     tf::TransformListener listener;
     tf::StampedTransform transform;
 	
-	// ros::Subscriber sub = n.subscribe("/sq_lidar/points/lcl", 10, Callback);
-    ros::Subscriber sub = n.subscribe("/sq_lidar/points", 10, Callback);
+	ros::Subscriber sub = n.subscribe("/sq_lidar/points/lcl", 10, Callback);
+    // ros::Subscriber sub = n.subscribe("/sq_lidar/points", 10, Callback);
     ros::Publisher  pub = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/tf", 10);
 
-    ros::Rate rate(40);
+    ros::Rate rate(60);
 
     while(ros::ok())
     {
