@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <launch>
-    <node name="republish" type="republish" pkg="image_transport" output="screen" 
-          args="compressed in:=/zed0/left/image_rect_color/compressed raw out:=/zed0/left/image_rect_color/republish" />
-    <node name="republish" type="republish" pkg="image_transport" output="screen" 
-          args="compressed in:=/zed1/left/image_rect_color/compressed raw out:=/zed1/left/image_rect_color/republish" />
-    <node name="republish" type="republish" pkg="image_transport" output="screen" 
-          args="compressed in:=/zed2/left/image_rect_color/compressed raw out:=/zed2/left/image_rect_color/republish" />
+    <node name="republish0" type="republish" pkg="image_transport" output="screen" 
+          args="compressed in:=/zed0/left/image_rect_color raw out:=/zed0/left/image_rect_color/republish" />
+    <node name="republish1" type="republish" pkg="image_transport" output="screen" 
+          args="compressed in:=/zed1/left/image_rect_color raw out:=/zed1/left/image_rect_color/republish" />
+    <node name="republish2" type="republish" pkg="image_transport" output="screen" 
+          args="compressed in:=/zed2/left/image_rect_color raw out:=/zed2/left/image_rect_color/republish" />
 </launch>
