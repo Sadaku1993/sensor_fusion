@@ -137,11 +137,11 @@ int main(int argc, char** argv)
 	ros::init(argc, argv, "save_points");
 	ros::NodeHandle n;
 
-	ros::Subscriber sub_pc = n.subscribe("/sq_lidar/points/coloured", 1, pc_callback);
+	ros::Subscriber sub_pc = n.subscribe("/sq_lidar/points/tf", 1, pc_callback);
 	ros::Subscriber sub_lcl = n.subscribe("/odom", 1, lcl_callback);
 	
-	pub_pc = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/coloured/lcl", 1);
-    pub_vis_pc = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/coloured/vis_lcl", 1);
+	pub_pc = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/saved", 1);
+    pub_vis_pc = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/saved/vis", 1);
 
 	nav_msgs::Odometry init_odom;
 
