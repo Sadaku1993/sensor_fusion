@@ -41,7 +41,7 @@ Eigen::Matrix4f transform_matrix;
 Eigen::Matrix4f inverse_transform_matrix;
 
 int count_ = 0;
-int save_num = 200;
+int save_num = 400;
 
 bool init_lcl_flag = true;
 
