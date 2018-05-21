@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+	<rosparam command="load" file="$(find sensor_fusion)/conf/sq_lidar_conversions_new.yaml"/>
+	<node pkg="sensor_fusion" type="save_points_odom_2" name="save_points_odom_2"/>
+</launch>
+	

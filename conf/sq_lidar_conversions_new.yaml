@@ -1,0 +1,13 @@
+
+sq_lidar_conversions:
+    # laser_topic: /sq_lidar/scan_raw
+    laser_topic: /sq_lidar/scan
+    pointcloud_topic: /cloud/tf
+    target_frame: centerlaser_
+    output_topic: /sq_lidar/points/lcl
+    # odom_topic: /t_frog/odom
+    odom_topic: /odom #2017/09/10/ /t_frog/odom->/odom by Onda
+    odom_parent_frame: odom
+    odom_child_frame: base_link
+
+
