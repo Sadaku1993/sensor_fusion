@@ -28,7 +28,7 @@ string LASER_TOPIC;
 string CAMERA_INFO_TOPIC;
 string IMAGE_TOPIC;
 string TARGET_FRAME;
-string SOUTCE_FRAME;
+string SOURCE_FRAME;
 string PUBLISH_TOPIC;
 
 sensor_msgs::PointCloud pc_tmp;

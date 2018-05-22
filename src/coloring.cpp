@@ -16,7 +16,7 @@ author : Yudai Sadakuni
 #include <sensor_fusion/coloring.h>
 
 // Colouring Function
-void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoConstPtr& cinfo_msg, const sensor_msgs::ImageConstPtr& image_msg)
+void coloring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoConstPtr& cinfo_msg, const sensor_msgs::ImageConstPtr& image_msg)
 {
     cout<<"ALL GREEN"<<endl;
 
@@ -109,7 +109,7 @@ int main(int argc, char** argv)
         
         try{
             listener.waitForTransform(TARGET_FRAME, SOURCE_FRAME, t, ros::Duration(1.0));
-            listener.transformPointCloud(TARGET_FRAME t, pc_tmp, SOURCE_FRAME, pc_trans);
+            listener.transformPointCloud(TARGET_FRAME, t, pc_tmp, SOURCE_FRAME, pc_trans);
             sensor_msgs::convertPointCloudToPointCloud2(pc_trans, pc2_trans);
         }catch (tf::TransformException& ex) {
             ROS_WARN("[draw_frames] TF exception:\n%s", ex.what());
