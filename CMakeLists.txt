@@ -156,6 +156,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
+add_executable(coloring src/coloring.cpp)
 add_executable(colouring_zed0 src/colouring_zed0.cpp)
 add_executable(colouring_zed1 src/colouring_zed1.cpp)
 add_executable(colouring_zed2 src/colouring_zed2.cpp)
@@ -186,6 +187,11 @@ add_executable(test_points_callback test/test_points_callback.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
+target_link_libraries(coloring
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
 target_link_libraries(colouring_zed0
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
