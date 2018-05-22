@@ -55,8 +55,7 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
             (*pt).b = image.at<cv::Vec3b>(uv)[0];
             (*pt).g = image.at<cv::Vec3b>(uv)[1];
             (*pt).r = image.at<cv::Vec3b>(uv)[2];
-			
-			area->points.push_back(*pt);
+            area->points.push_back(*pt);
         }
         else{
             (*pt).b = 255;
@@ -72,10 +71,10 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
     pcl_coloured.header.frame_id = TARGET_FRAME;
     pcl_coloured.header.stamp = t;
     pub.publish(pcl_coloured);
-
-	pc_flag = false;
-	camera_flag = false;
-	image_flag = false;
+    
+    pc_flag = false;
+    camera_flag = false;
+    image_flag = false;
 }
 
 int main(int argc, char** argv)
