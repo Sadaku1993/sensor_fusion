@@ -19,8 +19,8 @@ ros::Publisher pub;
 
 pc_callback(const sensor_msgs::PointCloud2ConstPtr& msg)
 {
-    sensor_msgs::PointCloud2ConstPtr pc;
-    pc = msg;
+    sensor_msgs::PointCloud2 pc;
+    pc = *msg;
     pub.publish(pc);
 }
 
