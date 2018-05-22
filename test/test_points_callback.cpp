@@ -12,6 +12,9 @@ author:Yudai Sadakuni
 
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
+
+using namespace std;
+
 pc_callback(const sensor_msgs::PointCloud2ConstPtr& msg)
 {
     sensor_msgs::PointCloud2ConstPtr pc;
