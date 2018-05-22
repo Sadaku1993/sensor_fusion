@@ -41,7 +41,7 @@ $rosrun sensor_fusion depthimage_zed1
 $rosrun sensor_fusion depthimage_zed2
 ```
 
-###Launch Colouring PointCloud
+### Launch Colouring PointCloud
 ```
 $rosrun sensor_fusion colouring_zed0
 $rosrun sensor_fusion colouring_zed1
