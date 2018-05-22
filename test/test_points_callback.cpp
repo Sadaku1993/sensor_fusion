@@ -24,7 +24,7 @@ pc_callback(const sensor_msgs::PointCloud2ConstPtr& msg)
 
 int main(int argc, char**argv)
 {
-    ros::init(argc, argc, "test_points_callback");
+    ros::init(argc, argv, "test_points_callback");
     ros::NodeHandle n;
 
     ros::Subscriber sub = n.subscribe("cloud/tf", 1, pc_callback);
