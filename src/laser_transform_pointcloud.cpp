@@ -1,9 +1,14 @@
 /*
 
-author : Yudai Sadakuni
+transform pointcloud data from laser_link to centerlaser
 
-transform pointcloud data
-source_frame -> target_frame
+Subscribe:
+    PointCloud2
+    tf
+Publish:
+    PointCloud2
+
+author : Yudai Sadakuni
 
 */
 
