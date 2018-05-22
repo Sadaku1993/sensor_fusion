@@ -172,6 +172,9 @@ add_executable(depthimage_zed1 src/depthimage_zed1.cpp)
 add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
 add_executable(save_points_odom_2 src/save_points_odom.cpp)
 
+## test code
+add_executable(test_points_callback test/test_points_callback.cpp)
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -258,6 +261,12 @@ target_link_libraries(save_points_odom_2
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
+target_link_libraries(test_points_callback
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+
 
 #############
 ## Install ##
