@@ -1,0 +1,7 @@
+zed:
+    laser_topic: /sq_lidar/points/center
+    camera_info_topic: /zed0/left/camera_info
+    image_topic: /zed0/left/image_rect_color/republish
+    target_frame: /zed0/zed_left_camera
+    source_frame: /centerlaser_
+    publish_topic: /zed0/coloured_points
