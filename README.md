@@ -7,8 +7,8 @@ By integrating the data of LiDAR and camera, create teacher data sets for monocu
 ## Requirements
 - ROS Kinetic(ubuntu 16.04)
 - Python2.7+
-- [Opencv](https://opencv.org/)3.4
-- [PCL](https://pointcloud.org/)1.8
+- [Opencv](https://opencv.org/)3.4+
+- [PCL](https://pointcloud.org/)1.8+
 - [zed-wrapper-ros](http://wiki.ros.org/zed-ros-wrapper)
 
 ## How to Run
@@ -18,10 +18,25 @@ Under review
 ### Launch Sensor Node
 ```
 $ roscd sensor_fusion/scripts
-$ ./run.sh
+$ ./preprocessing.sh
 ```
 or
 ```
 roslaunch zed_wrapper zed.launch
-roslaunch 
+roslaunch sq1_extra run_joy_for_bag.launch
+```
+
+### Launch LiDAR and Camera Calibration Node
+```
+$roscd sensor_fusion/scripts
+$./run.sh
+```
+or
+```
+$rosrun sensor_fusion division
+$rosrun sensor_fusion laser_transform_pointcloud
+$rosrun sensor_fusion save_points_odom
+$rosrun sensor_fusion depthimage_zed0
+$rosrun sensor_fusion depthimage_zed1
+$rosrun sensor_fusion depthimage_zed2
 ```
