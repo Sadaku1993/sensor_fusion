@@ -15,12 +15,12 @@ In this repository, I compiled the source code using ROS for the sensor fusion
 Under review
 
 ### Launch Sensor Node
-'''
+```
 $ roscd sensor_fusion/scripts
 $ ./run.sh
-'''
+```
 or
-'''
+```
 roslaunch zed_wrapper zed.launch
 roslaunch 
-'''
+```
