@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+    <rosparam command="load" file="$(find sensor_susion)/conf/zed2_coloring.yaml"/>
+    <node pkg="sensor_fusion" type="coloring" name="coloring_zed2" />
+</launch>
