@@ -24,6 +24,9 @@ or
 ```
 roslaunch zed_wrapper zed.launch
 roslaunch sq1_extra run_joy_for_bag.launch
+roslaunch sensor_fusion republish.launch
+roslaunch sensor_fusion sq2_tf.launch
+roslaunch sensor_fusion laser_tf.launch
 ```
 
 ### Launch LiDAR and Camera Calibration Node
