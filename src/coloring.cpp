@@ -68,9 +68,8 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
 
     // Publish Coloured PointCloud
     sensor_msgs::PointCloud2 pcl_coloured;
-    // pcl::toROSMsg(*coloured, pcl_coloured);
-	pcl::toROSMsg(*area, pcl_coloured);
-	pcl_coloured.header.frame_id = TARGET_FRAME;
+    pcl::toROSMsg(*area, pcl_coloured);
+    pcl_coloured.header.frame_id = TARGET_FRAME;
     pcl_coloured.header.stamp = t;
     pub.publish(pcl_coloured);
 
@@ -105,6 +104,7 @@ int main(int argc, char** argv)
     ros::Rate rate(20);
 
     while(ros::ok()){
+        // Transform pointcloud 
         sensor_msgs::PointCloud pc_trans;
         sensor_msgs::PointCloud2 pc2_trans;
         
