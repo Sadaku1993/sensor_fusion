@@ -67,7 +67,7 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "ransav_lidar");
+    ros::init(argc, argv, "ransac_lidar");
     ros::NodeHandle n;
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
