@@ -158,16 +158,16 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "depthimage_zed0");
     ros::NodeHandle n;
 
-    n.getParam("/zed_depthimage/target_frame", TARGET_FRAME);
-    n.getParam("/zed_depthimage/source_frame", SOURCE_FRAME);
+    n.getParam("/target_frame", TARGET_FRAME);
+    n.getParam("/source_frame", SOURCE_FRAME);
 
     image_transport::ImageTransport it(n);
     tf::TransformListener listener;
     tf::StampedTransform transform;
 
-    ros::Subscriber pc_sub    = n.subscribe("/sq_lidar/points/center", 10, pcCallback); 
-    ros::Subscriber cinfo_sub = n.subscribe("/zed0/left/camera_info", 10, cameraCallback);
-    ros::Subscriber image_sub = n.subscribe("/zed0/left/image_rect_color/republish", 10, imageCallback);
+    ros::Subscriber pc_sub    = n.subscribe("/cloud", 10, pcCallback); 
+    ros::Subscriber cinfo_sub = n.subscribe("/camera_info", 10, cameraCallback);
+    ros::Subscriber image_sub = n.subscribe("/image", 10, imageCallback);
 
     ros::Rate rate(10);
 
