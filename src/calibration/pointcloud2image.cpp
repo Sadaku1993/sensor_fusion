@@ -18,7 +18,7 @@ author : Yudai Sadakuni
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 
-typedef pcl::PointNormal PointA;
+typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
@@ -35,11 +35,11 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
 #pragma omp parallel for
         for( int y = 0; y < image.rows; y++ ) {
             for( int x = 0; x < image.cols; x++ ) {
-                pcl::PointXYZRGBA point = cloud->at( x, y );
-                image.at<cv::Vec4b>( y, x )[0] = point.b;
-                image.at<cv::Vec4b>( y, x )[1] = point.g;
-                image.at<cv::Vec4b>( y, x )[2] = point.r;
-                image.at<cv::Vec4b>( y, x )[3] = point.a;
+                pcl::PointXYZ point = cloud->at( x, y );
+                image.at<cv::Vec4b>( y, x )[0] = 255; // point.b;
+                image.at<cv::Vec4b>( y, x )[1] = 255; //point.g;
+                image.at<cv::Vec4b>( y, x )[2] = 255; //point.r;
+                image.at<cv::Vec4b>( y, x )[3] = 1; //point.a;
             }
         }
         cv::imshow("Image", image);
