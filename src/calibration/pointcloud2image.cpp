@@ -30,7 +30,7 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
 
     if( !cloud->empty() ){
         // Create cv::Mat
-        image = cv::Mat( cloud->height, cloud->width, CV_8UC4 );
+        cv::Mat image( cloud->height, cloud->width, CV_8UC4 );
 
         // pcl::PointCloud to cv::Mat
 #pragma omp parallel for
