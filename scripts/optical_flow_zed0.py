@@ -2,7 +2,7 @@
 #coding:utf-8
 
 """
-aothor : Yudai Sadakuni
+author : Yudai Sadakuni
 
 optical flow for ros
 
