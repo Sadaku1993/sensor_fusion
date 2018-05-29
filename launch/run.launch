@@ -10,6 +10,18 @@
 	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="laser_transform_pointcloud"/>
 
 	<!--Save PointCloud-->
-	<include file="$(find sensor_fusion)/launch/save_points.launch"/>
+	<node pkg="sensor_fusion" type="lcl" name="lcl"/>
+
+	<!--divide PointCloud-->
+	<node pkg="sensor_fusion" type="division" name="division" >
+		<remap from="/cloud" to="/cloud/lcl" />
+		<remap from="/cloud/center" to="/sq_lidar/points/center" />
+		<remap from="/cloud/left" 	to="/sq_lidar/points/left" />
+		<remap from="/cloud/right" 	to="/sq_lidar/points/right" />
+	</node>
+
+	<!--republish zed image-->
+	<include file="$(find sensor_fusion)/launch/republish.launch"/>
+
 
 </launch>

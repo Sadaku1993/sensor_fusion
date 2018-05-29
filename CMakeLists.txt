@@ -162,8 +162,6 @@ add_executable(division src/division.cpp)
 add_executable(transform_pointcloud src/transform_pointcloud.cpp)
 add_executable(integration src/integration.cpp)
 add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
-add_executable(save_points src/save_points.cpp)
-add_executable(save_points_odom_2 src/save_points_odom.cpp)
 add_executable(lcl src/lcl.cpp)
 
 ## Calibration
@@ -171,6 +169,10 @@ add_executable(pointcloud2image src/calibration/pointcloud2image.cpp)
 
 ## test code
 add_executable(test_points_callback test/test_points_callback.cpp)
+
+## old code
+add_executable(depthimage_zed0 src/old/depthimage_zed0.cpp)
+
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -213,17 +215,6 @@ target_link_libraries(laser_transform_pointcloud
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
-
-target_link_libraries(save_points
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(save_points_odom_2
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
 target_link_libraries(lcl
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
@@ -235,6 +226,11 @@ target_link_libraries(pointcloud2image
   ${PCL_LIBRARIES}
 )
 target_link_libraries(test_points_callback
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(depthimage_zed0
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}

@@ -99,26 +99,38 @@ void pc_callback(const sensor_msgs::PointCloud2ConstPtr msg)
     CloudAPtr output_pc_after (new CloudA);
 
     for(size_t i=0;i<single_pc_->points.size();i++){
-        if(single_pc_->points[i].z <= z_threshold){
+		double distance = sqrt(pow(single_pc_->points[i].x, 2)+
+							   pow(single_pc_->points[i].y, 2)+
+							   pow(single_pc_->points[i].z, 2));
+		if(distance < 30){
+        //if(single_pc_->points[i].z <= z_threshold){
             PointA temp;
             output_pc_after->points.push_back(output_pc->points[i]);
         }
     }
 
+	CloudAPtr output_save_pc (new CloudA);
+	Eigen::Matrix4f inverse_transform_matrix = transform_matrix.inverse();
+	pcl::transformPointCloud(*output_pc_after, *output_save_pc, inverse_transform_matrix);
+	
+
     if(count_ < save_num){
-        *save_pc_ += *output_pc_after;
-        old_pc_ = output_pc_after;
+        *save_pc_ += *output_save_pc;
+        old_pc_ = output_save_pc;
     }else{
         int old_pc_size = (int)old_pc_->points.size();
         save_pc_->points.erase(save_pc_->points.begin(), save_pc_->points.begin()+old_pc_size);
-        *save_pc_ += *output_pc_after;
+        *save_pc_ += *output_save_pc;
+		old_pc_ = output_save_pc;
     }
 
     sensor_msgs::PointCloud2 pc_;
-    pcl::toROSMsg(*save_pc_, pc_);
-    pc_.header.stamp = ros::Time::now();
+	pcl::toROSMsg(*save_pc_, pc_);
+	pc_.header.stamp = ros::Time::now();
     pc_.header.frame_id = msg->header.frame_id;
     pub.publish(pc_);
+
+	count_++;
 
 }
 
@@ -130,9 +142,9 @@ int main(int argc, char** argv)
 
     ros::Rate rate(20);
 
-    ros::Subscriber sub_pc = n.subscribe("/cloud", 10, pc_callback);
-    ros::Subscriber sub_lcl = n.subscribe("/odom", 10, lcl_callback);
-    pub = n.advertise<sensor_msgs::PointCloud2>("/cloud/lcl", 10);
+    ros::Subscriber sub_pc = n.subscribe("/cloud/tf", 30, pc_callback);
+    ros::Subscriber sub_lcl = n.subscribe("/odom", 30, lcl_callback);
+    pub = n.advertise<sensor_msgs::PointCloud2>("/cloud/lcl", 30);
 
     nav_msgs::Odometry init_odom;
     init_odom.header.frame_id = "/odom";

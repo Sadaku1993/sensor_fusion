@@ -32,7 +32,7 @@ class PointCloudTransform{
 		ros::Subscriber sub;
 		ros::Time t;
 		sensor_msgs::PointCloud pc_;
-		string target_frame = "/centerlaser_";
+		string target_frame = "/centerlaser";
 
 	public:
 		PointCloudTransform();

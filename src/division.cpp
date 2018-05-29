@@ -81,11 +81,11 @@ int main(int argc, char** argv)
     ros::NodeHandle n;
 
     // ros::Subscriber pc_callback = n.subscribe("/sq_lidar/points/saved",10,pcCallback);
-    ros::Subscriber pc_callback = n.subscribe("/sq_lidar/points/tf",10,pcCallback);
+    ros::Subscriber pc_callback = n.subscribe("/cloud",10,pcCallback);
 
-    pub_center = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/center",10);
-    pub_left   = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/left",10);
-    pub_right  = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/right",10);
+    pub_center = n.advertise<sensor_msgs::PointCloud2>("/cloud/center",10);
+    pub_left   = n.advertise<sensor_msgs::PointCloud2>("/cloud/left",10);
+    pub_right  = n.advertise<sensor_msgs::PointCloud2>("/cloud/right",10);
 
     ros::Rate rate(30);
     while(ros::ok())

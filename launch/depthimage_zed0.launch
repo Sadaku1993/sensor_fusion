@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
 <launch>
-    <rosparam command="load" file="$(find sensor_fusion)/conf/zed0_coloring.yaml"/>
-    <node pkg="sensor_fusion" type="depthimage" name="depthimage_zed0">
-        <ramap from="cloud" to="/sq_lidar/points/center" />
-        <remap from="camera_info" to="/zed0/left/camera_info" />
-        <remap from="image" to="/zed0/left/image_rect_color/republish" />
+    <node pkg="sensor_fusion" type="depthimage" name="depthimage_zed0" output="screen">
+        <remap from="cloud" 		to="/sq_lidar/points/center" />
+        <remap from="camera_info" 	to="/zed0/left/camera_info" />
+        <remap from="image" 		to="/zed0/left/image_rect_color/republish" />
         <param name="target_frame" type="string" value="/zed0/zed_left_camera" />
-        <param name="source_frame" type="string" value="/centerlaser_" />
+        <param name="source_frame" type="string" value="/centerlaser" />
     </node>
 </launch>
