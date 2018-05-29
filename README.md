@@ -29,6 +29,11 @@ roslaunch sensor_fusion sq2_zed.launch
 roslaunch sensor_fusion laser_tf.launch
 ```
 
+### Launch TF
+```
+roslaunch sensor_fusion run.launch
+```
+
 ### Launch LiDAR and Camera Calibration Node
 ```
 $roscd sensor_fusion/scripts
