@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <param name="TARGET_FRAME" type="string" value="/centerlaser" />
+    <param name="SOURCE_FRAME" type="string" value="/centerlaser_" />
+    <node pkg="sensor_fusion" type="transform_pointcloud" name="transform_pointcloud" />
+</launch>
