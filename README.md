@@ -50,8 +50,8 @@ $roslaunch sensor_fusion depthimage_zed2.launch
 
 ### Launch Colouring PointCloud
 ```
-$rosrun sensor_fusion colouring_zed0
-$rosrun sensor_fusion colouring_zed1
-$rosrun sensor_fusion colouring_zed2
-$rosrun sensor_fusion integration
+$roslaunch sensor_fusion colouring_zed0.launch
+$roslaunch sensor_fusion colouring_zed1.launch
+$roslaunch sensor_fusion colouring_zed2.launch
+$roslaunch sensor_fusion integration.launch
 ```
