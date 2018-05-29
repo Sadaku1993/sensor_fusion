@@ -25,7 +25,7 @@ or
 roslaunch zed_wrapper zed.launch
 roslaunch sq1_extra run_joy_for_bag.launch
 roslaunch sensor_fusion republish.launch
-roslaunch sensor_fusion sq2_tf.launch
+roslaunch sensor_fusion sq2_zed.launch
 roslaunch sensor_fusion laser_tf.launch
 ```
 
@@ -36,12 +36,16 @@ $./run.sh
 ```
 or
 ```
-$rosrun sensor_fusion division
 $rosrun sensor_fusion laser_transform_pointcloud
 $rosrun sensor_fusion save_points_odom
-$rosrun sensor_fusion depthimage_zed0
-$rosrun sensor_fusion depthimage_zed1
-$rosrun sensor_fusion depthimage_zed2
+$rosrun sensor_fusion division
+```
+
+### Launch Depthimage
+```
+$roslaunch sensor_fusion depthimage_zed0.launch
+$roslaunch sensor_fusion depthimage_zed1.launch
+$roslaunch sensor_fusion depthimage_zed2.launch
 ```
 
 ### Launch Colouring PointCloud
