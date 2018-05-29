@@ -165,6 +165,9 @@ add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
 add_executable(save_points src/save_points.cpp)
 add_executable(save_points_odom_2 src/save_points_odom.cpp)
 
+## Calibration
+add_executable(pointcloud2image src/calibration/pointcloud2image.cpp)
+
 ## test code
 add_executable(test_points_callback test/test_points_callback.cpp)
 
@@ -216,6 +219,11 @@ target_link_libraries(save_points
   ${PCL_LIBRARIES}
 )
 target_link_libraries(save_points_odom_2
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(pointcloud2image
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
