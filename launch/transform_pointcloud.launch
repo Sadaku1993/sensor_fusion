@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
+<!--PointCloud Transform-->
 <launch>
-    <param name="TARGET_FRAME" type="string" value="/centerlaser" />
-    <param name="SOURCE_FRAME" type="string" value="/centerlaser_" />
-    <node pkg="sensor_fusion" type="transform_pointcloud" name="transform_pointcloud" />
+    <node pkg="sensor_fusion" type="transform_pointcloud" name="transform_pointcloud">
+        <param name="TARGET_FRAME" type="string" value="/centerlaser" />
+        <param name="SOURCE_FRAME" type="string" value="/centerlaser_" />
+        <remap from="cloud"     to="/sq_lidar/points/lcl"/>
+        <ramap from="cloud/tf"  to="/sq_lidar/points/tf"/>
+    </node>
 </launch>

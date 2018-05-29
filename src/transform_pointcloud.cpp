@@ -25,9 +25,6 @@ string SOURCE_FRAME;
 
 ros::Time t;
 
-string target_frame = "/centerlaser";
-string source_frame = "/centerlaser_";
-
 sensor_msgs::PointCloud pc_;
 void Callback(const sensor_msgs::PointCloud2ConstPtr& msg)
 {
@@ -49,9 +46,6 @@ int main(int argc, char** argv)
     ros::Subscriber sub = n.subscribe("cloud", 10, Callback);
     ros::Publisher  pub = n.advertise<sensor_msgs::PointCloud2>("cloud/tf", 10);
 	
-	// ros::Subscriber sub = n.subscribe("/sq_lidar/points/lcl", 10, Callback);
-    // ros::Publisher  pub = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/tf", 10);
-
     ros::Rate rate(60);
 
     while(ros::ok())
