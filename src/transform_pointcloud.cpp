@@ -40,16 +40,14 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "sq_transform");
     ros::NodeHandle n;
 
-    n.getParam("/transform_pointcloud/input_topic", INPUT_TOPIC);
-    n.getParam("/transform_pointcloud/output_topic", OUTPUT_TOPIC);
     n.getParam("/transform_pointcloud/target_frame", TARGET_FRAME);
     n.getParam("/transform_pointcloud/source_frame", SOURCE_FRAME);
     
     tf::TransformListener listener;
     tf::StampedTransform transform;
 
-    ros::Subscriber sub = n.subscribe(INPUT_TOPIC, 10, Callback);
-    ros::Publisher  pub = n.advertise<sensor_msgs::PointCloud2>(OUTPUT_TOPIC, 10);
+    ros::Subscriber sub = n.subscribe("cloud", 10, Callback);
+    ros::Publisher  pub = n.advertise<sensor_msgs::PointCloud2>("cloud/tf", 10);
 	
 	// ros::Subscriber sub = n.subscribe("/sq_lidar/points/lcl", 10, Callback);
     // ros::Publisher  pub = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/tf", 10);
