@@ -13,6 +13,7 @@ author : Yudai Sadakuni
 #include "ros/package.h"
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl/point_cloud.h>
+#include <pcl_ros/point_cloud.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
