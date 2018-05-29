@@ -162,17 +162,8 @@ add_executable(division src/division.cpp)
 add_executable(transform_pointcloud src/transform_pointcloud.cpp)
 add_executable(integration src/integration.cpp)
 add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
-
-add_executable(colouring_zed0 src/colouring_zed0.cpp)
-add_executable(colouring_zed1 src/colouring_zed1.cpp)
-add_executable(colouring_zed2 src/colouring_zed2.cpp)
-add_executable(transform_pointcloud_zed0 src/transform_pointcloud_zed0.cpp)
-add_executable(transform_pointcloud_zed1 src/transform_pointcloud_zed1.cpp)
-add_executable(transform_pointcloud_zed2 src/transform_pointcloud_zed2.cpp)
 add_executable(save_points src/save_points.cpp)
 add_executable(colouring_realsense src/colouring_realsense.cpp)
-add_executable(depthimage_zed0 src/depthimage_zed0.cpp)
-add_executable(depthimage_zed1 src/depthimage_zed1.cpp)
 add_executable(save_points_odom_2 src/save_points_odom.cpp)
 
 ## test code
@@ -220,53 +211,12 @@ target_link_libraries(laser_transform_pointcloud
   ${PCL_LIBRARIES}
 )
 
-
-target_link_libraries(colouring_zed0
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(colouring_zed1
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(colouring_zed2
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(transform_pointcloud_zed0
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(transform_pointcloud_zed1
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(transform_pointcloud_zed2
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
 target_link_libraries(save_points
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
 target_link_libraries(colouring_realsense
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(depthimage_zed0
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(depthimage_zed1
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
