@@ -155,7 +155,7 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "depthimage_zed0");
+    ros::init(argc, argv, "depthimage");
     ros::NodeHandle n;
 
     n.getParam("/target_frame", TARGET_FRAME);
