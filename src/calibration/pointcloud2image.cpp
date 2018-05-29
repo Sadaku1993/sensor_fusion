@@ -15,7 +15,7 @@ author : Yudai Sadakuni
 #include <pcl/point_cloud.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.h>
+#include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 
 typedef pcl::PointNormal PointA;
@@ -28,22 +28,23 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
     pcl::fromROSMsg(*msg, *cloud);
 
     if( !cloud->empty() ){
-    // Create cv::Mat
-    image = cv::Mat( cloud->height, cloud->width, CV_8UC4 );
+        // Create cv::Mat
+        image = cv::Mat( cloud->height, cloud->width, CV_8UC4 );
 
-    // pcl::PointCloud to cv::Mat
-    #pragma omp parallel for
-    for( int y = 0; y < image.rows; y++ ) {
-        for( int x = 0; x < image.cols; x++ ) {
-            pcl::PointXYZRGBA point = cloud->at( x, y );
-            image.at<cv::Vec4b>( y, x )[0] = point.b;
-            image.at<cv::Vec4b>( y, x )[1] = point.g;
-            image.at<cv::Vec4b>( y, x )[2] = point.r;
-            image.at<cv::Vec4b>( y, x )[3] = point.a;
+        // pcl::PointCloud to cv::Mat
+#pragma omp parallel for
+        for( int y = 0; y < image.rows; y++ ) {
+            for( int x = 0; x < image.cols; x++ ) {
+                pcl::PointXYZRGBA point = cloud->at( x, y );
+                image.at<cv::Vec4b>( y, x )[0] = point.b;
+                image.at<cv::Vec4b>( y, x )[1] = point.g;
+                image.at<cv::Vec4b>( y, x )[2] = point.r;
+                image.at<cv::Vec4b>( y, x )[3] = point.a;
+            }
         }
+        cv::imshow("Image", image);
+        cv::waitKey(1);
     }
-    cv::imshow("Image", image);
-    cv::waitKey(1);
 }
 
 int main(int argc, char** argv)
