@@ -33,7 +33,7 @@ Eigen::Matrix4f transform_matrix;
 Eigen::Matrix4f inverse_transform_matrix;
 
 int count_ = 0;
-int save_num = 1;
+int save_num = 100;
 
 bool init_lcl_flag = true;
 
@@ -122,17 +122,14 @@ int main(int argc, char** argv)
 	ros::init(argc, argv, "save_points_odom_2");
 	ros::NodeHandle n;
 
-	n.getParam("/sq_lidar_conversions/pointcloud_topic", POINTCLOUD_TOPIC);
-	n.getParam("/sq_lidar_conversions/output_topic", OUTPUT_TOPIC);
-	n.getParam("/sq_lidar_conversions/odom_topic", ODOM_TOPIC);
-	n.getParam("/sq_lidar_conversions/odom_parent_frame", ODOM_PARENT_FRAME);
-	n.getParam("/sq_lidar_conversions/odom_child_frame", ODOM_CHILD_FRAME);
+	n.getParam("/odom_parent_frame", ODOM_PARENT_FRAME);
+	n.getParam("/odom_child_frame", ODOM_CHILD_FRAME);
 
-	ros::Subscriber sub_pc = n.subscribe(POINTCLOUD_TOPIC, 1, pc_callback);
-	ros::Subscriber sub_lcl = n.subscribe(ODOM_TOPIC, 1, lcl_callback);
+	ros::Subscriber sub_pc = n.subscribe("/cloud", 10, pc_callback);
+	ros::Subscriber sub_lcl = n.subscribe("/odom", 10, lcl_callback);
 	
 	
-	pub_pc = n.advertise<sensor_msgs::PointCloud2>(OUTPUT_TOPIC, 1);
+	pub_pc = n.advertise<sensor_msgs::PointCloud2>("/output", 10);
 	
 	nav_msgs::Odometry init_odom;
 

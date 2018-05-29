@@ -18,54 +18,53 @@ source_frame -> target_frame
 
 using namespace std;
 
-string INPUT_TOPIC;
-string OUTPUT_TOPIC;
-string TARGET_FRAME;
-string SOURCE_FRAME;
+class PointCloudTransform{
+	private:
+		ros::NodeHandle n;
+		tf::TransformListener listener;
+		tf::StampedTransform transform;
+		ros::Publisher pub;
+		ros::Subscriber sub;
+		ros::Time t;
+		sensor_msgs::PointCloud pc_;
+		string target_frame;
 
-ros::Time t;
+	public:
+		PointCloudTransform();
+		void Callback(const sensor_msgs::PointCloud2ConstPtr& msg);
+};
 
-sensor_msgs::PointCloud pc_;
-void Callback(const sensor_msgs::PointCloud2ConstPtr& msg)
-{
-    sensor_msgs::convertPointCloud2ToPointCloud(*msg, pc_);
-    t = msg->header.stamp;
+PointCloudTransform::PointCloudTransform(){
+	sub = n.subscribe("/cloud", 10, &PointCloudTransform::Callback, this);
+	pub = n.advertise<sensor_msgs::PointCloud2>("/cloud/tf", 10);
+	n.getParam("target_frame", target_frame);
 }
+
+void PointCloudTransform::Callback(const sensor_msgs::PointCloud2ConstPtr &msg){
+	sensor_msgs::convertPointCloud2ToPointCloud(*msg, pc_);
+	t = msg->header.stamp;
+	string source_frame = msg->header.frame_id;
+
+	sensor_msgs::PointCloud pc_trans;
+	sensor_msgs::PointCloud2 pc2_trans;
+
+	try{
+		listener.waitForTransform(target_frame.c_str(), source_frame.c_str(), t, ros::Duration(1.0));
+		listener.transformPointCloud(target_frame.c_str(), t, pc_, source_frame.c_str(), pc_trans);
+		sensor_msgs::convertPointCloudToPointCloud2(pc_trans, pc2_trans);
+		pub.publish(pc2_trans);
+	}catch (tf::TransformException& ex) {
+		ROS_WARN("[draw_frames] TF exception:\n%s", ex.what());
+	}
+}
+
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "sq_transform");
-    ros::NodeHandle n;
-
-    n.getParam("/transform_pointcloud/target_frame", TARGET_FRAME);
-    n.getParam("/transform_pointcloud/source_frame", SOURCE_FRAME);
-    
-    tf::TransformListener listener;
-    tf::StampedTransform transform;
-
-    ros::Subscriber sub = n.subscribe("cloud", 10, Callback);
-    ros::Publisher  pub = n.advertise<sensor_msgs::PointCloud2>("cloud/tf", 10);
+    ros::init(argc, argv, "laser_framsform_pointcloud");
 	
-    ros::Rate rate(60);
-
-    while(ros::ok())
-    {
-        sensor_msgs::PointCloud pc_trans;
-        sensor_msgs::PointCloud2 pc2_trans;
-        try{
-            listener.waitForTransform(TARGET_FRAME.c_str(), SOURCE_FRAME.c_str(), t, ros::Duration(1.0));
-            listener.transformPointCloud(TARGET_FRAME.c_str(), t, pc_, SOURCE_FRAME.c_str(), pc_trans);
-            sensor_msgs::convertPointCloudToPointCloud2(pc_trans, pc2_trans);
-        }catch (tf::TransformException& ex) {
-            ROS_WARN("[draw_frames] TF exception:\n%s", ex.what());
-        }
-
-        pub.publish(pc2_trans);
-
-        ros::spinOnce();
-        rate.sleep();
-    }
+	PointCloudTransform transform;
+	ros::spin();
 
     return 0;
 }
-

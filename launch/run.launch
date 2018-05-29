@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+    <!--Launch Sensor Node-->
+
+    <!--Launch Sensor TF-->
+	<include file="$(find sensor_fusion)/launch/sq2_zed.launch"/>
+	<include file="$(find sensor_fusion)/launch/laser_tf.launch"/>
+
+	<!--Transform PointCloud2 data at Camera Link-->
+	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="laser_transform_pointcloud"/>
+
+	<!--Save PointCloud-->
+	<include file="$(find sensor_fusion)/launch/save_points.launch"/>
+
+</launch>

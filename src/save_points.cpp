@@ -45,7 +45,7 @@ int save_num = 100;
 
 bool init_lcl_flag = true;
 
-float z_threshold = 5.0;
+float z_threshold = 30.0;
 
 Eigen::Matrix4f create_matrix(nav_msgs::Odometry odom_now, float reflect){
 	double roll_now, pitch_now, yaw_now;
@@ -136,12 +136,12 @@ int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "save_points");
 	ros::NodeHandle n;
-
-	ros::Subscriber sub_pc = n.subscribe("/sq_lidar/points/tf", 1, pc_callback);
-	ros::Subscriber sub_lcl = n.subscribe("/odom", 1, lcl_callback);
 	
-	pub_pc = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/saved", 1);
-    pub_vis_pc = n.advertise<sensor_msgs::PointCloud2>("/sq_lidar/points/saved/vis", 1);
+	ros::Subscriber sub_pc = n.subscribe("/cloud", 30, pc_callback);
+	ros::Subscriber sub_lcl = n.subscribe("/odom", 30, lcl_callback);
+	
+	pub_pc = n.advertise<sensor_msgs::PointCloud2>("/cloud/lcl", 30);
+    pub_vis_pc = n.advertise<sensor_msgs::PointCloud2>("/cloud/lcl/vis", 30);
 
 	nav_msgs::Odometry init_odom;
 
