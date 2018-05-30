@@ -17,46 +17,28 @@ Under review
 
 ### Launch Sensor Node
 ```
-$ roscd sensor_fusion/scripts
-$ ./preprocessing.sh
+$roslaunch sq1_extra run_joy_for_bag.launch
 ```
-or
+and
 ```
-roslaunch zed_wrapper zed.launch
-roslaunch sq1_extra run_joy_for_bag.launch
-roslaunch sensor_fusion republish.launch
-roslaunch sensor_fusion sq2_zed.launch
-roslaunch sensor_fusion laser_tf.launch
+$ssh tx2-0
+$roslaunch zed-wrapper zed0.launch
+
+$ssh tx2-1
+$roslaunch zed-wrapper zed1.launch
+
+$ssh tx2-2
+$roslaunch zed-wrapper zed2.launch
 ```
 
-### Launch TF
+### Launch Preprocessn Node
 ```
 roslaunch sensor_fusion run.launch
 ```
 
-### Launch LiDAR and Camera Calibration Node
+### Launch DepthImage and ColoredCloud
 ```
-$roscd sensor_fusion/scripts
-$./run.sh
-```
-or
-```
-$rosrun sensor_fusion laser_transform_pointcloud
-$rosrun sensor_fusion save_points_odom
-$rosrun sensor_fusion division
-```
-
-### Launch Depthimage
-```
-$roslaunch sensor_fusion depthimage_zed0.launch
-$roslaunch sensor_fusion depthimage_zed1.launch
-$roslaunch sensor_fusion depthimage_zed2.launch
-```
-
-### Launch Colouring PointCloud
-```
-$roslaunch sensor_fusion colouring_zed0.launch
-$roslaunch sensor_fusion colouring_zed1.launch
-$roslaunch sensor_fusion colouring_zed2.launch
-$roslaunch sensor_fusion integration.launch
+$roslaunch sensor_fusion zed0.launch
+$roslaunch sensor_fusion zed1.launch
+$roslaunch sensor_fusion zed2.launch
 ```
