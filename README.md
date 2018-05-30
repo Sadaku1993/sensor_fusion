@@ -11,6 +11,30 @@ By integrating the data of LiDAR and camera, create teacher data sets for monocu
 - [PCL](https://pointcloud.org/)1.8+
 - [zed-wrapper-ros](http://wiki.ros.org/zed-ros-wrapper)
 
+##Hardware Spec
+- PC
+    - OS : Ubuntu16.04
+    - Memory : 8GB
+    - CPU : Intel® Core™ i7-7700
+    - GPU : GeForce GTX 1050-Ti
+- TX2
+- Robot
+    - SensorS
+        - SQ-LiDAR(Meiji Univ)
+        - ZED(Stereolabs)
+        - AMU
+    - Vehicle
+        - Differetical drive
+
+##How to Build
+```
+$cd $HOME
+$cd catkin_ws/src
+$git clone git@github.com:Sadaku1993/sensor_fusion.git
+$cd ..
+$catkin_make
+```
+
 ## How to Run
 ### Calibration SQ Lidar and ZED
 Under review
@@ -37,7 +61,7 @@ $roslaunch zed-wrapper zed2.launch
 
 ### Launch Preprocess Node
 ```
-roslaunch sensor_fusion run.launch
+$roslaunch sensor_fusion run.launch
 ```
 
 ### Launch DepthImage and ColoredCloud
@@ -47,4 +71,8 @@ $roslaunch sensor_fusion zed1.launch
 $roslaunch sensor_fusion zed2.launch
 ```
 
-
+## Run All Node (for amsl)
+```
+$roscd scripts/sensor_fusion
+$./run.sh
+```
