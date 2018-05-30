@@ -41,8 +41,6 @@ ros::Time t;
 string TARGET_FRAME;
 string SOURCE_FRAME;
 
-sensor_msgs::PointCloud pc_tmp;
-
 bool pc_flag = false;
 bool camera_flag = false;
 bool image_flag = false;
@@ -162,7 +160,7 @@ int main(int argc, char** argv)
         
         try{
             listener.waitForTransform(TARGET_FRAME, SOURCE_FRAME, t, ros::Duration(1.0));
-            listener.transformPointCloud(TARGET_FRAME, t, pc_tmp, SOURCE_FRAME, pc_trans);
+            listener.transformPointCloud(TARGET_FRAME, t, pc_, SOURCE_FRAME, pc_trans);
             sensor_msgs::convertPointCloudToPointCloud2(pc_trans, pc2_trans);
         }catch (tf::TransformException& ex) {
             ROS_WARN("[draw_frames] TF exception:\n%s", ex.what());
