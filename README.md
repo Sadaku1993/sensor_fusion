@@ -12,26 +12,30 @@ By integrating the data of LiDAR and camera, create teacher data sets for monocu
 - [zed-wrapper-ros](http://wiki.ros.org/zed-ros-wrapper)
 
 ## How to Run
-### Calibration sq lidar and ZED
+### Calibration SQ Lidar and ZED
 Under review
 
 ### Launch Sensor Node
 ```
 $roslaunch sq1_extra run_joy_for_bag.launch
 ```
-and
 ```
-$ssh tx2-0
+$ssh 192.168.0.130
+$export ROS_MASTER_URI=http://192.168.0.142:11311
 $roslaunch zed-wrapper zed0.launch
-
-$ssh tx2-1
+```
+```
+$ssh 192.168.0.131
+$export ROS_MASTER_URI=http://192.168.0.142:11311
 $roslaunch zed-wrapper zed1.launch
-
-$ssh tx2-2
+```
+```
+$ssh 192.168.0.132
+$export ROS_MASTER_URI=http://192.168.0.142:11311
 $roslaunch zed-wrapper zed2.launch
 ```
 
-### Launch Preprocessn Node
+### Launch Preprocess Node
 ```
 roslaunch sensor_fusion run.launch
 ```
@@ -42,3 +46,5 @@ $roslaunch sensor_fusion zed0.launch
 $roslaunch sensor_fusion zed1.launch
 $roslaunch sensor_fusion zed2.launch
 ```
+
+
