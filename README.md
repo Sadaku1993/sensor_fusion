@@ -11,7 +11,7 @@ By integrating the data of LiDAR and camera, create teacher data sets for monocu
 - [PCL](https://pointcloud.org/)1.8+
 - [zed-wrapper-ros](http://wiki.ros.org/zed-ros-wrapper)
 
-##Hardware Spec
+## Hardware Spec
 - PC
     - OS : Ubuntu16.04
     - Memory : 8GB
@@ -19,7 +19,7 @@ By integrating the data of LiDAR and camera, create teacher data sets for monocu
     - GPU : GeForce GTX 1050-Ti
 - TX2
 - Robot
-    - SensorS
+    - Sensors
         - SQ-LiDAR(Meiji Univ)
         - ZED(Stereolabs)
         - AMU
