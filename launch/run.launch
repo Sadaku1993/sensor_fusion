@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <!--Launch Sensor Node-->
+	<include file="$(find sq1_extra)/launch/run_sq2_for_joy.launch"/>
 
     <!--Launch Sensor TF-->
 	<include file="$(find sensor_fusion)/launch/sq2_zed.launch"/>
@@ -14,7 +15,7 @@
 
 	<!--divide PointCloud-->
 	<node pkg="sensor_fusion" type="division" name="division" >
-		<remap from="/cloud" to="/cloud/lcl" />
+		<remap from="/cloud" 		to="/cloud/lcl" />
 		<remap from="/cloud/center" to="/sq_lidar/points/center" />
 		<remap from="/cloud/left" 	to="/sq_lidar/points/left" />
 		<remap from="/cloud/right" 	to="/sq_lidar/points/right" />
@@ -22,8 +23,5 @@
 
 	<!--republish zed image-->
 	<include file="$(find sensor_fusion)/launch/republish.launch"/>
-
-	<!--Depth Image-->
-	<include file="$(find sensor_fusion)/launch/depthimage_zed0.launch"/>
-
+	
 </launch>
