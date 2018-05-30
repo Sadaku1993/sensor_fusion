@@ -11,6 +11,7 @@
 	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="laser_transform_pointcloud"/>
 
 	<!--Save PointCloud-->
+	<param name="lcl/save_num" type="int" value="100" />
 	<node pkg="sensor_fusion" type="lcl" name="lcl"/>
 
 	<!--divide PointCloud-->

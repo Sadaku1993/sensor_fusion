@@ -53,7 +53,7 @@ Eigen::Matrix4f transform_matrix;
 Eigen::Matrix4f inverse_transform_matrix;
 
 int count_ = 0;
-int save_num = 100;
+int save_num;
 
 bool init_lcl_flag = false;
 
@@ -139,7 +139,7 @@ int main(int argc, char** argv)
 {
     ros::init(argc, argv, "lsl");
     ros::NodeHandle n;
-
+	n.getParam("lcl/save_num", save_num);
     ros::Rate rate(20);
 
     ros::Subscriber sub_pc = n.subscribe("/cloud/tf", 30, pc_callback);
