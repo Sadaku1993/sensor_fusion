@@ -23,5 +23,7 @@
 	<!--republish zed image-->
 	<include file="$(find sensor_fusion)/launch/republish.launch"/>
 
+	<!--Depth Image-->
+	<include file="$(find sensor_fusion)/launch/depthimage_zed0.launch"/>
 
 </launch>

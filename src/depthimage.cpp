@@ -31,12 +31,12 @@ typedef pcl::PointCloud<pcl::PointXYZRGB> PointCloudXYZRGB;
 
 ros::Time t;
 
-ros::Publisher pub;
 image_transport::Publisher image_pub;
 
 // Frame Name
 string TARGET_FRAME;
 string SOURCE_FRAME;
+bool DEBUG;
 
 // subscribe data確認用flag
 bool pc_flag = false;
@@ -105,7 +105,7 @@ COLOUR GetColour(double v, double vmin, double vmax)
 // Colouring Function
 void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoConstPtr& cinfo_msg, const sensor_msgs::ImageConstPtr& image_msg)
 {
-    cout<<"ALL GREEN"<<endl;
+    printf("ALL GREEN\n");
 
     cv_bridge::CvImageConstPtr cv_img_ptr;
     try{
@@ -118,8 +118,6 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
     cv::Mat image(cv_img_ptr->image.rows, cv_img_ptr->image.cols, cv_img_ptr->image.type());
     image = cv_bridge::toCvShare(image_msg)->image;
 
-	// cv::Mat depth_image = cv::Mat::zeros(cv_img_ptr->image.rows, cv_img_ptr->image.cols, CV_8UC1);
-		
     image_geometry::PinholeCameraModel cam_model_;
     cam_model_.fromCameraInfo(cinfo_msg);
 
@@ -143,10 +141,14 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
             cv::circle(image, uv, 3, cv::Scalar(int(255*c.b),int(255*c.g),int(255*c.r)), -1);
 		}
     }
-    ROS_INFO("Publish coloured PC");
-
-    cv::imshow("projection", image);
-    cv::waitKey(1);
+	
+	sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
+	image_pub.publish(msg);
+	
+	if(DEBUG){
+    	cv::imshow("projection", image);
+    	cv::waitKey(1);
+	}
 
 	pc_flag = false;
 	camera_flag = false;
@@ -157,9 +159,10 @@ int main(int argc, char** argv)
 {
     ros::init(argc, argv, "depthimage");
     ros::NodeHandle n;
-
-    n.getParam("target_frame", TARGET_FRAME);
-    n.getParam("source_frame", SOURCE_FRAME);
+	
+	n.getParam("target_frame",TARGET_FRAME);
+	n.getParam("source_frame",SOURCE_FRAME);
+	n.getParam("debug", DEBUG);
 
     image_transport::ImageTransport it(n);
     tf::TransformListener listener;
@@ -168,6 +171,7 @@ int main(int argc, char** argv)
     ros::Subscriber pc_sub    = n.subscribe("/cloud", 10, pcCallback); 
     ros::Subscriber cinfo_sub = n.subscribe("/camera_info", 10, cameraCallback);
     ros::Subscriber image_sub = n.subscribe("/image", 10, imageCallback);
+	image_pub = it.advertise("/depthimage", 10);
 
     ros::Rate rate(10);
 
@@ -187,7 +191,7 @@ int main(int argc, char** argv)
 
         // coloring
         if(pc_flag && camera_flag && image_flag){
-            colouring(pc2_trans, camera_, image_);
+             colouring(pc2_trans, camera_, image_);
         }
 
         ros::spinOnce();
