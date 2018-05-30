@@ -158,8 +158,8 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "depthimage");
     ros::NodeHandle n;
 
-    n.getParam("/target_frame", TARGET_FRAME);
-    n.getParam("/source_frame", SOURCE_FRAME);
+    n.getParam("target_frame", TARGET_FRAME);
+    n.getParam("source_frame", SOURCE_FRAME);
 
     image_transport::ImageTransport it(n);
     tf::TransformListener listener;
