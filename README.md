@@ -26,7 +26,7 @@ By integrating the data of LiDAR and camera, create teacher data sets for monocu
     - Vehicle
         - Differetical drive
 
-##How to Build
+## How to Build
 ```
 $cd $HOME
 $cd catkin_ws/src
