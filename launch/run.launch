@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <!--Launch Sensor Node-->
-	<include file="$(find sq1_extra)/launch/run_sq2_for_joy.launch"/>
+	<!--include file="$(find sq1_extra)/launch/run_sq2_for_joy.launch"/-->
 
     <!--Launch Sensor TF-->
 	<include file="$(find sensor_fusion)/launch/sq2_zed.launch"/>

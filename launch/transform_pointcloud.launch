@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!--PointCloud Transform-->
-<launch>
-	<node pkg="sensor_fusion" type="transform_pointcloud" name="transform_pointcloud">
-		<param name="target_frame" type="string" value="/centerlaser" />
-		<remap from="cloud"     to="/cloud/tf"/>
-		<remap from="cloud/tf"  to="/cloud/tf2"/>
-    </node>
-</launch>
