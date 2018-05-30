@@ -137,7 +137,7 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
 
         if(uv.x>0 && uv.x < image.cols && uv.y > 0 && uv.y < image.rows){
             double range = sqrt( pow((*pt).x, 2.0) + pow((*pt).y, 2.0) + pow((*pt).z, 2.0));
-            COLOUR c = GetColour(int(range/10*255.0), 0, 255);
+            COLOUR c = GetColour(int(range/20*255.0), 0, 255);
             cv::circle(image, uv, 3, cv::Scalar(int(255*c.b),int(255*c.g),int(255*c.r)), -1);
 		}
     }
