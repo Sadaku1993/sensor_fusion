@@ -165,7 +165,7 @@ add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
 add_executable(lcl src/lcl.cpp)
 
 ## Calibration
-add_executable(pointcloud2image src/calibration/pointcloud2image.cpp)
+add_executable(pointcloud2image calibration/pointcloud2image.cpp)
 
 ## test code
 add_executable(test_points_callback test/test_points_callback.cpp)
