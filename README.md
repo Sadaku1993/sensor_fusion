@@ -76,3 +76,8 @@ $roslaunch sensor_fusion zed2.launch
 $roscd scripts/sensor_fusion
 $./run.sh
 ```
+
+## How to calibration lidar and camera
+The following programs are prepared with reference to this paper.
+[Automatic Extrinsic Calibration for Lidar-Stereo Vehicle Sensor Setups](https://arxiv.org/pdf/1705.04085.pdf)
+Source Code is [velo2cam_calibration](http://wiki.ros.org/velo2cam_calibration)
