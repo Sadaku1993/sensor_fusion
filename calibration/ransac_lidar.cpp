@@ -43,6 +43,7 @@ void plane_segmentation(CloudAPtr cloud, CloudA& plane);
         PCL_ERROR ("Could not estimate a planar model for the given dataset.");
     }
 
+    // plane pointcloud
     plane.points.resize(inliers->indices.size());
     for(size_t i=0;i<inliers->indices.size();i++)
     {

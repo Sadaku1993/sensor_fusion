@@ -52,7 +52,7 @@ void clustering(CloudAPtr cloud, CloudA cluster)
     pcl::EuclideanClusterExtraction<PointA> ec;
     ec.setClusterTolerance (0.05); // 15cm
     ec.setMinClusterSize (50);
-    ec.setMaxClusterSize (10000000);
+    ec.setMaxClusterSize (10000);
     ec.setSearchMethod (tree);
     ec.setInputCloud(cloud_in);
     ec.extract (cluster_indices);

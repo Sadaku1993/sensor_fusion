@@ -33,7 +33,7 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
         cv::Mat image( cloud->height, cloud->width, CV_8UC4 );
 
         // pcl::PointCloud to cv::Mat
-#pragma omp parallel for
+        #pragma omp parallel for
         for( int y = 0; y < image.rows; y++ ) {
             for( int x = 0; x < image.cols; x++ ) {
                 pcl::PointXYZ point = cloud->at( x, y );
