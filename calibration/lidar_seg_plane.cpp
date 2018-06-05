@@ -26,8 +26,6 @@ typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
 ros::Publisher pub_plane;
 
-Clustering cluster;
-
 void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 {
     CloudAPtr input (new CloudA);
