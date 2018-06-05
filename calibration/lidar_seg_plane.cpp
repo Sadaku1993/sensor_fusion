@@ -35,7 +35,7 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
     plane_segmentation(input, plane);
 
     sensor_msgs::PointCloud2 output;
-    pcl::toROSMsg(plane, outout);
+    pcl::toROSMsg(plane, output);
     output.header.stamp = ros::Time::now();
     output.header.frame_id = msg->header.frame_id;
     pub_plane.publish(output);
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     ros::NodeHandle n;
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
-    pub = n.advertise<sensor_msgs::PointCloud2>("/plane", 10);
+    pub_plane = n.advertise<sensor_msgs::PointCloud2>("/plane", 10);
 
     ros::spin();
 
