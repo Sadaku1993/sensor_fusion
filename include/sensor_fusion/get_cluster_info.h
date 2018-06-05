@@ -16,7 +16,7 @@ class Clustering{
             float y; 
             float z;
             float width;
-            float hieght;
+            float height;
             float depth;
             float curvature;
             Vector3f min_p;
