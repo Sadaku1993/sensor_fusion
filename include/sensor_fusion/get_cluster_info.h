@@ -67,8 +67,7 @@ void Clustering::clustering(CloudAPtr cloud_in, CloudA cloud){
             cloud_cluster->points[jjj] = cloud_in->points[p_num];
         }
         Clustering::getClusterInfo(*cloud_cluster, data);
-        Clustering::detection(data, *cloud_cluster);
-        flag = detection(data, *cloud_cluster, front_cloud);
+        flag = Clustering::detection(data, *cloud_cluster, front_cloud);
         if(flag) break;
     }
 }
@@ -103,14 +102,14 @@ void Clustering::getClusterInfo(CloudA pt, Cluster& cluster)
         if (pt.points[i].z>max_p[2]) max_p[2]=pt.points[i].z;
     }
 
-    cluster.x=centroid[0]/(float)pt.points.size();
-    cluster.y=centroid[1]/(float)pt.points.size();
-    cluster.z=centroid[2]/(float)pt.points.size();
-    cluster.depth  = max_p[0]-min_p[0];
-    cluster.width  = max_p[1]-min_p[1];
-    cluster.height = max_p[2]-min_p[2]; 
-    cluster.min_p = min_p;
-    cluster.max_p = max_p;
+    Cluster.x=centroid[0]/(float)pt.points.size();
+    Cluster.y=centroid[1]/(float)pt.points.size();
+    Cluster.z=centroid[2]/(float)pt.points.size();
+    Cluster.depth  = max_p[0]-min_p[0];
+    Cluster.width  = max_p[1]-min_p[1];
+    Cluster.height = max_p[2]-min_p[2]; 
+    Cluster.min_p = min_p;
+    Cluster.max_p = max_p;
 }
 
 bool Clustering::detection(Cluster cluster,
