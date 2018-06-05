@@ -35,7 +35,7 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
     clustering(input, cloud);
 
     CloudA plane;
-    // plane_segmentation(cloud, plane);
+    plane_segmentation(cloud, plane);
 
     sensor_msgs::PointCloud2 output;
     pcl::toROSMsg(plane, output);
