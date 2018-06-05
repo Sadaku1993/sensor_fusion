@@ -65,14 +65,14 @@ void getClusterInfo(CloudA pt, Cluster& cluster)
 // キャリブレーションボードが正面かつサイズが正確に検出できているか
 bool detection(Cluster cluster,
         CloudAPtr pt,
-        CloudA& cloud)
+        CloudAPtr& cloud)
 {
     bool detect = false;
     
     if(abs(cluster.y) < 0.1 &&
        abs(cluster.width - 1.0) < 0.1 && 
        abs(cluster.height - 1.0) < 0.1){
-        cloud = *pt;
+        cloud = pt;
         detect = true;
     }
     else{
@@ -81,7 +81,7 @@ bool detection(Cluster cluster,
     return detect;
 }
 
-void clustering(CloudAPtr cloud_in, CloudA cloud){
+void clustering(CloudAPtr cloud_in, CloudAPtr& cloud){
     //downsampled point's z =>0
     vector<float> tmp_z;
     tmp_z.resize(cloud_in->points.size());
@@ -105,7 +105,6 @@ void clustering(CloudAPtr cloud_in, CloudA cloud){
         cloud_in->points[i].z=tmp_z[i];
 
     bool flag = false;
-    CloudA front_cloud;
     for(int iii=0;iii<(int)cluster_indices.size();iii++)
     {
         // cluster points
@@ -118,7 +117,7 @@ void clustering(CloudAPtr cloud_in, CloudA cloud){
             cloud_cluster->points[jjj] = cloud_in->points[p_num];
         }
         getClusterInfo(*cloud_cluster, data);
-        flag = detection(data, cloud_cluster, front_cloud);
+        flag = detection(data, cloud_cluster, *cloud);
         if(flag) break;
     }
 }
