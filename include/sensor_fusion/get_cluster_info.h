@@ -22,7 +22,27 @@ struct Cluster{
     Vector3f max_p;
 };
 
-void getClusterInfo(CloudA pt, Cluster& cluster)
+class Clustering{
+    private:
+        struct Cluster{
+            float x; 
+            float y; 
+            float z;
+            float width;
+            float height;
+            float depth;
+            float curvature;
+            Vector3f min_p;
+            Vector3f max_p;
+        };
+    public:
+        Clustering();
+        getClusterInfo(CloudA pt, Cluster& cluster);
+        detection(Cluster cluster, CloudAPtr pt, ClouAPtr& cloud);
+        clustering(CloudAPtr cloud_in, CloudAPtr& cloud);
+}
+
+void Clustering.getClusterInfo(CloudA pt, Cluster& cluster)
 {
     Vector3f centroid;
     centroid[0]=pt.points[0].x;
@@ -63,7 +83,7 @@ void getClusterInfo(CloudA pt, Cluster& cluster)
 }
 
 // キャリブレーションボードが正面かつサイズが正確に検出できているか
-bool detection(Cluster cluster,
+bool Clustering.detection(Cluster cluster,
         CloudAPtr pt,
         CloudAPtr& cloud)
 {
@@ -81,7 +101,7 @@ bool detection(Cluster cluster,
     return detect;
 }
 
-void clustering(CloudAPtr cloud_in, CloudAPtr& cloud){
+void Clustering.clustering(CloudAPtr cloud_in, CloudAPtr& cloud){
     //downsampled point's z =>0
     vector<float> tmp_z;
     tmp_z.resize(cloud_in->points.size());
