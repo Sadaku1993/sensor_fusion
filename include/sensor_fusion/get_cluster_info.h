@@ -53,7 +53,8 @@ void Clustering::clustering(CloudAPtr cloud_in, CloudA cloud){
 	for(int i=0;i<(int)cloud_in->points.size();i++)
         cloud_in->points[i].z=tmp_z[i];
 
-
+    bool flag = false;
+    CloudA front_cloud;
     for(int iii=0;iii<(int)cluster_indices.size();iii++)
     {
         // cluster points
@@ -67,7 +68,8 @@ void Clustering::clustering(CloudAPtr cloud_in, CloudA cloud){
         }
         Clustering::getClusterInfo(*cloud_cluster, data);
         Clustering::detection(data, *cloud_cluster);
-        detection(data, *cloud_cluster, cluster_array);
+        flag = detection(data, *cloud_cluster, front_cloud);
+        if(flag) break;
     }
 }
 
@@ -88,8 +90,6 @@ void Clustering::getClusterInfo(CloudA pt, Cluster& cluster)
     max_p[1]=pt.points[0].y;
     max_p[2]=pt.points[0].z;
 
-    float curvature=pt.points[0].curvature;
-
     for(size_t i=1;i<pt.points.size();i++){
         centroid[0]+=pt.points[i].x;
         centroid[1]+=pt.points[i].y;
@@ -101,8 +101,6 @@ void Clustering::getClusterInfo(CloudA pt, Cluster& cluster)
         if (pt.points[i].x>max_p[0]) max_p[0]=pt.points[i].x;
         if (pt.points[i].y>max_p[1]) max_p[1]=pt.points[i].y;
         if (pt.points[i].z>max_p[2]) max_p[2]=pt.points[i].z;
-
-        curvature+=pt.points[i].curvature;
     }
 
     cluster.x=centroid[0]/(float)pt.points.size();
@@ -111,7 +109,6 @@ void Clustering::getClusterInfo(CloudA pt, Cluster& cluster)
     cluster.depth  = max_p[0]-min_p[0];
     cluster.width  = max_p[1]-min_p[1];
     cluster.height = max_p[2]-min_p[2]; 
-    cluster.curvature = curvature/(float)pt.points.size();
     cluster.min_p = min_p;
     cluster.max_p = max_p;
 }
