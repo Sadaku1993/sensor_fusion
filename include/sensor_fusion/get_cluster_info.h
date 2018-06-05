@@ -112,13 +112,13 @@ void Clustering::getClusterInfo(CloudA pt, Cluster& cluster)
     cluster.max_p = max_p;
 }
 
+// キャリブレーションボードが正面かつサイズが正確に検出できているか
 bool Clustering::detection(Cluster cluster,
                            CloudAPtr pt,
                            CloudA& cloud)
 {
     bool detect = false;
     
-    // キャリブレーションボードが正面かつサイズが正確に検出できているか
     if(abs(cluster.y) < 0.1 &&
        abs(cluster.width - 1.0) < 0.1 && 
        abs(cluster.height - 1.0) < 0.1){
