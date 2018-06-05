@@ -20,7 +20,7 @@
 #include <sensor_fusion/get_cluster_info.h>
 #include <sensor_fusion/plane_segmentation.h>
 
-typedef pcl::PointNormal PointA;
+typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
