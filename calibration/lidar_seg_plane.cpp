@@ -28,7 +28,7 @@ ros::Publisher pub_plane;
 
 void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 {
-    CloudAPtr intput (new CloudA);
+    CloudAPtr input (new CloudA);
     pcl::fromROSMsg(*msg, *input);
 
     CloudA plane;
