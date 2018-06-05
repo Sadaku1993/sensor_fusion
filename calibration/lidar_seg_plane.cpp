@@ -31,10 +31,9 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
     CloudAPtr input (new CloudA);
     pcl::fromROSMsg(*msg, *input);
 
-
-    Clustering cluster;
-    CloudA cloud;
-    cluster.clustering(input, cloud);
+    // Clustering cluster;
+    // CloudA cloud;
+    // cluster.clustering(input, cloud);
 
     CloudA plane;
     plane_segmentation(input, plane);
