@@ -10,69 +10,19 @@ typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
  
 
-class Clustering{
-    private:
-        struct Cluster{
-            float x; 
-            float y; 
-            float z;
-            float width;
-            float height;
-            float depth;
-            float curvature;
-            Vector3f min_p;
-            Vector3f max_p;
-        };
-    public:
-        Clustering();
-        void clustering(CloudAPtr pt, CloudA cloud);
-        void getClusterInfo(CloudA pt,Cluster& cluster);
-        bool detection(Cluster cluster, CloudAPtr pt, CloudA& cloud);
+struct Cluster{
+    float x; 
+    float y; 
+    float z;
+    float width;
+    float height;
+    float depth;
+    float curvature;
+    Vector3f min_p;
+    Vector3f max_p;
 };
 
-void Clustering::clustering(CloudAPtr cloud_in, CloudA cloud){
-    //downsampled point's z =>0
-    vector<float> tmp_z;
-    tmp_z.resize(cloud_in->points.size());
-	for(int i=0;i<(int)cloud_in->points.size();i++){
-        tmp_z[i]=cloud_in->points[i].z;
-		cloud_in->points[i].z  = 0.0;
-    }
-    //Clustering//
-    pcl::search::KdTree<PointA>::Ptr tree (new pcl::search::KdTree<PointA>);
-    tree->setInputCloud (cloud_in);
-    std::vector<pcl::PointIndices> cluster_indices;
-    pcl::EuclideanClusterExtraction<PointA> ec;
-    ec.setClusterTolerance (0.05); // 15cm
-    ec.setMinClusterSize (50);
-    ec.setMaxClusterSize (2000);
-    ec.setSearchMethod (tree);
-    ec.setInputCloud(cloud_in);
-    ec.extract (cluster_indices);
-    //reset z value
-	for(int i=0;i<(int)cloud_in->points.size();i++)
-        cloud_in->points[i].z=tmp_z[i];
-
-    bool flag = false;
-    CloudA front_cloud;
-    for(int iii=0;iii<(int)cluster_indices.size();iii++)
-    {
-        // cluster points
-        CloudAPtr cloud_cluster (new CloudA);
-        cloud_cluster->points.resize(cluster_indices[iii].indices.size());
-        // cluster data
-        Cluster data;
-        for(int jjj=0;jjj<int(cluster_indices[iii].indices.size());jjj++){
-            int p_num = cluster_indices[iii].indices[jjj];
-            cloud_cluster->points[jjj] = cloud_in->points[p_num];
-        }
-        Clustering::getClusterInfo(*cloud_cluster, data);
-        flag = Clustering::detection(data, cloud_cluster, front_cloud);
-        if(flag) break;
-    }
-}
-
-void Clustering::getClusterInfo(CloudA pt, Cluster& cluster)
+void getClusterInfo(CloudA pt, Cluster& cluster)
 {
     Vector3f centroid;
     centroid[0]=pt.points[0].x;
@@ -113,9 +63,9 @@ void Clustering::getClusterInfo(CloudA pt, Cluster& cluster)
 }
 
 // キャリブレーションボードが正面かつサイズが正確に検出できているか
-bool Clustering::detection(Cluster cluster,
-                           CloudAPtr pt,
-                           CloudA& cloud)
+bool detection(Cluster cluster,
+        CloudAPtr pt,
+        CloudA& cloud)
 {
     bool detect = false;
     
@@ -130,3 +80,47 @@ bool Clustering::detection(Cluster cluster,
     }
     return detect;
 }
+
+void clustering(CloudAPtr cloud_in, CloudA cloud){
+    //downsampled point's z =>0
+    vector<float> tmp_z;
+    tmp_z.resize(cloud_in->points.size());
+	for(int i=0;i<(int)cloud_in->points.size();i++){
+        tmp_z[i]=cloud_in->points[i].z;
+		cloud_in->points[i].z  = 0.0;
+    }
+    //Clustering//
+    pcl::search::KdTree<PointA>::Ptr tree (new pcl::search::KdTree<PointA>);
+    tree->setInputCloud (cloud_in);
+    std::vector<pcl::PointIndices> cluster_indices;
+    pcl::EuclideanClusterExtraction<PointA> ec;
+    ec.setClusterTolerance (0.05); // 15cm
+    ec.setMinClusterSize (50);
+    ec.setMaxClusterSize (2000);
+    ec.setSearchMethod (tree);
+    ec.setInputCloud(cloud_in);
+    ec.extract (cluster_indices);
+    //reset z value
+	for(int i=0;i<(int)cloud_in->points.size();i++)
+        cloud_in->points[i].z=tmp_z[i];
+
+    bool flag = false;
+    CloudA front_cloud;
+    for(int iii=0;iii<(int)cluster_indices.size();iii++)
+    {
+        // cluster points
+        CloudAPtr cloud_cluster (new CloudA);
+        cloud_cluster->points.resize(cluster_indices[iii].indices.size());
+        // cluster data
+        Cluster data;
+        for(int jjj=0;jjj<int(cluster_indices[iii].indices.size());jjj++){
+            int p_num = cluster_indices[iii].indices[jjj];
+            cloud_cluster->points[jjj] = cloud_in->points[p_num];
+        }
+        getClusterInfo(*cloud_cluster, data);
+        flag = detection(data, cloud_cluster, front_cloud);
+        if(flag) break;
+    }
+}
+
+
