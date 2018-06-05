@@ -10,39 +10,19 @@ typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
  
 
-// struct Cluster{
-//     float x; 
-//     float y; 
-//     float z;
-//     float width;
-//     float height;
-//     float depth;
-//     float curvature;
-//     Vector3f min_p;
-//     Vector3f max_p;
-// };
-// 
-class Clustering{
-    private:
-        struct Cluster{
-            float x; 
-            float y; 
-            float z;
-            float width;
-            float height;
-            float depth;
-            float curvature;
-            Vector3f min_p;
-            Vector3f max_p;
-        };
-    public:
-        Clustering();
-        void getClusterInfo(CloudA pt, Cluster& cluster);
-        bool detection(Cluster cluster, CloudAPtr pt, CloudAPtr& cloud);
-        void clustering(CloudAPtr cloud_in, CloudAPtr& cloud);
+struct Cluster{
+    float x; 
+    float y; 
+    float z;
+    float width;
+    float height;
+    float depth;
+    float curvature;
+    Vector3f min_p;
+    Vector3f max_p;
 };
 
-void Clustering::getClusterInfo(CloudA pt, Cluster& cluster)
+void getClusterInfo(CloudA pt, Cluster& cluster)
 {
     Vector3f centroid;
     centroid[0]=pt.points[0].x;
@@ -83,7 +63,7 @@ void Clustering::getClusterInfo(CloudA pt, Cluster& cluster)
 }
 
 // キャリブレーションボードが正面かつサイズが正確に検出できているか
-bool Clustering::detection(Cluster cluster,
+bool detection(Cluster cluster,
         CloudAPtr pt,
         CloudAPtr& cloud)
 {
@@ -101,7 +81,7 @@ bool Clustering::detection(Cluster cluster,
     return detect;
 }
 
-void Clustering::clustering(CloudAPtr cloud_in, CloudAPtr& cloud){
+void clustering(CloudAPtr cloud_in, CloudAPtr& cloud){
     //downsampled point's z =>0
     vector<float> tmp_z;
     tmp_z.resize(cloud_in->points.size());
@@ -136,8 +116,8 @@ void Clustering::clustering(CloudAPtr cloud_in, CloudAPtr& cloud){
             int p_num = cluster_indices[iii].indices[jjj];
             cloud_cluster->points[jjj] = cloud_in->points[p_num];
         }
-        Clustering::getClusterInfo(*cloud_cluster, data);
-        flag = Clustering::detection(data, cloud_cluster, cloud);
+        getClusterInfo(*cloud_cluster, data);
+        flag = detection(data, cloud_cluster, cloud);
         if(flag) break;
     }
 }
