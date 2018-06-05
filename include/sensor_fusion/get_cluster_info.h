@@ -10,13 +10,14 @@ typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
 class Clustering{
     private:
-        struct Cluster{float x, 
-            float y, 
-            float z,
-            float width,
-            float hieght,
-            float depth,
-            float curvature,
+        struct Cluster{
+            float x; 
+            float y; 
+            float z;
+            float width;
+            float hieght;
+            float depth;
+            float curvature;
             Vector3f min_p;
             Vector3f max_p;
         };
