@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
-
+#include <pcl/segmentation/extract_clusters.h>
 using namespace std;
 using namespace Eigen;
 
