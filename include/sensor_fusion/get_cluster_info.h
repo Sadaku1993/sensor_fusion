@@ -37,9 +37,9 @@ class Clustering{
         };
     public:
         Clustering();
-        getClusterInfo(CloudA pt, Cluster& cluster);
-        detection(Cluster cluster, CloudAPtr pt, ClouAPtr& cloud);
-        clustering(CloudAPtr cloud_in, CloudAPtr& cloud);
+        void getClusterInfo(CloudA pt, Cluster& cluster);
+        bool detection(Cluster cluster, CloudAPtr pt, ClouAPtr& cloud);
+        void clustering(CloudAPtr cloud_in, CloudAPtr& cloud);
 }
 
 void Clustering::getClusterInfo(CloudA pt, Cluster& cluster)
