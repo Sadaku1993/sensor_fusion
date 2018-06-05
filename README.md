@@ -78,5 +78,4 @@ $./run.sh
 ```
 
 ## How to calibration lidar and camera
-The following programs are prepared with reference to [Automatic Extrinsic Calibration for Lidar-Stereo Vehicle Sensor Setups](https://arxiv.org/pdf/1705.04085.pdf).  
-Source Code is [here](http://wiki.ros.org/velo2cam_calibration).
+Watch [calibration](https://github.com/Sadaku1993/sensor_fusion/tree/master/calibration)
