@@ -6,7 +6,7 @@
  */
 
 
-#include <ros/rros.h>
+#include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl_ros/point_cloud.h>
 #include <iostream>
