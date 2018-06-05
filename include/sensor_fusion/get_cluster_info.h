@@ -8,21 +8,20 @@ using namespace Eigen;
 typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
+ 
+struct Cluster{
+    float x; 
+    float y; 
+    float z;
+    float width;
+    float height;
+    float depth;
+    float curvature;
+    Vector3f min_p;
+    Vector3f max_p;
+};
 
 class Clustering{
-    private:
-        struct Cluster{
-            float x; 
-            float y; 
-            float z;
-            float width;
-            float height;
-            float depth;
-            float curvature;
-            Vector3f min_p;
-            Vector3f max_p;
-        };
-
     public:
         Clustering();
         void clustering(CloudAPtr pt, CloudA cloud);
