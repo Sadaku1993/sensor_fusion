@@ -33,7 +33,7 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 
     Clustering cluster;
     CloudA cloud;
-    cluster::clustering(input, cloud);
+    cluster.clustering(input, cloud);
 
     CloudA plane;
     plane_segmentation(input, plane);
