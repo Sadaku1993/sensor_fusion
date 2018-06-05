@@ -26,12 +26,14 @@ typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
 ros::Publisher pub_plane;
 
+Clustering cluster;
+
 void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 {
     CloudAPtr input (new CloudA);
     pcl::fromROSMsg(*msg, *input);
 
-    Clustering cluster_front;
+    // Clustering cluster_front;
     // CloudA cloud;
     // cluster.clustering(input, cloud);
 
