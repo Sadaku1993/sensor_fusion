@@ -29,7 +29,7 @@ class Clustering{
         bool detection(Cluster cluster, CloudAPtr pt, CloudA& cloud);
 };
 
-void Clustering::clustering(CloudAPtr cloud_in, CloudA cloud)
+void Clustering::clustering(CloudAPtr cloud_in, CloudA cloud){
     //downsampled point's z =>0
     vector<float> tmp_z;
     tmp_z.resize(cloud_in->points.size());
