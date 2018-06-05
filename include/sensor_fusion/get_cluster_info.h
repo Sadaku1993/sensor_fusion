@@ -83,7 +83,7 @@ void Clustering.getClusterInfo(CloudA pt, Cluster& cluster)
 }
 
 // キャリブレーションボードが正面かつサイズが正確に検出できているか
-bool Clustering.detection(Cluster cluster,
+bool Clustering::detection(Cluster cluster,
         CloudAPtr pt,
         CloudAPtr& cloud)
 {
@@ -101,7 +101,7 @@ bool Clustering.detection(Cluster cluster,
     return detect;
 }
 
-void Clustering.clustering(CloudAPtr cloud_in, CloudAPtr& cloud){
+void Clustering::clustering(CloudAPtr cloud_in, CloudAPtr& cloud){
     //downsampled point's z =>0
     vector<float> tmp_z;
     tmp_z.resize(cloud_in->points.size());
@@ -136,8 +136,8 @@ void Clustering.clustering(CloudAPtr cloud_in, CloudAPtr& cloud){
             int p_num = cluster_indices[iii].indices[jjj];
             cloud_cluster->points[jjj] = cloud_in->points[p_num];
         }
-        getClusterInfo(*cloud_cluster, data);
-        flag = detection(data, cloud_cluster, cloud);
+        Clustering::getClusterInfo(*cloud_cluster, data);
+        flag = Clustering::detection(data, cloud_cluster, cloud);
         if(flag) break;
     }
 }
