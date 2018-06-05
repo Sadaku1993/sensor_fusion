@@ -102,14 +102,14 @@ void Clustering::getClusterInfo(CloudA pt, Cluster& cluster)
         if (pt.points[i].z>max_p[2]) max_p[2]=pt.points[i].z;
     }
 
-    Clustering::Cluster.x=centroid[0]/(float)pt.points.size();
-    Clustering::Cluster.y=centroid[1]/(float)pt.points.size();
-    Clustering::Cluster.z=centroid[2]/(float)pt.points.size();
-    Clustering::Cluster.depth  = max_p[0]-min_p[0];
-    Clustering::Cluster.width  = max_p[1]-min_p[1];
-    Clustering::Cluster.height = max_p[2]-min_p[2]; 
-    Clustering::Cluster.min_p = min_p;
-    Clustering::Cluster.max_p = max_p;
+    cluster.x=centroid[0]/(float)pt.points.size();
+    cluster.y=centroid[1]/(float)pt.points.size();
+    cluster.z=centroid[2]/(float)pt.points.size();
+    cluster.depth  = max_p[0]-min_p[0];
+    cluster.width  = max_p[1]-min_p[1];
+    cluster.height = max_p[2]-min_p[2]; 
+    cluster.min_p = min_p;
+    cluster.max_p = max_p;
 }
 
 bool Clustering::detection(Cluster cluster,
