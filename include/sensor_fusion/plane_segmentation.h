@@ -38,8 +38,8 @@ void plane_segmentation(CloudAPtr cloud, CloudA& plane)
     // plane pointcloud
     for(size_t i=0;i<inliers->indices.size();i++)
     {
-        plane.points.resize(int(inliers->indices[i].indices.size()));
-        for(size_t j=0;j<inliers->indices[i].indices.size();j++){
+        plane.points.resize(inliers[i]->indices.size());
+        for(size_t j=0;j<inliers[i]->indices.size();j++){
             plane.points[i] = inliers->points[i].indices[j];
         }
     }
