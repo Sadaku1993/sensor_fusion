@@ -14,7 +14,7 @@ typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
-void plane_segmentation(CloudAPtr cloud, CloudA& plane);
+void plane_segmentation(CloudAPtr cloud, CloudA& plane)
 {
     pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
     pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
