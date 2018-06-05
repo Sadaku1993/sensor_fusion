@@ -166,7 +166,7 @@ add_executable(lcl src/lcl.cpp)
 
 ## Calibration
 add_executable(pointcloud2image calibration/pointcloud2image.cpp)
-# add_executable(lidar_seg_plane calibration/lidar_seg_plane.cpp)
+add_executable(lidar_seg_plane calibration/lidar_seg_plane.cpp)
 
 ## test code
 add_executable(test_points_callback test/test_points_callback.cpp)
@@ -226,11 +226,11 @@ target_link_libraries(pointcloud2image
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
-# target_link_libraries(lidar_seg_plane
-#   ${catkin_LIBRARIES}
-#   ${OpenCV_LIBRARIES}
-#   ${PCL_LIBRARIES}
-# )
+target_link_libraries(lidar_seg_plane
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
 target_link_libraries(test_points_callback
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
