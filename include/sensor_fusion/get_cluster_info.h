@@ -42,7 +42,7 @@ class Clustering{
         clustering(CloudAPtr cloud_in, CloudAPtr& cloud);
 }
 
-void Clustering.getClusterInfo(CloudA pt, Cluster& cluster)
+void Clustering::getClusterInfo(CloudA pt, Cluster& cluster)
 {
     Vector3f centroid;
     centroid[0]=pt.points[0].x;
