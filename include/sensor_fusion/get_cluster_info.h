@@ -2,6 +2,7 @@
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
 
+using namespace std;
 using namespace Eigen;
 
 typedef pcl::PointXYZ PointA;
