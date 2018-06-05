@@ -117,7 +117,7 @@ void clustering(CloudAPtr cloud_in, CloudAPtr& cloud){
             cloud_cluster->points[jjj] = cloud_in->points[p_num];
         }
         getClusterInfo(*cloud_cluster, data);
-        flag = detection(data, cloud_cluster, *cloud);
+        flag = detection(data, cloud_cluster, cloud);
         if(flag) break;
     }
 }
