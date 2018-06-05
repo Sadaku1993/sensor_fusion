@@ -32,7 +32,7 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
     pcl::fromROSMsg(*msg, *input);
 
     Clustering cluster_front;
-    CloudA cloud;
+    // CloudA cloud;
     // cluster.clustering(input, cloud);
 
     CloudA plane;
