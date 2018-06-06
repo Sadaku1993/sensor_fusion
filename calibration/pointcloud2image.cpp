@@ -21,6 +21,9 @@ author : Yudai Sadakuni
 
 #include <sensor_fusion/get_cluster_info.h>
 
+#define HEIGHT 1200
+#define WIDTH  800
+
 typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
@@ -34,16 +37,18 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
 	getClusterInfo(*cloud, cluster);
 	
 	printf("Height:%.3f Width:%.3f\n", cluster.height, cluster.width);
-    printf("cv::Height:%d cv::Width:%d\n", int(cluster.height*1000), int(cluster.width*1000));
 
 	if( !cloud->empty() ){
         // Create cv::Mat
-        cv::Mat image(int(cluster.height*1000), int(cluster.width*1000), CV_8UC4 );
+        cv::Mat image(HEIGHT, WIDTH, CV_8UC4 );
+
+        int diff_row = WIDTH/2 - int(cluster.y*1000);
+        int diff_col = HEIGHT/2 - int(cluster.z*1000);
 
         // pcl::PointCloud to cv::Mat
 		for(size_t i=0;i<cloud->points.size();i++){
-			int row = int((cloud->points[i].y - cluster.min_p[1])*1000);
-			int col = int((cloud->points[i].z - cluster.min_p[2])*1000);
+			int row = int( -(cloud->points[i].y - cluster.y - cluster.max_p[1])*1000 + diff_row);
+			int col = int( -(cloud->points[i].z - cluster.z - cluster.max_p[2])*1000 + diff_col);
 			cv::circle(image, 
 					   cv::Point(row, col),
 					   1,
