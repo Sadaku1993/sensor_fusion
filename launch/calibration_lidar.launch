@@ -4,20 +4,24 @@
 	<!--include file="$(find sq1_extra)/launch/run_sq2_for_joy.launch"/-->
 
     <!--Remove Ground-->
-    <node pkg="sensor_fusion" type="sq_rm_ground_min_max" name="sq_rm_ground_min_max" output="screen">
-        <remap from="/cloud" to="sq_lidar/points/center" />
+    <node pkg="sensor_fusion" type="sq_rm_ground" name="sq_rm_ground">
+		<remap from="/cloud" 	 to="/lcl/center" />
+		<remap from="/rm_ground" to="/rm_ground/center" />
     </node>
 
 	<!--Plane Segmentation-->
-	<!--node pkg="sensor_fusion" type="lidar_seg_plane" name="lidar_seg_plane" output="screen" >
-		<remap from="/cloud" 	to="/sq_lidar/points/center" />
-	</node-->
-
+	<node pkg="sensor_fusion" type="lidar_seg_plane" name="lidar_seg_plane">
+		<remap from="/cloud" 				to="/rm_ground/center" />
+		<remap from="/centroid" 			to="/center/centroid" />
+		<remap from="/poitns"   			to="/center/points" />
+		<remap from="/calibration_board" 	to="/center/calibration_board" />
+		<remap from="/plane" 				to="/center/plane" />
+	</node>
 
 	<!--PointCloud2Image-->
-	<!--node pkg="sensor_fusion" type="pointcloud2image" name="pointcloud2image" output="screen" >
-		<remap from="/cloud" 	to="/sq_lidar/points/center" />
-	</node-->
+	<node pkg="sensor_fusion" type="pointcloud2image" name="pointcloud2image" output="screen" >
+		<remap from="/cloud" to="/center/plane" />
+	</node>
 	
 	<!--divide PointCloud-->
 	<!--node pkg="sensor_fusion" type="detection_circle" name="detection_circle" >

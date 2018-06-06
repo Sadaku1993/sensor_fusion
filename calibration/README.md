@@ -8,6 +8,10 @@ $ roscd scripts/sensor_fusion
 $ ./calibration.sh
 ```
 
+```
+$ roslaunch sensor_fusion calibration_lidar.launch
+```
+
 ### Turning a PointCloud into am Image
 This Code is [pcl_ros](http://wiki.ros.org/pcl_ros/Tutorials/CloudToImage)
 Let's assume you have an openni camera up and running. Fire up a terminal.

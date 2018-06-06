@@ -19,6 +19,8 @@ author : Yudai Sadakuni
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 
+#include <sensor_fusion/get_cluster_info.h>
+
 typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
@@ -28,26 +30,29 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
     CloudAPtr cloud(new CloudA);
     pcl::fromROSMsg(*msg, *cloud);
 
-	printf("Height:%d Width:%d\n", cloud->height, cloud->width);
-	/*
-    if( !cloud->empty() ){
+	Cluster cluster;
+	getClusterInfo(*cloud, cluster);
+	
+	printf("Height:%.3f Width:%.3f\n", cluster.height, cluster.width);
+    printf("cv::Height:%d cv::Width:%d\n", int(cluster.height*1000), int(cluster.width*1000));
+
+	if( !cloud->empty() ){
         // Create cv::Mat
-        cv::Mat image( cloud->height, cloud->width, CV_8UC4 );
+        cv::Mat image(int(cluster.height*1000), int(cluster.width*1000), CV_8UC4 );
 
         // pcl::PointCloud to cv::Mat
-        #pragma omp parallel for
-        for( int y = 0; y < image.rows; y++ ) {
-            for( int x = 0; x < image.cols; x++ ) {
-                pcl::PointXYZ point = cloud->at( x, y );
-                image.at<cv::Vec4b>( y, x )[0] = 255; // point.b;
-                image.at<cv::Vec4b>( y, x )[1] = 255; //point.g;
-                image.at<cv::Vec4b>( y, x )[2] = 255; //point.r;
-                image.at<cv::Vec4b>( y, x )[3] = 1; //point.a;
-            }
-        }
+		for(size_t i=0;i<cloud->points.size();i++){
+			int row = int((cloud->points[i].y - cluster.min_p[1])*1000);
+			int col = int((cloud->points[i].z - cluster.min_p[2])*1000);
+			cv::circle(image, 
+					   cv::Point(row, col),
+					   1,
+					   cv::Scalar(255, 255, 255) 
+					   ,-1);
+		}
         cv::imshow("Image", image);
         cv::waitKey(1);
-    }*/
+    }
 }
 
 int main(int argc, char** argv)

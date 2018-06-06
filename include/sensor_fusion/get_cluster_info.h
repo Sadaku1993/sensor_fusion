@@ -69,9 +69,8 @@ bool detection(Cluster cluster,
 {
     bool detect = false;
     
-    if(abs(cluster.y) < 0.1 &&
-       abs(cluster.width - 1.0) < 0.1 && 
-       abs(cluster.height - 1.0) < 0.1){
+    if(abs(cluster.y) < 0.1)
+	{
         cloud = pt;
         detect = true;
     }
@@ -99,7 +98,7 @@ void clustering(CloudAPtr cloud_in,
     pcl::EuclideanClusterExtraction<PointA> ec;
     ec.setClusterTolerance (0.05); // 15cm
     ec.setMinClusterSize (50);
-    ec.setMaxClusterSize (2000);
+    ec.setMaxClusterSize (10000);
     ec.setSearchMethod (tree);
     ec.setInputCloud(cloud_in);
     ec.extract (cluster_indices);

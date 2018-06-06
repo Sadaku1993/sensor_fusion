@@ -35,10 +35,10 @@ void plane_segmentation(CloudAPtr cloud, CloudA& plane)
         PCL_ERROR ("Could not estimate a planar model for the given dataset.");
     }
     
-    std::cerr << "Model coefficients: " << coefficients->values[0] << " " 
-        << coefficients->values[1] << " "
-        << coefficients->values[2] << " " 
-        << coefficients->values[3] << std::endl;
+    // std::cerr << "Model coefficients: " << coefficients->values[0] << " " 
+    //     << coefficients->values[1] << " "
+    //     << coefficients->values[2] << " " 
+    //     << coefficients->values[3] << std::endl;
     
     // plane pointcloud
     plane.points.resize(inliers->indices.size());

@@ -8,17 +8,20 @@
 
 	<!--Transform PointCloud2 data at Camera Link-->
 	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="laser_transform_pointcloud"/>
-
-	<!--Save PointCloud-->
-	<param name="lcl/save_num" type="int" value="100" />
-	<node pkg="sensor_fusion" type="lcl" name="lcl"/>
-
+	
 	<!--divide PointCloud-->
-	<node pkg="sensor_fusion" type="division" name="division" >
-		<remap from="/cloud" 		to="/cloud/lcl" />
+	<node pkg="sensor_fusion" type="division_one_shot" name="division_one_shot" >
+		<remap from="/cloud" 		to="/cloud/tf" />
 		<remap from="/cloud/center" to="/sq_lidar/points/center" />
 		<remap from="/cloud/left" 	to="/sq_lidar/points/left" />
 		<remap from="/cloud/right" 	to="/sq_lidar/points/right" />
+	</node>
+
+	<!--Save PointCloud-->
+	<param name="lcl/save_num" type="int" value="500" />
+	<node pkg="sensor_fusion" type="lcl" name="lcl_center">
+		<remap from="/cloud" to="/sq_lidar/points/center" />
+		<remap from="/cloud/lcl" to="/lcl/center" />
 	</node>
 
 	<!--republish zed image-->

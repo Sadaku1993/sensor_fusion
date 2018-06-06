@@ -159,6 +159,7 @@ include_directories(
 add_executable(coloringcloud src/coloringcloud.cpp)
 add_executable(depthimage src/depthimage.cpp)
 add_executable(division src/division.cpp)
+add_executable(division_one_shot src/division_one_shot.cpp)
 add_executable(transform_pointcloud src/transform_pointcloud.cpp)
 add_executable(integration src/integration.cpp)
 add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
@@ -168,7 +169,9 @@ add_executable(lcl src/lcl.cpp)
 add_executable(pointcloud2image calibration/pointcloud2image.cpp)
 add_executable(lidar_seg_plane calibration/lidar_seg_plane.cpp)
 add_executable(detection_circle calibration/detection_circle.cpp)
+add_executable(sq_rm_ground calibration/sq_rm_ground.cpp)
 add_executable(sq_rm_ground_min_max calibration/sq_rm_ground_min_max.cpp)
+
 ## test code
 add_executable(test_points_callback test/test_points_callback.cpp)
 
@@ -198,6 +201,11 @@ target_link_libraries(depthimage
   ${PCL_LIBRARIES}
 )
 target_link_libraries(division
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(division_one_shot
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
@@ -233,6 +241,11 @@ target_link_libraries(lidar_seg_plane
   ${PCL_LIBRARIES}
 )
 target_link_libraries(detection_circle
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(sq_rm_ground  
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
