@@ -2,6 +2,11 @@
 The following programs are prepared with reference to [this paper](https://arxiv.org/pdf/1705.04085.pdf).  
 Source Code is [here](http://wiki.ros.org/velo2cam_calibration).
 
+### Launch Sensor Node
+```
+$ roslaunch sensor_fusion sensor.launch
+```
+
 ### Turning a PointCloud into am Image
 This Code is [pcl_ros](http://wiki.ros.org/pcl_ros/Tutorials/CloudToImage)
 Let's assume you have an openni camera up and running. Fire up a terminal.
