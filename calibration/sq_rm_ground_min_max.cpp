@@ -20,7 +20,7 @@ typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
-void constructFullClouds(CloudAPtr cloud, CloudAPtr& rm_ground){
+void constructFullClouds(CloudAPtr cloud, CloudA& rm_ground){
     
     float min[grid_dimentions][grid_dimentions];
     float max[grid_dimentions][grid_dimentions];
@@ -51,17 +51,21 @@ void constructFullClouds(CloudAPtr cloud, CloudAPtr& rm_ground){
         }
     }
 
-#pragma omp parallel for
+// #pragma omp parallel for
     for(size_t i=0;i<cloud->points.size();i++)
     {
         int x = (grid_dimentions/2)+cloud->points[i].x/cell_size;
         int y = (grid_dimentions/2)+cloud->points[i].y/cell_size;
-        
+		
+		// rm_ground.points.push_back(cloud->points[i]);
+
         if(0<=x && grid_dimentions<x &&
            0<=y && grid_dimentions<y)
         {
-            if(min_threshold<min[x][y] && max[x][y]<max_threshold)
-                rm_ground->points.push_back(cloud->points[i]);
+			rm_ground.points.push_back(cloud->points[i]);
+
+            // if(min_threshold<min[x][y] && max[x][y]<max_threshold)
+            //     rm_ground.points.push_back(cloud->points[i]);
         }
     }
 }
@@ -71,6 +75,16 @@ void Callback(const sensor_msgs::PointCloud2ConstPtr msg)
 {
     CloudAPtr cloud(new CloudA);
     pcl::fromROSMsg(*msg, *cloud);
+	
+	CloudA rm_ground;
+	constructFullClouds(cloud, rm_ground);
+
+	// Publish Coloured PointCloud
+	sensor_msgs::PointCloud2 output;
+    pcl::toROSMsg(rm_ground, output);
+    output.header.frame_id = msg->header.frame_id;
+    output.header.stamp = ros::Time::now();
+    pub.publish(output);
 }
 
 int main(int argc, char**argv)
