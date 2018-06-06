@@ -173,11 +173,7 @@ add_executable(sq_rm_ground calibration/sq_rm_ground.cpp)
 add_executable(sq_rm_ground_min_max calibration/sq_rm_ground_min_max.cpp)
 add_executable(save_points calibration/save_points.cpp)
 add_executable(rm_ground_division calibration/rm_ground_division.cpp)
-## test code
-add_executable(test_points_callback test/test_points_callback.cpp)
-
-## old code
-add_executable(depthimage_zed0 src/old/depthimage_zed0.cpp)
+add_executable(dumy_lidar calibration/dumy_lidar.cpp)
 
 
 ## Rename C++ executable without prefix
@@ -266,17 +262,11 @@ target_link_libraries(rm_ground_division
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
-target_link_libraries(test_points_callback
+target_link_libraries(dumy_lidar
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
-target_link_libraries(depthimage_zed0
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-
 
 #############
 ## Install ##
