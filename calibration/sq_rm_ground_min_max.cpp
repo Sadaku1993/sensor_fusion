@@ -37,7 +37,7 @@ void constructFullClouds(CloudAPtr cloud, CloudA& rm_ground){
         int y = (grid_dimentions/2)+cloud->points[i].y/cell_size;
 
         if(x<=0 && x<grid_dimentions && 
-           0<=0 && y<grid_dimentions)
+           y<=0 && y<grid_dimentions)
         {
             if(!init[x][y]){
                 min[x][y] = cloud->points[i].z;
@@ -51,16 +51,13 @@ void constructFullClouds(CloudAPtr cloud, CloudA& rm_ground){
         }
     }
 
-// #pragma omp parallel for
     for(size_t i=0;i<cloud->points.size();i++)
     {
         int x = (grid_dimentions/2)+cloud->points[i].x/cell_size;
         int y = (grid_dimentions/2)+cloud->points[i].y/cell_size;
-		
-		// rm_ground.points.push_back(cloud->points[i]);
 
-        if(0<=x && grid_dimentions<x &&
-           0<=y && grid_dimentions<y)
+        if(0<=x && x<grid_dimentions &&
+           0<=y && y<grid_dimentions)
         {
 			rm_ground.points.push_back(cloud->points[i]);
 
