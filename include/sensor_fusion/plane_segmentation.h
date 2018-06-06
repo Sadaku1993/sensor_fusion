@@ -25,7 +25,7 @@ void plane_segmentation(CloudAPtr cloud, CloudA& plane)
     // Mandatory
     seg.setModelType (pcl::SACMODEL_PLANE);
     seg.setMethodType (pcl::SAC_RANSAC);
-    seg.setDistanceThreshold (0.01);
+    seg.setDistanceThreshold (0.02);
 
     seg.setInputCloud (cloud);
     seg.segment (*inliers, *coefficients);

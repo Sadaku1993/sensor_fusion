@@ -96,7 +96,7 @@ void clustering(CloudAPtr cloud_in,
     tree->setInputCloud (cloud_in);
     std::vector<pcl::PointIndices> cluster_indices;
     pcl::EuclideanClusterExtraction<PointA> ec;
-    ec.setClusterTolerance (0.05); // 15cm
+    ec.setClusterTolerance (0.30); // 15cm
     ec.setMinClusterSize (50);
     ec.setMaxClusterSize (10000);
     ec.setSearchMethod (tree);

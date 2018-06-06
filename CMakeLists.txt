@@ -172,7 +172,7 @@ add_executable(detection_circle calibration/detection_circle.cpp)
 add_executable(sq_rm_ground calibration/sq_rm_ground.cpp)
 add_executable(sq_rm_ground_min_max calibration/sq_rm_ground_min_max.cpp)
 add_executable(save_points calibration/save_points.cpp)
-
+add_executable(rm_ground_division calibration/rm_ground_division.cpp)
 ## test code
 add_executable(test_points_callback test/test_points_callback.cpp)
 
@@ -257,6 +257,11 @@ target_link_libraries(sq_rm_ground_min_max
   ${PCL_LIBRARIES}
 )
 target_link_libraries(save_points
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(rm_ground_division
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}

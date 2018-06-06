@@ -10,19 +10,33 @@
 	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="laser_transform_pointcloud"/>
 	
 	<!--divide PointCloud-->
-	<node pkg="sensor_fusion" type="division_one_shot" name="division_one_shot" >
+	<node pkg="sensor_fusion" type="rm_ground_division" name="rm_ground_division" >
+		<remap from="/cloud" 		to="/cloud/save" />
+		<remap from="/cloud/center" to="/rm_ground/center" />
+		<remap from="/cloud/left" 	to="/rm_ground/left" />
+		<remap from="/cloud/right" 	to="/rm_ground/right" />
+	</node>
+	<!--node pkg="sensor_fusion" type="division_one_shot" name="division_one_shot" >
 		<remap from="/cloud" 		to="/cloud/tf" />
 		<remap from="/cloud/center" to="/sq_lidar/points/center" />
 		<remap from="/cloud/left" 	to="/sq_lidar/points/left" />
 		<remap from="/cloud/right" 	to="/sq_lidar/points/right" />
-	</node>
+	</node-->
 
 	<!--Save PointCloud-->
-	<param name="lcl/save_num" type="int" value="500" />
+	<param name="save_points/save_num" type="int" value="3000" />
+	<param name="save_points/lidar_points" type="int" value="417" />
+	<param name="save_points/hz" type="int" value="30" />
+	<node pkg="sensor_fusion" type="save_points" name="save_points">
+		<remap from="/cloud" to="/cloud/tf" />
+	</node>
+	
+	<!--param name="lcl/save_num" type="int" value="500" />
 	<node pkg="sensor_fusion" type="lcl" name="lcl_center">
 		<remap from="/cloud" to="/sq_lidar/points/center" />
 		<remap from="/cloud/lcl" to="/lcl/center" />
-	</node>
+	</node-->
+
 
 	<!--republish zed image-->
 	<include file="$(find sensor_fusion)/launch/republish.launch"/>

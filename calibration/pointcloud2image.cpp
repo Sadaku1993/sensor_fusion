@@ -23,10 +23,12 @@ author : Yudai Sadakuni
 
 #define HEIGHT 800
 #define WIDTH  1200
+#define AREA 5
 
 typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
+
 
 void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
 {
@@ -35,6 +37,15 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
 	
 	// Create cv::Mat
 	cv::Mat image = cv::Mat::zeros(HEIGHT, WIDTH, CV_8UC3);
+	int cols = image.cols;
+	int rows = image.rows;
+	for (int j = 0; j < rows; j++) {
+		for (int i = 0; i < cols; i++) {
+			image.at<cv::Vec3b>(j, i)[0] = 255; //青
+			image.at<cv::Vec3b>(j, i)[1] = 255; //緑
+			image.at<cv::Vec3b>(j, i)[2] = 255; //赤
+		}
+	}
 
 	if( !cloud->empty() ){
 		Cluster cluster;
@@ -52,10 +63,22 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
 	
 		// pcl::PointCloud to cv::Mat
 		for(size_t i=0;i<cloud->points.size();i++){
-			int row = int(cloud->points[i].y * 1000) + WIDTH/2;
 			int col = int(cloud->points[i].z * 1000) + HEIGHT/2;
-
-			cv::circle(image, cv::Point(row, col), 3, cv::Scalar(255, 255, 255), -1, CV_AA);
+			int row = int(cloud->points[i].y * 1000) + WIDTH/2;
+			
+			if(AREA<row && row<WIDTH-AREA
+			   && AREA<col && col<HEIGHT-AREA)
+			{
+				for(int i=-AREA;i<AREA;i++){
+					for(int j=-AREA;j<AREA;j++){
+						image.at<cv::Vec3b>(col+i,row+j)[0] = 0; //青
+						image.at<cv::Vec3b>(col+i,row+j)[1] = 0; //緑
+						image.at<cv::Vec3b>(col+i,row+j)[2] = 0; //赤
+					}
+				}
+			}
+			
+			// cv::circle(image, cv::Point(row, col), 8, cv::Scalar(0, 0, 0), -1, CV_AA);
 		}
 
 		// Gray Scale
@@ -71,11 +94,11 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
 				circles, 
 				CV_HOUGH_GRADIENT, 
 				1,    // 画像分解能に対する投票分解能の比率の逆数
-				100,  // 検出される円の中心同士の最小距離
+				200,  // 検出される円の中心同士の最小距離
 				20,   // param1
-				40,   // param2 
-				50,   // minRadius
-				90   // maxRadius
+				30,   // param2 
+				20,   // minRadius
+				100   // maxRadius
 				);
 
 		// Show results

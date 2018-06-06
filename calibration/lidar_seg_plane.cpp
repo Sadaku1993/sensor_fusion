@@ -39,15 +39,15 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 	CloudAPtr points (new CloudA);
     
 	// clustering and detect calibration board
-	clustering(input,
-			   cloud,
-			   centroid,
-			   points);
+	// clustering(input,
+	// 		   cloud,
+	// 		   centroid,
+	// 		   points);
 	
 	// Plane Segmentation
     CloudA plane;
-    if(0<cloud->points.size())
-		plane_segmentation(cloud, plane);
+    if(0<input->points.size())
+		plane_segmentation(input, plane);
 
 	sensor_msgs::PointCloud2 centroid_;
 	pcl::toROSMsg(*centroid, centroid_);

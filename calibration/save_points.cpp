@@ -4,8 +4,9 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 
-#define SAVE_NUM 100
-#define LIDAR_POINTS 500
+int SAVE_NUM;
+int LIDAR_POINTS;
+int HZ;
 
 typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
@@ -26,16 +27,16 @@ void Callback(const sensor_msgs::PointCloud2ConstPtr msg)
     CloudAPtr cloud(new CloudA);
     pcl::fromROSMsg(*msg, *cloud);
 
-    printf("size:%d\n", int(cloud->points.size()));
+    printf("count:%d size:%d\n", pc_count, int(cloud->points.size()));
     t = pc_count * int(cloud->points.size());
 
-    // for(size_t i=0;i<LIDAR_POINTS;i++)
-    // {
-    //     pcl_save.points[i+t] = cloud->points[i];
-    // }
+    for(size_t i=0;i<LIDAR_POINTS;i++)
+    {
+        pcl_save.points[i+t] = cloud->points[i];
+    }
 
     // Publish Coloured PointCloud
-    if(save)
+    if(save && pc_count%HZ==0)
     {
         sensor_msgs::PointCloud2 output;
         pcl::toROSMsg(pcl_save, output);
@@ -55,6 +56,10 @@ int main(int argc, char**argv)
 {
     ros::init(argc, argv, "save_points");
     ros::NodeHandle n;
+
+	n.getParam("save_points/save_num", SAVE_NUM);
+	n.getParam("save_points/lidar_points", LIDAR_POINTS);
+	n.getParam("save_points/hz" ,HZ);
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, Callback);
     pub = n.advertise<sensor_msgs::PointCloud2>("/cloud/save", 10);

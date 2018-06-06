@@ -4,10 +4,10 @@
 	<!--include file="$(find sq1_extra)/launch/run_sq2_for_joy.launch"/-->
 
     <!--Remove Ground-->
-    <node pkg="sensor_fusion" type="sq_rm_ground" name="sq_rm_ground">
+    <!--node pkg="sensor_fusion" type="sq_rm_ground" name="sq_rm_ground">
 		<remap from="/cloud" 	 to="/lcl/center" />
 		<remap from="/rm_ground" to="/rm_ground/center" />
-    </node>
+    </node-->
 
 	<!--Plane Segmentation-->
 	<node pkg="sensor_fusion" type="lidar_seg_plane" name="lidar_seg_plane">
