@@ -25,6 +25,8 @@ typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
 ros::Publisher pub_plane;
+ros::Publisher pub_centroid;
+ros::Publisher pub_points;
 
 void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 {
@@ -32,16 +34,33 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
     pcl::fromROSMsg(*msg, *input);
 
     CloudAPtr cloud (new CloudA);
-    clustering(input, cloud);
+	CloudAPtr centroid (new CloudA);
+	CloudAPtr points (new CloudA);
+    clustering(input,
+			   cloud,
+			   centroid,
+			   points);
+	 
+	sensor_msgs::PointCloud2 centroid_;
+	pcl::toROSMsg(*centroid, centroid_);
+	centroid_.header.stamp = ros::Time::now();
+	centroid_.header.frame_id = msg->header.frame_id;
+	pub_centroid.publish(centroid_);
 
-    CloudA plane;
-    plane_segmentation(cloud, plane);
+	sensor_msgs::PointCloud2 points_;
+	pcl::toROSMsg(*points, points_);
+	points_.header.stamp = ros::Time::now();
+	points_.header.frame_id = msg->header.frame_id;
+	pub_points.publish(points_);
 
-    sensor_msgs::PointCloud2 output;
-    pcl::toROSMsg(plane, output);
-    output.header.stamp = ros::Time::now();
-    output.header.frame_id = msg->header.frame_id;
-    pub_plane.publish(output);
+	// Plane Segmentation
+    // CloudA plane;
+    // plane_segmentation(cloud, plane);
+    // sensor_msgs::PointCloud2 output;
+    // pcl::toROSMsg(plane, output);
+    // output.header.stamp = ros::Time::now();
+    // output.header.frame_id = msg->header.frame_id;
+    // pub_plane.publish(output);
 }
 
 int main(int argc, char** argv)
@@ -50,9 +69,12 @@ int main(int argc, char** argv)
     ros::NodeHandle n;
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
-    pub_plane = n.advertise<sensor_msgs::PointCloud2>("/plane", 10);
 
-    ros::spin();
+    pub_plane = n.advertise<sensor_msgs::PointCloud2>("/plane", 10);
+	pub_centroid = n.advertise<sensor_msgs::PointCloud2>("/centroid", 10);
+	pub_points = n.advertise<sensor_msgs::PointCloud2>("/points", 10);
+    
+	ros::spin();
 
     return 0;
 }

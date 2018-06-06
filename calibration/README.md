@@ -4,7 +4,8 @@ Source Code is [here](http://wiki.ros.org/velo2cam_calibration).
 
 ### Launch Sensor Node
 ```
-$ roslaunch sensor_fusion sensor.launch
+$ roscd scripts/sensor_fusion
+$ ./calibration.sh
 ```
 
 ### Turning a PointCloud into am Image

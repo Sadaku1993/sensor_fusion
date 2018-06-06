@@ -35,12 +35,13 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
     cv::HoughCircles(gray_image, 
                      circles, 
                      CV_HOUGH_GRADIENT, 
-                     1,                     // 画像分解能に対する投票分解能の比率の逆数
-                     gray_image.rows/4,     // 検出される円の中心同士の最小距離
-                     20,                    // param1
-                     50,                    // param2 
-                     50,                    // minRadius
-                     150);                  // maxRadius
+                     1,    // 画像分解能に対する投票分解能の比率の逆数
+                     100,  // 検出される円の中心同士の最小距離
+                     20,   // param1
+                     50,   // param2 
+                     20,   // minRadius
+                     100   // maxRadius
+					 );
 
     // Show results
     for(vector<cv::Vec3f>::iterator it = circles.begin(); it!=circles.end(); ++it)

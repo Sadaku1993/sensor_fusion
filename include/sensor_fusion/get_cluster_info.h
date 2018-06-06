@@ -81,7 +81,10 @@ bool detection(Cluster cluster,
     return detect;
 }
 
-void clustering(CloudAPtr cloud_in, CloudAPtr& cloud){
+void clustering(CloudAPtr cloud_in, 
+				CloudAPtr& cloud,
+				CloudAPtr& centroid,
+				CloudAPtr& points){
     //downsampled point's z =>0
     vector<float> tmp_z;
     tmp_z.resize(cloud_in->points.size());
@@ -117,8 +120,15 @@ void clustering(CloudAPtr cloud_in, CloudAPtr& cloud){
             cloud_cluster->points[jjj] = cloud_in->points[p_num];
         }
         getClusterInfo(*cloud_cluster, data);
-        flag = detection(data, cloud_cluster, cloud);
-        if(flag) break;
+		if(!flag) detection(data, cloud_cluster, cloud);
+		
+		PointA center;
+		center.x = data.x;
+		center.y = data.y;
+		center.z = data.z;
+		centroid->points.push_back(center);
+
+		*points += *cloud_cluster;
     }
 }
 

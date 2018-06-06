@@ -3,9 +3,20 @@
     <!--Launch Sensor Node-->
 	<!--include file="$(find sq1_extra)/launch/run_sq2_for_joy.launch"/-->
 
-	<!--divide PointCloud-->
-	<node pkg="sensor_fusion" type="detection_circle" name="detection_circle" >
-		<remap from="/image" 	to="/usb_cam/image_raw" />
+	<!--Plane Segmentation-->
+	<node pkg="sensor_fusion" type="lidar_seg_plane" name="lidar_seg_plane" output="screen" >
+		<remap from="/cloud" 	to="/sq_lidar/points/center" />
 	</node>
+
+
+	<!--PointCloud2Image-->
+	<!--node pkg="sensor_fusion" type="pointcloud2image" name="pointcloud2image" output="screen" >
+		<remap from="/cloud" 	to="/sq_lidar/points/center" />
+	</node-->
+	
+	<!--divide PointCloud-->
+	<!--node pkg="sensor_fusion" type="detection_circle" name="detection_circle" >
+		<remap from="/image" 	to="/zed0/left/image_rect_color/republish" />
+	</node-->
 	
 </launch>

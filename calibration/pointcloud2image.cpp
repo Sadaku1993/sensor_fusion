@@ -28,6 +28,8 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
     CloudAPtr cloud(new CloudA);
     pcl::fromROSMsg(*msg, *cloud);
 
+	printf("Height:%d Width:%d\n", cloud->height, cloud->width);
+	/*
     if( !cloud->empty() ){
         // Create cv::Mat
         cv::Mat image( cloud->height, cloud->width, CV_8UC4 );
@@ -45,7 +47,7 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
         }
         cv::imshow("Image", image);
         cv::waitKey(1);
-    }
+    }*/
 }
 
 int main(int argc, char** argv)
