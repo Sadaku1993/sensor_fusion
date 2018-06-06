@@ -6,7 +6,7 @@
 
 #include <sensor_fusion/get_cluster_info.h>
 
-#define CELL_SIZE_H 0.025
+#define CELL_SIZE_H 0.016
 #define CELL_SIZE_W 0.01
 #define HEIGHT 50
 #define WIDTH  1200
