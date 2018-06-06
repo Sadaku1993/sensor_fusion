@@ -3,10 +3,15 @@
     <!--Launch Sensor Node-->
 	<!--include file="$(find sq1_extra)/launch/run_sq2_for_joy.launch"/-->
 
+    <!--Remove Ground-->
+    <node pkg="sensor_fusion" type-"sq_rm_ground_min_max" name="sq_rm_ground_min_max" >
+        <remap from="/cloud" to="sq_lidar/points/center" />
+    </node>
+
 	<!--Plane Segmentation-->
-	<node pkg="sensor_fusion" type="lidar_seg_plane" name="lidar_seg_plane" output="screen" >
+	<!--node pkg="sensor_fusion" type="lidar_seg_plane" name="lidar_seg_plane" output="screen" >
 		<remap from="/cloud" 	to="/sq_lidar/points/center" />
-	</node>
+	</node-->
 
 
 	<!--PointCloud2Image-->
