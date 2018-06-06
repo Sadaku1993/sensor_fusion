@@ -6,6 +6,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 
+using namespace std;
+
 // Callback(Image)
 void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
@@ -19,26 +21,38 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
     }
 
     cv::Mat image(cv_img_ptr->image.rows, cv_img_ptr->image.cols, cv_img_ptr->image.type());
-    image = cv_bridge::toCvShare(image_msg)->image;
+    image = cv_bridge::toCvShare(msg)->image;
     
-    // GaussianBlur
-    cv::GaussianBlur(image, image, cv::Size(5, 5), 0);
-    cv::namedWindow("Blur Image");
-    cv::imshow("Blur Image", image);
-
-    //Gray Scale
+    // Gray Scale
     cv::Mat gray_image;
-    cv::cvtColor(image, gray_image, cv::CV_BGR2GRAY);
-    cv::namedWindow("Blur-Gray Image");
-    cv::imshow("Blur-Gray Image", gray_image);
+    cv::cvtColor(image, gray_image, CV_BGR2GRAY);
 
-    //Hough Circles
-    cv::HoughCircles(gray_image, circles, cv::CV_HOUGH_GRADIENT, 1, 50, 100, 100, 0, 0);
-    cv::Mat copy = image.clone();
+    // GaussianBlur
+    cv::GaussianBlur(gray_image, gray_image, cv::Size(11, 11), 2, 2);
 
-    for(auto it = circles.begin()
+    // Hough Circles
+    vector<cv::Vec3f> circles;
+    cv::HoughCircles(gray_image, 
+                     circles, 
+                     CV_HOUGH_GRADIENT, 
+                     1,                     // 画像分解能に対する投票分解能の比率の逆数
+                     gray_image.rows/4,     // 検出される円の中心同士の最小距離
+                     20,                    // param1
+                     50,                    // param2 
+                     50,                    // minRadius
+                     150);                  // maxRadius
 
+    // Show results
+    for(vector<cv::Vec3f>::iterator it = circles.begin(); it!=circles.end(); ++it)
+    {
+        cv::Point center = cv::Point((*it)[0], (*it)[1]);
+        int radius = (*it)[2];
+        cv::circle(image, center, radius, cv::Scalar(0, 0, 255), 2);
+    }
+    cv::namedWindow("Gray-HoughCircles");
+    cv::imshow("Gray-HoughCircles", image);
 
+    cv::waitKey(1);
 }
 
 int main(int argc, char** argv)

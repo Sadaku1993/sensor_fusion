@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+    <!--Launch Sensor Node-->
+	<!--include file="$(find sq1_extra)/launch/run_sq2_for_joy.launch"/-->
+
+	<!--divide PointCloud-->
+	<node pkg="sensor_fusion" type="detection_circle" name="detection_circle" >
+		<remap from="/image" 	to="/usb_cam/image_raw" />
+	</node>
+	
+</launch>
