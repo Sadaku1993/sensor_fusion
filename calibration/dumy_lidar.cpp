@@ -17,6 +17,7 @@ void pc_Callback(const sensor_msgs::PointCloud2ConstPtr msg)
     CloudAPtr cloud(new CloudA);
     pcl::fromROSMsg(*msg, *cloud);
    
+    CloudAPtr points(new CloudA);
     
     if(!cloud->empty()){
 		CloudAPtr points;
