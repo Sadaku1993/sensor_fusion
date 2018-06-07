@@ -19,9 +19,14 @@
 	</node>
 
 	<!--PointCloud2Image-->
-	<node pkg="sensor_fusion" type="pointcloud2image" name="pointcloud2image" output="screen" >
+	<node pkg="sensor_fusion" type="dumy_lidar" name="duny_lidar" output="screen">
 		<remap from="/cloud" to="/center/plane" />
+		<remap from="/output" to="/dumy" />
 	</node>
+
+	<!--node pkg="sensor_fusion" type="pointcloud2image" name="pointcloud2image" >
+		<remap from="/cloud" to="/center/plane" />
+	</node-->
 	
 	<!--divide PointCloud-->
 	<!--node pkg="sensor_fusion" type="detection_circle" name="detection_circle" >

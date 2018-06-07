@@ -1,14 +1,17 @@
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl_ros/point_cloud.h>
-#include <pcl/point_cloud.h>
+#include <pcl_ros/transforms.h>
 #include <pcl/point_types.h>
-
+#include <pcl/point_cloud.h>
+#include <pcl_conversions/pcl_conversions.h>
+#include <pcl/common/transforms.h>
 #include <sensor_fusion/get_cluster_info.h>
 
 #define CELL_SIZE_H 0.016
 #define CELL_SIZE_W 0.01
 
+using namespace std;
 
 ros::Publisher pub;
 
@@ -20,7 +23,6 @@ void pc_Callback(const sensor_msgs::PointCloud2ConstPtr msg)
     CloudAPtr points(new CloudA);
     
     if(!cloud->empty()){
-		CloudAPtr points;
 		Cluster cluster;
         getClusterInfo(*cloud, cluster);
 		printf("Height:%.3f Width:%.3f\n", cluster.height, cluster.width);
@@ -40,18 +42,17 @@ void pc_Callback(const sensor_msgs::PointCloud2ConstPtr msg)
 			for(int j=min_height;j<max_height;j++){
 				PointA p;
 				p.x = cluster.x;
-				p.y = cluster.y; // + i*CELL_SIZE_W;
-				p.z = cluster.z; // + j*CELL_SIZE_H;
+				p.y = cluster.y + i*CELL_SIZE_W;
+				p.z = cluster.z + j*CELL_SIZE_H;
 				points->points.push_back(p);
-             }
-         }
-		 // Publish Coloured PointCloud
-		 sensor_msgs::PointCloud2 output;
-		 pcl::toROSMsg(*points, output);
-		 output.header.frame_id = msg->header.frame_id;
-		 output.header.stamp = ros::Time::now();
-		 pub.publish(output);
-
+			}
+		}
+		// Publish Coloured PointCloud
+		sensor_msgs::PointCloud2 output;
+		pcl::toROSMsg(*points, output);
+		output.header.frame_id = msg->header.frame_id;
+		output.header.stamp = ros::Time::now();
+		pub.publish(output);
 	}
 
 }
