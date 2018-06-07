@@ -168,6 +168,8 @@ add_executable(lcl src/lcl.cpp)
 ## Calibration
 add_executable(pointcloud2image calibration/pointcloud2image.cpp)
 add_executable(lidar_seg_plane calibration/lidar_seg_plane.cpp)
+add_executable(lidar_seg_circle calibration/lidar_seg_circle.cpp)
+
 add_executable(detection_circle calibration/detection_circle.cpp)
 add_executable(sq_rm_ground calibration/sq_rm_ground.cpp)
 add_executable(sq_rm_ground_min_max calibration/sq_rm_ground_min_max.cpp)
@@ -233,6 +235,11 @@ target_link_libraries(pointcloud2image
   ${PCL_LIBRARIES}
 )
 target_link_libraries(lidar_seg_plane
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(lidar_seg_circle
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}

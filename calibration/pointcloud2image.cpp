@@ -59,60 +59,20 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
 			cloud->points[i].y -= cluster.y;
 			cloud->points[i].z -= cluster.z;
 		}
-
 	
 		// pcl::PointCloud to cv::Mat
 		for(size_t i=0;i<cloud->points.size();i++){
 			int col = int(cloud->points[i].z * 1000) + HEIGHT/2;
 			int row = int(cloud->points[i].y * 1000) + WIDTH/2;
 			
-			if(AREA<row && row<WIDTH-AREA
-			   && AREA<col && col<HEIGHT-AREA)
-			{
-				for(int i=-AREA;i<AREA;i++){
-					for(int j=-AREA;j<AREA;j++){
-						image.at<cv::Vec3b>(col+i,row+j)[0] = 0; //青
-						image.at<cv::Vec3b>(col+i,row+j)[1] = 0; //緑
-						image.at<cv::Vec3b>(col+i,row+j)[2] = 0; //赤
-					}
-				}
-			}
-			
-			// cv::circle(image, cv::Point(row, col), 8, cv::Scalar(0, 0, 0), -1, CV_AA);
-		}
-
-		// Gray Scale
-		cv::Mat gray_image;
-		cv::cvtColor(image, gray_image, CV_BGR2GRAY);
-
-		// GaussianBlur
-		cv::GaussianBlur(gray_image, gray_image, cv::Size(11, 11), 2, 2);
-
-		// Hough Circles
-		vector<cv::Vec3f> circles;
-		cv::HoughCircles(gray_image, 
-				circles, 
-				CV_HOUGH_GRADIENT, 
-				1,    // 画像分解能に対する投票分解能の比率の逆数
-				200,  // 検出される円の中心同士の最小距離
-				20,   // param1
-				30,   // param2 
-				20,   // minRadius
-				100   // maxRadius
-				);
-
-		// Show results
-		for(vector<cv::Vec3f>::iterator it = circles.begin(); it!=circles.end(); ++it)
-		{
-			cv::Point center = cv::Point((*it)[0], (*it)[1]);
-			int radius = (*it)[2];
-			cv::circle(image, center, radius, cv::Scalar(0, 0, 255), 2);
-		}
-	}
-	cv::namedWindow("Gray-HoughCircles");
-	cv::imshow("Gray-HoughCircles", image);
+            image.at<cv::Vec3b>(col,row)[0] = 0; //青
+            image.at<cv::Vec3b>(col,row)[1] = 0; //緑
+            image.at<cv::Vec3b>(col,row)[2] = 0; //赤
+        }
+    }
+	cv::namedWindow("Image");
+	cv::imshow("Image", image);
 	cv::waitKey(1);
-
 }
 
 int main(int argc, char** argv)

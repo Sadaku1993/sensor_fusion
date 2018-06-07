@@ -11,22 +11,26 @@
 
 	<!--Plane Segmentation-->
 	<node pkg="sensor_fusion" type="lidar_seg_plane" name="lidar_seg_plane">
-		<remap from="/cloud" 				to="/rm_ground/center" />
-		<remap from="/centroid" 			to="/center/centroid" />
-		<remap from="/poitns"   			to="/center/points" />
-		<remap from="/calibration_board" 	to="/center/calibration_board" />
-		<remap from="/plane" 				to="/center/plane" />
+		<remap from="/cloud"  to="/rm_ground/center" />
+		<remap from="/plane"  to="/center/plane" />
 	</node>
 
-	<!--PointCloud2Image-->
-	<node pkg="sensor_fusion" type="dumy_lidar" name="duny_lidar" output="screen">
+    <!--Circle Detection-->
+    <node pkg="sensor_fusion" type="lidar_seg_circle" name="lidar_seg_circle" output="screen">
+        <remap from="/cloud"  to="/center/plane" />
+        <remap from="/output" to="/dumy/centroid" />
+    </node>
+
+	<!--Dumy PointCloud-->
+	<node pkg="sensor_fusion" type="dumy_lidar" name="duny_lidar">
 		<remap from="/cloud" to="/center/plane" />
 		<remap from="/output" to="/dumy" />
 	</node>
 
-	<!--node pkg="sensor_fusion" type="pointcloud2image" name="pointcloud2image" >
+	<!--PointCloud2Image-->
+	<node pkg="sensor_fusion" type="pointcloud2image" name="pointcloud2image" >
 		<remap from="/cloud" to="/center/plane" />
-	</node-->
+	</node>
 	
 	<!--divide PointCloud-->
 	<!--node pkg="sensor_fusion" type="detection_circle" name="detection_circle" >

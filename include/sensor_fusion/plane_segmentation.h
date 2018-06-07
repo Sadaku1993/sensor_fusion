@@ -14,7 +14,7 @@ typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
-void plane_segmentation(CloudAPtr cloud, CloudA& plane)
+void plane_segmentation(CloudAPtr cloud, CloudAPtr& plane)
 {
     pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
     pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
@@ -25,7 +25,7 @@ void plane_segmentation(CloudAPtr cloud, CloudA& plane)
     // Mandatory
     seg.setModelType (pcl::SACMODEL_PLANE);
     seg.setMethodType (pcl::SAC_RANSAC);
-    seg.setDistanceThreshold (0.02);
+    seg.setDistanceThreshold (0.03);
 
     seg.setInputCloud (cloud);
     seg.segment (*inliers, *coefficients);
@@ -41,9 +41,9 @@ void plane_segmentation(CloudAPtr cloud, CloudA& plane)
     //     << coefficients->values[3] << std::endl;
     
     // plane pointcloud
-    plane.points.resize(inliers->indices.size());
+    plane->points.resize(inliers->indices.size());
     for(size_t i=0;i<inliers->indices.size();i++)
     {
-        plane.points[i] = cloud->points[inliers->indices[i]];
+        plane->points[i] = cloud->points[inliers->indices[i]];
     }
 }
