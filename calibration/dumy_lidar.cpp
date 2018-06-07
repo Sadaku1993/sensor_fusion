@@ -8,12 +8,7 @@
 
 #define CELL_SIZE_H 0.016
 #define CELL_SIZE_W 0.01
-#define HEIGHT 50
-#define WIDTH  1200
 
-typedef pcl::PointXYZ PointA;
-typedef pcl::PointCloud<PointA> CloudA;
-typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
 ros::Publisher pub;
 
@@ -22,31 +17,42 @@ void pc_Callback(const sensor_msgs::PointCloud2ConstPtr msg)
     CloudAPtr cloud(new CloudA);
     pcl::fromROSMsg(*msg, *cloud);
    
-    CloudAPtr points;
     
     if(!cloud->empty()){
-        Cluster cluster;
+		CloudAPtr points;
+		Cluster cluster;
         getClusterInfo(*cloud, cluster);
 		printf("Height:%.3f Width:%.3f\n", cluster.height, cluster.width);
 		printf("centroid x:%.2f y:%.3f z:%.3f\n", cluster.x, cluster.y, cluster.z);
+		
+		int size_height = int(cluster.height/CELL_SIZE_H);
+		int size_width = int(cluster.width/CELL_SIZE_W);
 
-        for(int i=-WIDTH/2;i<WIDTH/2;i++){
-            for(int j=-HEIGHT/2;j<HEIGHT/2;j++){
-                PointA point;
-                point.x = cluster.x;
-                point.y = cluster.y + WIDTH*CELL_SIZE_W;
-                point.z = cluster.z + HEIGHT*CELL_SIZE_H;
-                points->points.push_back(point);
-            }
-        }
-    }
-	
-    // Publish Coloured PointCloud
-	sensor_msgs::PointCloud2 output;
-    pcl::toROSMsg(*points, output);
-    output.header.frame_id = msg->header.frame_id;
-    output.header.stamp = ros::Time::now();
-    pub.publish(output);
+		printf("Points Height:%d Width:%d\n", size_height, size_width);
+
+		int min_height = -size_height/2;
+		int max_height = size_height/2;
+		int min_width  = -size_width/2;
+		int max_width  = size_width/2;
+		
+		for(int i=min_width;i<max_width;i++){
+			for(int j=min_height;j<max_height;j++){
+				PointA p;
+				p.x = cluster.x;
+				p.y = cluster.y; // + i*CELL_SIZE_W;
+				p.z = cluster.z; // + j*CELL_SIZE_H;
+				points->points.push_back(p);
+             }
+         }
+		 // Publish Coloured PointCloud
+		 sensor_msgs::PointCloud2 output;
+		 pcl::toROSMsg(*points, output);
+		 output.header.frame_id = msg->header.frame_id;
+		 output.header.stamp = ros::Time::now();
+		 pub.publish(output);
+
+	}
+
 }
 
 int main(int argc, char** argv)
