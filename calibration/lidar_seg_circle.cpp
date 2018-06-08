@@ -9,9 +9,12 @@
 #define CELL_SIZE_H 0.016
 #define CELL_SIZE_W 0.01
 
+#define SIZE 0.05
+
 using namespace std;
 
 ros::Publisher pub;
+ros::Publisher pub_p1;
 
 void pc_Callback(const sensor_msgs::PointCloud2ConstPtr msg)
 {
@@ -43,6 +46,20 @@ void pc_Callback(const sensor_msgs::PointCloud2ConstPtr msg)
         p3.x = cluster.x; p3.y = cluster.y+0.15; p3.z = cluster.z-0.15;
         p4.x = cluster.x; p4.y = cluster.y-0.15; p4.z = cluster.z-0.15;
 
+        CloudAPtr cloud_p1(new CloudA);
+        CloudAPtr cloud_p2(new CloudA);
+        CloudAPtr cloud_p3(new CloudA);
+        CloudAPtr cloud_p4(new CloudA);
+
+        for(int i=0;i<100;i++)
+        {
+            PointA searchPoint;
+            searchPoint.x = p1.x + 0.0001 * (rand()%1024 - 512);
+            searchPoint.y = p1.y + 0.0001 * (rand()%1024 - 512);
+            searchPoint.z = p1.z + 0.0001 * (rand()%1024 - 512);
+            cloud_p1->points.push_back(searchPoint);
+        }
+
         CloudAPtr centroid(new CloudA);
         centroid->points.push_back(p0);
         centroid->points.push_back(p1);
@@ -56,6 +73,13 @@ void pc_Callback(const sensor_msgs::PointCloud2ConstPtr msg)
 		output.header.frame_id = msg->header.frame_id;
 		output.header.stamp = ros::Time::now();
 		pub.publish(output);
+
+		sensor_msgs::PointCloud2 output_p1;
+		pcl::toROSMsg(*cloud_p1, output_p1);
+		output_p1.header.frame_id = msg->header.frame_id;
+		output_p1.header.stamp = ros::Time::now();
+		pub_p1.publish(output_p1);
+
     }
 }
 
@@ -66,6 +90,7 @@ int main(int argc, char**argv)
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pc_Callback);
     pub = n.advertise<sensor_msgs::PointCloud2>("/output", 10);
+    pub_p1 = n.advertise<sensor_msgs::PointCloud2>("/output/p1", 10);
 
     ros::spin();
 

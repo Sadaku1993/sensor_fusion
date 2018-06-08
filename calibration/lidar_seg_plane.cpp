@@ -16,6 +16,7 @@
 #include <sensor_fusion/get_cluster_info.h>
 #include <sensor_fusion/plane_segmentation.h>
 #include <sensor_fusion/outlier_removal.h>
+#include <sensor_fusion/down_sampling.h>
 
 typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
@@ -37,11 +38,16 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 	// 		   cloud,
 	// 		   centroid,
 	// 		   points);
-	
+
+    // Down Sampling
+    CloudAPtr ds_cloud(new CloudA);
+	if(0<input->points.size())
+        down_sampling(input, ds_cloud);
+
 	// Plane Segmentation
     CloudAPtr plane(new CloudA);
-    if(0<input->points.size())
-		plane_segmentation(input, plane);
+    if(0<ds_cloud->points.size())
+		plane_segmentation(ds_cloud, plane);
 
     // Outlier Removal
     CloudAPtr filtered(new CloudA);

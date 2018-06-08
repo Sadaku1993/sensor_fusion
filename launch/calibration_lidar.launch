@@ -28,9 +28,9 @@
 	</node>
 
 	<!--PointCloud2Image-->
-	<node pkg="sensor_fusion" type="pointcloud2image" name="pointcloud2image" >
+	<!--node pkg="sensor_fusion" type="pointcloud2image" name="pointcloud2image" >
 		<remap from="/cloud" to="/center/plane" />
-	</node>
+	</node-->
 	
 	<!--divide PointCloud-->
 	<!--node pkg="sensor_fusion" type="detection_circle" name="detection_circle" >

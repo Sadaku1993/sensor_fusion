@@ -17,6 +17,9 @@ division sqlidar pointcloud
 #define cell_size 0.3
 #define grid_dimentions 140
 
+float MIN_THRESHOLD_Z;
+float MAX_THRESHOLD_Z;
+
 ros::Publisher pub_center;
 ros::Publisher pub_left;
 ros::Publisher pub_right;
@@ -40,9 +43,8 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 
         if( 0<=x && x<=grid_dimentions 
 				&& 0<=y && y<=grid_dimentions
-				&& abs(cloud->points[i].x) < 3.0
-				&& abs(cloud->points[i].y) < 1.0
-				&& abs(cloud->points[i].z) < 1.0){
+				&& MIN_THRESHOLD_Z < cloud->points[i].z 
+                && cloud->points[i].z < MAX_THRESHOLD_Z){
             if(grid_dimentions/2<=y && sqrt(3)*x+grid_dimentions/2*(1-sqrt(3))<=y) pcl_left.push_back(cloud->points[i]);
 
             else if(y<=grid_dimentions/2 && y<=(-1)*sqrt(3)*x+(1+sqrt(3))*grid_dimentions/2) pcl_right.push_back(cloud->points[i]);
@@ -77,6 +79,9 @@ int main(int argc, char** argv)
     ros::NodeHandle n;
 
     ros::Subscriber pc_callback = n.subscribe("/cloud",10,pcCallback);
+    
+    n.getParam("rm_ground/threshold_z/min", MIN_THRESHOLD_Z);
+    n.getParam("rm_ground/threshold_z/max", MAX_THRESHOLD_Z);
 
     pub_center = n.advertise<sensor_msgs::PointCloud2>("/cloud/center",10);
     pub_left   = n.advertise<sensor_msgs::PointCloud2>("/cloud/left",10);
