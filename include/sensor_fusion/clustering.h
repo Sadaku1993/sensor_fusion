@@ -4,9 +4,13 @@
 #include <pcl/kdtree/kdtree.h>
 #include <pcl/segmentation/extract_clusters.h>
 
-using namespace std;
+#include <sensor_fusion/Cluster.h>
+#include <sensor_fusion/ClusterArray.h>
 
-typedef pcl::PointXYZINormal PointA;
+using namespace std;
+using namespace Eigen;
+
+typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA>  CloudA;
 typedef pcl::PointCloud<PointA>::Ptr  CloudAPtr;
 
@@ -20,6 +24,12 @@ struct Cluster{
     float curvature;
     Vector3f min_p;
     Vector3f max_p;
+};
+
+struct Clusters{
+    Cluster data;
+    CloudA centroid;
+    CloudA points;
 };
 
 void getClusterInfo(CloudA pt, Cluster& cluster)
@@ -62,9 +72,8 @@ void getClusterInfo(CloudA pt, Cluster& cluster)
     cluster.max_p = max_p;
 }
 
-void clustering(CloudAPtr cloud_in, 
-				CloudAPtr& centroid,
-				CloudAPtr& points){
+void clustering(CloudAPtr cloud_in,
+                vector<Clusters>& cluster_array){
     //downsampled point's z =>0
     vector<float> tmp_z;
     tmp_z.resize(cloud_in->points.size());
@@ -72,6 +81,7 @@ void clustering(CloudAPtr cloud_in,
         tmp_z[i]=cloud_in->points[i].z;
 		cloud_in->points[i].z  = 0.0;
     }
+
     //Clustering//
     pcl::search::KdTree<PointA>::Ptr tree (new pcl::search::KdTree<PointA>);
     tree->setInputCloud (cloud_in);
@@ -99,13 +109,18 @@ void clustering(CloudAPtr cloud_in,
             cloud_cluster->points[jjj] = cloud_in->points[p_num];
         }
         getClusterInfo(*cloud_cluster, data);
-		
+
 		PointA center;
 		center.x = data.x;
 		center.y = data.y;
 		center.z = data.z;
-		centroid->points.push_back(center);
 
-		*points += *cloud_cluster;
+        Clusters cluster;
+        cluster.data = data;
+        cluster.centroid.points.push_back(center);
+        for(size_t i=0;i<cloud_cluster->points.size();i++)
+            cluster.points.points.push_back(cloud_cluster->points[i]);
+
+        cluster_array.push_back(cluster);
     }
 }

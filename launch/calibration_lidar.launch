@@ -10,22 +10,35 @@
     </node-->
 
 	<!--Plane Segmentation-->
-	<node pkg="sensor_fusion" type="lidar_seg_plane" name="lidar_seg_plane">
-		<remap from="/cloud"  to="/rm_ground/center" />
-		<remap from="/plane"  to="/center/plane" />
+    <param name="min_x" type="double" value="0"   />
+    <param name="max_x" type="double" value="4.0" />
+    <param name="min_y" type="double" value="-1.0"/>
+    <param name="max_y" type="double" value="1.0" />
+    <param name="min_z" type="double" value="-0.6"/>
+    <param name="max_z" type="double" value="1.0" />
+	<node pkg="sensor_fusion" type="lidar_seg_plane" name="lidar_seg_plane" output="screen">
+		<remap from="/cloud"        to="/rm_ground/center" />
+		<remap from="/area"         to="/center/area" />
+        <remap from="/down_sample"  to="/center/down_sample" />
+        <remap from="/cluster"      to="/center/cluster" />
+        <remap from="/plane"        to="/center/plane" />
+        <remap from="/outlier"      to="/center/outlier" />
 	</node>
 
     <!--Circle Detection-->
     <node pkg="sensor_fusion" type="lidar_seg_circle" name="lidar_seg_circle" output="screen">
-        <remap from="/cloud"  to="/center/plane" />
-        <remap from="/output" to="/dumy/centroid" />
+        <remap from="/cloud"            to="/center/plane" />
+        <remap from="/output/reference" to="/center/reference" />
+        <remap from="/output/search"    to="/center/search" />]
+        <remap from="/output/candidate" to="/center/candidate" />
+        <remap from="/output/centroid"  to="/center/centroid" />
     </node>
 
 	<!--Dumy PointCloud-->
-	<node pkg="sensor_fusion" type="dumy_lidar" name="duny_lidar">
+	<!-- node pkg="sensor_fusion" type="dumy_lidar" name="duny_lidar">
 		<remap from="/cloud" to="/center/plane" />
 		<remap from="/output" to="/dumy" />
-	</node>
+	</node -->
 
 	<!--PointCloud2Image-->
 	<!--node pkg="sensor_fusion" type="pointcloud2image" name="pointcloud2image" >
