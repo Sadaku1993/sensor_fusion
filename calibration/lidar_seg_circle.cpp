@@ -9,7 +9,8 @@
 #include <sensor_fusion/pub_cloud.h>
 #include <sensor_fusion/kd_tree.h>
 
-#define K 20
+#define RADIUS 0.10
+#define K 100
 
 using namespace std;
 
@@ -75,23 +76,23 @@ void pc_Callback(const sensor_msgs::PointCloud2ConstPtr msg)
 
         printf("Point1\n");
         neighbors_with_radius_Search(cloud1, p1, searchPoints1, searchPoint1);
-        // K_nearest_neighbor_search(K, cloud1, searchPoint1, centroid1);
-        K_nearest_neighbor_search(K, cloud1, p1, centroid1);
+        K_nearest_neighbor_search(K, cloud1, searchPoint1, centroid1);
+        // K_nearest_neighbor_search(K, cloud1, p1, centroid1);
 
         printf("Point2\n");
         neighbors_with_radius_Search(cloud2, p2, searchPoints2, searchPoint2);
-        // K_nearest_neighbor_search(K, cloud2, searchPoint2, centroid2);
-        K_nearest_neighbor_search(K, cloud2, p2, centroid2);
+        K_nearest_neighbor_search(K, cloud2, searchPoint2, centroid2);
+        // K_nearest_neighbor_search(K, cloud2, p2, centroid2);
 
         printf("Point3\n");
         neighbors_with_radius_Search(cloud3, p3, searchPoints3, searchPoint3);
-        // K_nearest_neighbor_search(K, cloud3, searchPoint3, centroid3);
-        K_nearest_neighbor_search(K, cloud3, p3, centroid3);
+        K_nearest_neighbor_search(K, cloud3, searchPoint3, centroid3);
+        // K_nearest_neighbor_search(K, cloud3, p3, centroid3);
 
         printf("Point4\n");
         neighbors_with_radius_Search(cloud4, p4, searchPoints4, searchPoint4);
-        // K_nearest_neighbor_search(K, cloud4, searchPoint4, centroid4);
-        K_nearest_neighbor_search(K, cloud4, p4, centroid4);
+        K_nearest_neighbor_search(K, cloud4, searchPoint4, centroid4);
+        // K_nearest_neighbor_search(K, cloud4, p4, centroid4);
 
 
         CloudAPtr referencePoints(new CloudA);
