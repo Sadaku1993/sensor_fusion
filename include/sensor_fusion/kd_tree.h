@@ -57,9 +57,9 @@ void K_nearest_neighbor_search(int K,
     printf("K nearest neighbor search at ( %.3f %.3f %.3f with %d )\n", searchPoint.x, searchPoint.y, searchPoint.z, K);
 
     // Initialize
-    float X = 0;
-    float Y = 0;
-    float Z = 0;
+    float X = searchPoint.x;
+    float Y = searchPoint.y;
+    float Z = searchPoint.z;
 
     // 中心点から最近傍点群を指定サイズ取得し、重心点を円の重心点を算出する
     pcl::KdTreeFLANN<pcl::PointXYZ> kdtree;
@@ -77,9 +77,9 @@ void K_nearest_neighbor_search(int K,
             Y += cloud->points[ pointIdxNKNSearch[i] ].y;
             Z += cloud->points[ pointIdxNKNSearch[i] ].z;
         }
-        output.x = X / int(pointIdxNKNSearch.size());
-        output.y = Y / int(pointIdxNKNSearch.size());
-        output.z = Z / int(pointIdxNKNSearch.size());
+        output.x = X / int(pointIdxNKNSearch.size() + 1);
+        output.y = Y / int(pointIdxNKNSearch.size() + 1);
+        output.z = Z / int(pointIdxNKNSearch.size() + 1);
     }
 
     printf("Final Centroid Point ( %.3f %.3f %.3f )\n", output.x, output.y , output.z);
