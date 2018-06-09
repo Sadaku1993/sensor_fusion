@@ -60,9 +60,9 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
         pickup_cloud(input, area);
 
     // Down Sampling
-    CloudAPtr ds_cloud(new CloudA);
-	if(0<area->points.size())
-        down_sampling(area, ds_cloud);
+    // CloudAPtr ds_cloud(new CloudA);
+	// if(0<area->points.size())
+    //     down_sampling(area, ds_cloud);
 
     // Clustering
     // vector<Clusters> cluster_array;
@@ -71,8 +71,8 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 
 	// Plane Segmentation
     CloudAPtr plane(new CloudA);
-    if(0<ds_cloud->points.size())
-		plane_segmentation(ds_cloud, plane);
+    if(0<area->points.size())
+		plane_segmentation(area, plane);
 
     // Outlier Removal
     CloudAPtr filtered(new CloudA);
@@ -80,7 +80,7 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
         outlier_removal(plane, filtered);
 
     pub_cloud(area, msg->header, pub_area);
-    pub_cloud(ds_cloud, msg->header, pub_down_sample);
+    // pub_cloud(ds_cloud, msg->header, pub_down_sample);
     pub_cloud(plane, msg->header, pub_plane);
     pub_cloud(filtered, msg->header, pub_filtered);
 }

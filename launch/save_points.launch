@@ -20,7 +20,7 @@
 	</node>
 
 	<!--Save PointCloud-->
-	<param name="save_points/save_num" type="int" value="3000" />
+	<param name="save_points/save_num" type="int" value="1000" />
 	<param name="save_points/lidar_points" type="int" value="417" />
 	<param name="save_points/hz" type="int" value="30" />
 	<node pkg="sensor_fusion" type="save_points" name="save_points">
