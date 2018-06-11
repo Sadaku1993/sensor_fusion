@@ -1,13 +1,29 @@
 <?xml version="1.0"?>
 <launch>
-    <!--Launch Sensor Node-->
-	<!--include file="$(find sq1_extra)/launch/run_sq2_for_joy.launch"/-->
+    <!--Launch Sensor TF-->
+	<include file="$(find sensor_fusion)/launch/laser_tf.launch"/>
 
-    <!--Remove Ground-->
-    <!--node pkg="sensor_fusion" type="sq_rm_ground" name="sq_rm_ground">
-		<remap from="/cloud" 	 to="/lcl/center" />
-		<remap from="/rm_ground" to="/rm_ground/center" />
-    </node-->
+	<!--Transform PointCloud2 data at Camera Link-->
+	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="laser_transform_pointcloud"/>
+	
+	<!--divide PointCloud-->
+	<param name="rm_ground/threshold_z/min" type="double" value="-0.9" />
+    <param name="rm_ground/threshold_z/max" type="double" value="1.0" />
+    <node pkg="sensor_fusion" type="rm_ground_division" name="rm_ground_division" >
+		<remap from="/cloud" 		to="/cloud/save" />
+		<remap from="/cloud/center" to="/rm_ground/center" />
+		<remap from="/cloud/left" 	to="/rm_ground/left" />
+		<remap from="/cloud/right" 	to="/rm_ground/right" />
+	</node>
+
+	<!--Save PointCloud-->
+	<param name="save_points/save_num" type="int" value="2000" />
+	<param name="save_points/lidar_points" type="int" value="417" />
+	<param name="save_points/hz" type="int" value="30" />
+	<node pkg="sensor_fusion" type="save_points" name="save_points">
+		<remap from="/cloud" to="/cloud/tf" />
+	</node>
+
 
 	<!--Plane Segmentation-->
     <param name="min_x" type="double" value="0"   />
@@ -35,20 +51,4 @@
         <remap from="/output/average"   to="/center/average" />
     </node>
 
-	<!--Dumy PointCloud-->
-	<!-- node pkg="sensor_fusion" type="dumy_lidar" name="duny_lidar">
-		<remap from="/cloud" to="/center/plane" />
-		<remap from="/output" to="/dumy" />
-	</node -->
-
-	<!--PointCloud2Image-->
-	<!--node pkg="sensor_fusion" type="pointcloud2image" name="pointcloud2image" >
-		<remap from="/cloud" to="/center/plane" />
-	</node-->
-	
-	<!--divide PointCloud-->
-	<!--node pkg="sensor_fusion" type="detection_circle" name="detection_circle" >
-		<remap from="/image" 	to="/zed0/left/image_rect_color/republish" />
-	</node-->
-	
 </launch>
