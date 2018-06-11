@@ -33,7 +33,7 @@ int main(int argc, char**argv)
     n.getParam("camera/ds_size", DS_SIZE);
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
-    pub_ds_cloud = n.advertise<sensor_msgs::PointCloud2>("/output/ds_cloud", 10);
+    pub_ds_cloud = n.advertise<sensor_msgs::PointCloud2>("/output", 10);
 
     ros::spin();
 
