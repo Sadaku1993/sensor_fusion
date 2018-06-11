@@ -171,13 +171,14 @@ add_executable(lcl src/lcl.cpp)
 add_executable(pointcloud2image calibration/pointcloud2image.cpp)
 add_executable(lidar_seg_plane calibration/lidar_seg_plane.cpp)
 add_executable(lidar_seg_circle calibration/lidar_seg_circle.cpp)
+add_executable(camera_seg_plane calibration/camera_seg_plane.cpp)
+
 
 add_executable(detection_circle calibration/detection_circle.cpp)
 add_executable(sq_rm_ground calibration/sq_rm_ground.cpp)
 add_executable(sq_rm_ground_min_max calibration/sq_rm_ground_min_max.cpp)
 add_executable(save_points calibration/save_points.cpp)
 add_executable(rm_ground_division calibration/rm_ground_division.cpp)
-add_executable(dumy_lidar calibration/dumy_lidar.cpp)
 
 
 ## Rename C++ executable without prefix
@@ -246,6 +247,11 @@ target_link_libraries(lidar_seg_circle
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
+target_link_libraries(camera_seg_plane
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
 target_link_libraries(detection_circle
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
@@ -271,12 +277,6 @@ target_link_libraries(rm_ground_division
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
-target_link_libraries(dumy_lidar
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-
 #############
 ## Install ##
 #############

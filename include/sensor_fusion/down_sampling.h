@@ -7,11 +7,11 @@ typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
-void down_sampling(CloudAPtr cloud, CloudAPtr& cloud_filtered)
+void down_sampling(CloudAPtr cloud, CloudAPtr& cloud_filtered, float size)
 {
     // Create the filtering object
     pcl::VoxelGrid<PointA> sor;
     sor.setInputCloud (cloud);
-    sor.setLeafSize (0.02f, 0.02f, 0.02f);
+    sor.setLeafSize (size, size, size);
     sor.filter (*cloud_filtered);
 }

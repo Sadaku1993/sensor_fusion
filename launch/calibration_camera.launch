@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <!--Plane Segmentation-->
+    <param name="/camera/ds_size" type="double" value="0.01" />
+    <node pkg="sensor_fusion" type="camera_seg_plane" name-"lidar_seg_plane" output="screen">
+        <remap from="/cloud" to="/zed/cloud_registered" />
+    </node>
+</launch>

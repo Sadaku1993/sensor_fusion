@@ -62,7 +62,7 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
     // Down Sampling
     // CloudAPtr ds_cloud(new CloudA);
 	// if(0<area->points.size())
-    //     down_sampling(area, ds_cloud);
+    //     down_sampling(area, ds_cloud, 0.02f);
 
     // Clustering
     // vector<Clusters> cluster_array;
