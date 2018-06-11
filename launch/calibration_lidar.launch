@@ -32,6 +32,7 @@
         <remap from="/output/search"    to="/center/search" />]
         <remap from="/output/candidate" to="/center/candidate" />
         <remap from="/output/centroid"  to="/center/centroid" />
+        <remap from="/output/average"   to="/center/average" />
     </node>
 
 	<!--Dumy PointCloud-->

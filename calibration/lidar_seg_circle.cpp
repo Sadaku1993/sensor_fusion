@@ -3,6 +3,7 @@
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_cloud.h>
 #include <pcl/kdtree/kdtree_flann.h>
+#include <pcl/common/centroid.h>
 #include <iostream>
 
 #include <sensor_fusion/get_cluster_info.h>
@@ -11,13 +12,29 @@
 
 #define RADIUS 0.10
 #define K 100
+#define MAX_COUNT 10
 
 using namespace std;
+
+int COUNT = 0;
 
 ros::Publisher pub_referencePoints;
 ros::Publisher pub_searchPoints;
 ros::Publisher pub_candidatePoints;
 ros::Publisher pub_centroidPoints;
+ros::Publisher pub_averagePoints;
+
+CloudA average_p0 ,average_p1, average_p2, average_p3;
+
+bool save = false;
+
+void get_average(CloudA cloud, PointA& point)
+{
+    pcl::CentroidPoint<pcl::PointXYZ> centroid;
+    for(size_t i=0;i<cloud.points.size();i++)
+        centroid.add(cloud.points[i]);
+    centroid.get (point);
+}
 
 void pc_Callback(const sensor_msgs::PointCloud2ConstPtr msg)
 {
@@ -90,6 +107,11 @@ void pc_Callback(const sensor_msgs::PointCloud2ConstPtr msg)
         neighbors_with_radius_Search(cloud4, p4, searchPoints4, searchPoint4);
         K_nearest_neighbor_search(K, cloud4, searchPoint4, centroid4);
 
+        average_p0.points[COUNT] = centroid1;
+        average_p1.points[COUNT] = centroid2;
+        average_p2.points[COUNT] = centroid3;
+        average_p3.points[COUNT] = centroid4;
+
         CloudAPtr referencePoints(new CloudA);
         referencePoints->points.push_back(p0);
         referencePoints->points.push_back(p1);
@@ -115,12 +137,33 @@ void pc_Callback(const sensor_msgs::PointCloud2ConstPtr msg)
         centroidPoints->points.push_back(centroid3);
         centroidPoints->points.push_back(centroid4);
 
+        if(save){
+            PointA c0, c1, c2, c3;
+            get_average(average_p0, c0);
+            get_average(average_p1, c1);
+            get_average(average_p2, c2);
+            get_average(average_p3, c3);
+
+            CloudAPtr averagePoints(new CloudA);
+            averagePoints->points.push_back(c0);
+            averagePoints->points.push_back(c1);
+            averagePoints->points.push_back(c2);
+            averagePoints->points.push_back(c3);
+            pub_cloud(averagePoints, msg->header, pub_averagePoints);
+        }
 
         // Publish 
         pub_cloud(referencePoints, msg->header, pub_referencePoints);
         pub_cloud(searchPoints,    msg->header, pub_searchPoints);
         pub_cloud(candidatePoints, msg->header, pub_candidatePoints);
         pub_cloud(centroidPoints,  msg->header, pub_centroidPoints);
+
+        COUNT++;
+
+        if(COUNT==MAX_COUNT){
+            save = true;
+            COUNT = 0;
+        }
 
     }
 }
@@ -132,9 +175,16 @@ int main(int argc, char**argv)
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pc_Callback);
     pub_referencePoints = n.advertise<sensor_msgs::PointCloud2>("/output/reference", 10);
-    pub_searchPoints = n.advertise<sensor_msgs::PointCloud2>("/output/search", 10);
-    pub_candidatePoints = n.advertise<sensor_msgs::PointCloud2>("output/candidate", 10);
-    pub_centroidPoints = n.advertise<sensor_msgs::PointCloud2>("/output/centroid", 10);
+    pub_searchPoints    = n.advertise<sensor_msgs::PointCloud2>("/output/search", 10);
+    pub_candidatePoints = n.advertise<sensor_msgs::PointCloud2>("/output/candidate", 10);
+    pub_centroidPoints  = n.advertise<sensor_msgs::PointCloud2>("/output/centroid", 10);
+    pub_averagePoints   = n.advertise<sensor_msgs::PointCloud2>("/output/average", 10); 
+
+    average_p0.points.resize(MAX_COUNT);
+    average_p1.points.resize(MAX_COUNT);
+    average_p2.points.resize(MAX_COUNT);
+    average_p3.points.resize(MAX_COUNT);
+
     ros::spin();
 
     return 0;
