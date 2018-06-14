@@ -9,6 +9,8 @@
     <param name="camera/ds_size" type="double" value="0.03" />
     <node pkg="sensor_fusion" type="camera_seg_plane" name="lidar_seg_plane" output="screen">
         <remap from="/cloud" to="/zed/ds_cloud" />
-        <remap from="/output/pickup" to="zed/pickup" />
+        <remap from="/output/pickup"  to="/center/pickup" />
+        <remap from="/output/plane"   to="/center/plane" />
+        <remap from="/output/outlier" to="/center/outlier" />
     </node>
 </launch>
