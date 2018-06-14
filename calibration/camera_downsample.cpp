@@ -11,7 +11,7 @@ using namespace std;
 
 ros::Publisher pub_ds_cloud;
 
-double DS_SIZE;
+double DS_SIZE = 0.03;
 
 void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
 {
@@ -30,7 +30,7 @@ int main(int argc, char**argv)
     ros::init(argc, argv, "camera_downsample");
     ros::NodeHandle n;
 
-    n.getParam("camera/ds_size", DS_SIZE);
+    // n.getParam("camera/ds_size", DS_SIZE);
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
     pub_ds_cloud = n.advertise<sensor_msgs::PointCloud2>("/output", 10);
