@@ -20,7 +20,7 @@
 
     <!--Circle Detection-->
     <node pkg="sensor_fusion" type="camera_seg_circle" name="camera_seg_circle" output="screen">
-        <remap from="/cloud"            to="/camera/plane" />
+        <remap from="/cloud"            to="/camera/outlier" />
         <remap from="/output/reference" to="/camera/reference" />
         <remap from="/output/search"    to="/camera/search" />]
         <remap from="/output/candidate" to="/camera/candidate" />
