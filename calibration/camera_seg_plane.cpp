@@ -16,21 +16,23 @@ ros::Publisher pub_pickup;
 ros::Publisher pub_plane;
 ros::Publisher pub_outlier;
 
-string REALWORLD;
-double THRESHOLD_X;
-double THRESHOLD_Y;
-double THRESHOLD_Z;
-double DS_SIZE;
+// このパラメータで取得する点群のエリアを確定する
+// キャリブレーションボードが収まる範囲に調整すること
+double MIN_X, MAX_X;
+double MIN_Y, MAX_Y;
+double MIN_Z, MAX_Z;
 
-void pickup(CloudAPtr cloud, CloudAPtr& pickup_cloud)
+double DISTANCE;
+
+
+void pickup(CloudAPtr cloud, CloudAPtr& output)
 {
     for(size_t i=0;i<cloud->points.size();i++){
-        if(fabs(cloud->points[i].x) < THRESHOLD_X 
-            && fabs(cloud->points[i].y) < THRESHOLD_Y
-            && fabs(cloud->points[i].z) < THRESHOLD_Z )
-        {
-            pickup_cloud->points.push_back(cloud->points[i]);
-        }
+        if( MIN_X < cloud->points[i].x && cloud->points[i].x < MAX_X
+            && MIN_Y < cloud->points[i].y && cloud->points[i].y < MAX_Y
+            && MIN_Z < cloud->points[i].z && cloud->points[i].z < MAX_Z)
+            
+            output->points.push_back(cloud->points[i]);
     }
 }
 
@@ -40,17 +42,22 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr msg)
     pcl::fromROSMsg(*msg, *cloud);
 
     CloudAPtr pickup_cloud(new CloudA);
-    pickup(cloud, pickup_cloud);
-    
+    if(0<cloud->points.size()){
+        pickup(cloud, pickup_cloud);
+        pub_cloud(pickup_cloud, msg->header, pub_pickup);
+    }
+
     CloudAPtr plane_cloud(new CloudA);
-    plane_segmentation(pickup_cloud, plane_cloud);
+    if(0<pickup_cloud->points.size()){
+        plane_segmentation(pickup_cloud, plane_cloud, DISTANCE);
+        pub_cloud(plane_cloud, msg->header, pub_plane);
+    }
 
     CloudAPtr outlier_cloud(new CloudA);
-    outlier_removal(plane_cloud, outlier_cloud);
-
-    pub_cloud(pickup_cloud, msg->header, pub_pickup);
-    pub_cloud(plane_cloud, msg->header, pub_plane);
-    pub_cloud(outlier_cloud, msg->header, pub_outlier);
+    if(0<plane_cloud->points.size()){
+        outlier_removal(plane_cloud, outlier_cloud);
+        pub_cloud(outlier_cloud, msg->header, pub_outlier);
+    }
 }
 
 
@@ -58,10 +65,15 @@ int main(int argc, char**argv)
 {
     ros::init(argc, argv, "lidar_seg_plane");
     ros::NodeHandle n;
+ 
+    n.getParam("min_x", MIN_X);
+    n.getParam("max_x", MAX_X);
+    n.getParam("min_y", MIN_Y);
+    n.getParam("max_y", MAX_Y);
+    n.getParam("min_z", MIN_Z);
+    n.getParam("max_z", MAX_Z);
 
-    n.getParam("threshold/x", THRESHOLD_X);
-    n.getParam("threshold/y", THRESHOLD_Y);
-    n.getParam("threshold/z", THRESHOLD_Z);
+    n.getParam("distance"   , DISTANCE);
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
     pub_pickup = n.advertise<sensor_msgs::PointCloud2>("/output/pickup", 10);

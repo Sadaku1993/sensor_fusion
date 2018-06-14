@@ -17,7 +17,7 @@ gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion calibration_came
 sleep 1s
 
 # bag
-gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-06-11-20-13-33.bag --clock -l" --geometry=50x12+2000+500 &
+gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-06-14-20-21-16.bag --clock -l" --geometry=50x12+2000+500 &
 sleep 1s
 
 # rviz

@@ -32,6 +32,7 @@
     <param name="max_y" type="double" value="1.0" />
     <param name="min_z" type="double" value="-0.6"/>
     <param name="max_z" type="double" value="1.0" />
+    <param name-"distance" type="double" value="0.03" />
 	<node pkg="sensor_fusion" type="lidar_seg_plane" name="lidar_seg_plane" output="screen">
 		<remap from="/cloud"        to="/rm_ground/center" />
 		<remap from="/area"         to="/center/area" />

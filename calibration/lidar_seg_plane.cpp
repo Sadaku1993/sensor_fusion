@@ -37,6 +37,8 @@ double MIN_X, MAX_X;
 double MIN_Y, MAX_Y;
 double MIN_Z, MAX_Z;
 
+double DISTANCE;
+
 // 正面の点群のみを取得
 void pickup_cloud(CloudAPtr cloud, CloudAPtr& output)
 {
@@ -72,7 +74,7 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 	// Plane Segmentation
     CloudAPtr plane(new CloudA);
     if(0<area->points.size())
-		plane_segmentation(area, plane);
+		plane_segmentation(area, plane, DISTANCE);
 
     // Outlier Removal
     CloudAPtr filtered(new CloudA);
@@ -96,6 +98,7 @@ int main(int argc, char** argv)
     n.getParam("max_y", MAX_Y);
     n.getParam("min_z", MIN_Z);
     n.getParam("max_z", MAX_Z);
+    n.getParam("distance", DISTANCE);
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
 

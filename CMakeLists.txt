@@ -172,6 +172,7 @@ add_executable(pointcloud2image calibration/pointcloud2image.cpp)
 add_executable(lidar_seg_plane calibration/lidar_seg_plane.cpp)
 add_executable(lidar_seg_circle calibration/lidar_seg_circle.cpp)
 add_executable(camera_seg_plane calibration/camera_seg_plane.cpp)
+add_executable(camera_seg_circle calibration/camera_seg_circle.cpp)
 add_executable(camera_downsample calibration/camera_downsample.cpp)
 
 
@@ -249,6 +250,11 @@ target_link_libraries(lidar_seg_circle
   ${PCL_LIBRARIES}
 )
 target_link_libraries(camera_seg_plane
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(camera_seg_circle
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}

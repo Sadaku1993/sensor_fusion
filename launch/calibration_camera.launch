@@ -3,14 +3,29 @@
     <param name="realworld" type="string" value="false" />
 
     <!--Plane Segmentation-->
-    <param name="threshold/x" type="double" value="3.0" />
-    <param name="threshold/y" type="double" value="1.0" />
-    <param name="threshold/z" type="double" value="0.5" />
-    <param name="camera/ds_size" type="double" value="0.03" />
+    <param name="min_x" type="double" value="0"   />
+    <param name="max_x" type="double" value="4.0" />
+    <param name="min_y" type="double" value="-0.6"/>
+    <param name="max_y" type="double" value="0.6" />
+    <param name="min_z" type="double" value="-0.5"/>
+    <param name="max_z" type="double" value="0.3" />
+    <param name="distance"    type="double" value="0.05" />
+    
     <node pkg="sensor_fusion" type="camera_seg_plane" name="lidar_seg_plane" output="screen">
         <remap from="/cloud" to="/zed/ds_cloud" />
-        <remap from="/output/pickup"  to="/center/pickup" />
-        <remap from="/output/plane"   to="/center/plane" />
-        <remap from="/output/outlier" to="/center/outlier" />
+        <remap from="/output/pickup"  to="/camera/pickup" />
+        <remap from="/output/plane"   to="/camera/plane" />
+        <remap from="/output/outlier" to="/camera/outlier" />
     </node>
+
+    <!--Circle Detection-->
+    <node pkg="sensor_fusion" type="camera_seg_circle" name="camera_seg_circle" output="screen">
+        <remap from="/cloud"            to="/camera/plane" />
+        <remap from="/output/reference" to="/camera/reference" />
+        <remap from="/output/search"    to="/camera/search" />]
+        <remap from="/output/candidate" to="/camera/candidate" />
+        <remap from="/output/centroid"  to="/camera/centroid" />
+        <remap from="/output/average"   to="/camera/average" />
+    </node>
+
 </launch>
