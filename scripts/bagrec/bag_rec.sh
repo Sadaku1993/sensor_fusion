@@ -25,4 +25,4 @@ echo $ZED1 &
 echo $ZED2 &
 echo $TF &
 
-/opt/ros/kinetic/bin/rosbag record $CLOUD $ODOM $IMU $ZED0 $ZED1 $ZED2 -O /home/amsl/$TIME.bag
+/opt/ros/kinetic/bin/rosbag record $CLOUD $ODOM $IMU $ZED0 -O /home/amsl/$TIME.bag
