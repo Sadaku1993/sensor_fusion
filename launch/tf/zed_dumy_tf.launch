@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<launch>
+    <arg name="stdout" default="screen" />
+    <node pkg="tf" type="static_transform_publisher" name="zed_dumy_tf" args="0.0 0.10 0 0 0 0 zed_center zed_left_camera 100"/>
+</launch>

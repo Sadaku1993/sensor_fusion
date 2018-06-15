@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+	<arg name="stdout" default="screen" />
+	<node pkg="tf" type="static_transform_publisher" name="base2laser" args="0 0 1.194 0 0 0 base_link centerlaser 1000" />
+</launch>
+

@@ -16,13 +16,17 @@ gnome-terminal -e '/home/amsl/ros_catkin_ws/src/hardware/sensor_fusion/scripts/b
 sleep 1s
 
 # Launch Sensor TF
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion laser_tf.launch' --geometry=50x12+500+0 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion laser_tf.launch' --geometry=50x12+600+0 &
 sleep 1s
-gnome-terminal -e '/opt/ros/kinetic/bin/rosrun sensor_fusion laser_transform_pointcloud' --geometry=50x12+500+250 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion sq2_zed.launch' --geometry=50x12+600+250 &
+sleep 1s
+
+# Transform PointCloud from /centerlaser_ to /centerlaser
+gnome-terminal -e '/opt/ros/kinetic/bin/rosrun sensor_fusion laser_transform_pointcloud' --geometry=50x12+600+500 &
 sleep 1s
 
 # rviz
-gnome-terminal -e '/opt/ros/kinetic/bin/rosrun rviz rviz -d /home/amsl/.rviz/calibration.rviz' --geometry=50x12+500+500 &
+gnome-terminal -e '/opt/ros/kinetic/bin/rosrun rviz rviz -d /home/amsl/.rviz/calibration.rviz' --geometry=50x12+600+750 &
 sleep 5s
 
 # bagrec

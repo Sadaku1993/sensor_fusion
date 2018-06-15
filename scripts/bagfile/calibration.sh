@@ -9,16 +9,17 @@ gnome-terminal -e "/opt/ros/kinetic/bin/roscore" --geometry=50x12+0+0 &
 sleep 1s
 
 # use_sim_time true
-gnome-terminal -e "rosparam set use_sim_time true" --geometry=50x12+1000+500
+gnome-terminal -e "rosparam set use_sim_time true" --geometry=50x12+0+0
 sleep 1s
 
 # Launch TF
-gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion imu_complement.launch" --geometry=50x12+1000+500
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion base2laser.launch" --geometry=50x12+0+250
+sleep 1s
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed_dumy_tf.launch" --geometry=50x12+0+500
 sleep 1s
 
-
-# Launch Calibration Lidar Node
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion calibration_lidar.launch' --geometry=50x12+0+300 &
+# TF odom to base_link
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion imu_complement.launch" --geometry=50x12+0+750
 sleep 1s
 
 # bag
