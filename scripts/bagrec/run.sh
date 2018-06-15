@@ -9,9 +9,9 @@ gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sq1_extra run_sq2_for_joy.laun
 sleep 1s
 
 # Launch Zed and Downsample
-gnome-terminal -e '/home/amsl/ros_catkin_ws/src/hardware/sensor_fusion/scripts/bagrec/downsample_zed0.sh' --geometry=50x12+0+250 &
-gnome-terminal -e '/home/amsl/ros_catkin_ws/src/hardware/sensor_fusion/scripts/bagrec/downsample_zed1.sh' --geometry=50x12+0+500 &
-gnome-terminal -e '/home/amsl/ros_catkin_ws/src/hardware/sensor_fusion/scripts/bagrec/downsample_zed2.sh' --geometry=50x12+0+750 &
+gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/bagrec/downsample_zed0.sh' --geometry=50x12+0+250 &
+gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/bagrec/downsample_zed1.sh' --geometry=50x12+0+500 &
+gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/bagrec/downsample_zed2.sh' --geometry=50x12+0+750 &
 sleep 1s
 
 # Launch Sensor TF
@@ -29,4 +29,4 @@ gnome-terminal -e '/opt/ros/kinetic/bin/rosrun rviz rviz -d /home/amsl/.rviz/cal
 sleep 5s
 
 # bagrec
-gnome-terminal -e '/home/amsl/ros_catkin_ws/src/hardware/sensor_fusion/scripts/bagrec/bag_rec.sh' --geometry=50x12+1000+0 &
+gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/bagrec/bag_rec.sh' --geometry=50x12+1000+0 &
