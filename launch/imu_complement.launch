@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+	<!-- <rosparam file="$(find params)/run_test/init_pose.yaml" /> -->
+	<node name="imu_complement" pkg="sensor_fusion" type="imu_complement" output= "screen" />
+	
+	<param name="header_frame" value="/odom" />	
+	<param name="child_frame" value="/base_link" />
+	<!-- <param name="child_frame" value="/matching_base_link" /> -->
+	<param name="init_x" value="0.0" />
+	<param name="init_y" value="0.0" />
+	<param name="init_yaw" value="0.0" />
+	<param name="odom_topic" value="/odom" />
+	<param name="imu_topic" value="/imu/data" />
+	<param name="ndt_topic" value="/sq_ndt_data" />
+	<param name="ekf_topic" value="/ekf_NDT" />
+	<!-- <param name="publish_topic" value="/lcl_sq_ekf" /> -->
+	<param name="publish_topic" value="/lcl_ekf" />
+
+	<!-- 0:odom 1:imu 2:ndt 3:ekf -->
+	<param name="estimate_result" value="1" />
+	
+
+</launch>
