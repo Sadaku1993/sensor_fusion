@@ -15,7 +15,7 @@ sleep 1s
 # Launch TF
 gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion base2laser.launch" --geometry=50x12+0+250
 sleep 1s
-gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed_dumy_tf.launch" --geometry=50x12+0+500
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed0_dumy_tf.launch" --geometry=50x12+0+500
 sleep 1s
 
 # TF odom to base_link
@@ -23,7 +23,7 @@ gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion imu_complement.l
 sleep 1s
 
 # bag
-gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-06-15-18-50-13.bag --clock -l" --geometry=50x12+2000+500 &
+gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-06-15-20-19-04.bag --clock -l" --geometry=50x12+2000+500 &
 sleep 1s
 
 # rviz
