@@ -8,7 +8,7 @@ hander()
 trap hander SIGINT
 
 TIME=$(date +%Y-%m-%d-%H-%M-%S)
-CLOUD="/cloud"
+CLOUD="/cloud/tf"
 ODOM="/odom"
 IMU="/imu/data"
 ZED="/zed/left/image_rect_color/compressed /zed/left/camera_info /zed/ds_cloud"
