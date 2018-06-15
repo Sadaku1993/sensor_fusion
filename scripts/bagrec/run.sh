@@ -8,11 +8,10 @@ source /home/amsl/.bashrc
 gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sq1_extra run_sq2_for_joy.launch' --geometry=50x12+0+0 &
 sleep 1s
 
-# Launch Zed 
-gnome-terminal -e '/home/amsl/ros_catkin_ws/src/hardware/sensor_fusion/scripts/bagrec/zed.sh' --geometry=50x12+0+250 &
-sleep 1s
-# Downsample Zed Cloud
-gnome-terminal -e '/home/amsl/ros_catkin_ws/src/hardware/sensor_fusion/scripts/bagrec/downsample.sh' --geometry=50x12+0+250 &
+# Launch Zed and Downsample
+gnome-terminal -e '/home/amsl/ros_catkin_ws/src/hardware/sensor_fusion/scripts/bagrec/downsample_zed0.sh' --geometry=50x12+0+250 &
+gnome-terminal -e '/home/amsl/ros_catkin_ws/src/hardware/sensor_fusion/scripts/bagrec/downsample_zed1.sh' --geometry=50x12+0+500 &
+gnome-terminal -e '/home/amsl/ros_catkin_ws/src/hardware/sensor_fusion/scripts/bagrec/downsample_zed2.sh' --geometry=50x12+0+750 &
 sleep 1s
 
 # Launch Sensor TF
