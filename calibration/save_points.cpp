@@ -62,7 +62,7 @@ int main(int argc, char**argv)
 	n.getParam("save_points/hz" ,HZ);
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, Callback);
-    pub = n.advertise<sensor_msgs::PointCloud2>("/cloud/save", 10);
+    pub = n.advertise<sensor_msgs::PointCloud2>("/output", 10);
 
     pcl_save.points.resize(SAVE_NUM*LIDAR_POINTS);
 	

@@ -11,8 +11,8 @@
     <param name="max_z" type="double" value="0.3" />
     <param name="distance"    type="double" value="0.05" />
     
-    <node pkg="sensor_fusion" type="camera_seg_plane" name="lidar_seg_plane" output="screen">
-        <remap from="/cloud" to="/zed/ds_cloud" />
+    <node pkg="sensor_fusion" type="camera_seg_plane" name="camera_seg_plane" output="screen">
+        <remap from="/cloud" to="/zed0/ds_cloud" />
         <remap from="/output/pickup"  to="/camera/pickup" />
         <remap from="/output/plane"   to="/camera/plane" />
         <remap from="/output/outlier" to="/camera/outlier" />

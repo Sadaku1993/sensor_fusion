@@ -1,10 +1,19 @@
 <?xml version="1.0"?>
 <launch>
     <!--Launch Sensor TF-->
-	<include file="$(find sensor_fusion)/launch/laser_tf.launch"/>
+	<!--include file="$(find sensor_fusion)/launch/laser_tf.launch"/-->
 
 	<!--Transform PointCloud2 data at Camera Link-->
-	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="laser_transform_pointcloud"/>
+	<!--node pkg="sensor_fusion" type="laser_transform_pointcloud" name="laser_transform_pointcloud"/-->
+
+	<!--Save PointCloud-->
+	<param name="save_points/save_num" type="int" value="2000" />
+	<param name="save_points/lidar_points" type="int" value="417" />
+	<param name="save_points/hz" type="int" value="30" />
+	<node pkg="sensor_fusion" type="save_points" name="save_points">
+		<remap from="/cloud" to="/cloud/tf" />
+        <remap from="/output" to="/cloud/save" />
+	</node>
 	
 	<!--divide PointCloud-->
 	<param name="rm_ground/threshold_z/min" type="double" value="-0.9" />
@@ -16,23 +25,14 @@
 		<remap from="/cloud/right" 	to="/rm_ground/right" />
 	</node>
 
-	<!--Save PointCloud-->
-	<param name="save_points/save_num" type="int" value="2000" />
-	<param name="save_points/lidar_points" type="int" value="417" />
-	<param name="save_points/hz" type="int" value="30" />
-	<node pkg="sensor_fusion" type="save_points" name="save_points">
-		<remap from="/cloud" to="/cloud/tf" />
-	</node>
-
-
 	<!--Plane Segmentation-->
     <param name="min_x" type="double" value="0"   />
-    <param name="max_x" type="double" value="4.0" />
+    <param name="max_x" type="double" value="2.0" />
     <param name="min_y" type="double" value="-1.0"/>
     <param name="max_y" type="double" value="1.0" />
     <param name="min_z" type="double" value="-0.6"/>
     <param name="max_z" type="double" value="1.0" />
-    <param name-"distance" type="double" value="0.03" />
+    <param name="distance" type="double" value="0.03" />
 	<node pkg="sensor_fusion" type="lidar_seg_plane" name="lidar_seg_plane" output="screen">
 		<remap from="/cloud"        to="/rm_ground/center" />
 		<remap from="/area"         to="/center/area" />

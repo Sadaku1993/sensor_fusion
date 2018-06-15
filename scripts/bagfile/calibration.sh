@@ -22,8 +22,17 @@ sleep 1s
 gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion imu_complement.launch" --geometry=50x12+0+750
 sleep 1s
 
+# Laser Pattern
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion calibration_lidar.launch" --geometry=50x12+600+0
+sleep 1s
+
+# Stereo Pattern
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion calibration_camera.launch" --geometry=50x12+600+250
+sleep 1s
+
 # bag
-gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-06-15-20-19-04.bag --clock -l" --geometry=50x12+2000+500 &
+gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-06-15-21-42-06.bag --clock -l" --geometry=50x12+2000+500 &
+# gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-06-15-20-57-15.bag  --clock -l" --geometry=50x12+2000+500 &
 sleep 1s
 
 # rviz
