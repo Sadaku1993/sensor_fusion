@@ -170,7 +170,7 @@ add_executable(lcl src/lcl.cpp)
 
 ## Calibration
 add_executable(pointcloud2image calibration/pointcloud2image.cpp)
-add_executable(imu_complement calibration/imu_complement.cpp)
+add_executable(odom2baselink calibration/imu_complement.cpp)
 add_executable(lidar_seg_plane calibration/lidar_seg_plane.cpp)
 add_executable(lidar_seg_circle calibration/lidar_seg_circle.cpp)
 add_executable(camera_seg_plane calibration/camera_seg_plane.cpp)
@@ -241,7 +241,7 @@ target_link_libraries(pointcloud2image
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
-target_link_libraries(imu_complement
+target_link_libraries(odom2baselink
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}

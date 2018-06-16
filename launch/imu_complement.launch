@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 	<!-- <rosparam file="$(find params)/run_test/init_pose.yaml" /> -->
-	<node name="imu_complement" pkg="sensor_fusion" type="imu_complement" output= "screen" />
+	<node name="odom2baselink" pkg="sensor_fusion" type="odom2baselink" output= "screen" />
 	
 	<param name="header_frame" value="/odom" />	
 	<param name="child_frame" value="/base_link" />
