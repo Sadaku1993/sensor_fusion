@@ -35,6 +35,14 @@ $cd ..
 $catkin_make
 ```
 
+```
+$cd $HOME
+$cd catkin_ws/src
+$git clone git@github.com:Sadaku1993/sensor_fusion.git
+$cd ..
+$catkin_make
+```
+
 ## How to Run
 ### Calibration SQ Lidar and ZED
 Under review
