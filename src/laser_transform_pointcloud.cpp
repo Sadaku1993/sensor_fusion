@@ -40,6 +40,7 @@ class PointCloudTransform{
 };
 
 PointCloudTransform::PointCloudTransform(){
+    n.getParam("target_frame", target_frame);
 	sub = n.subscribe("/cloud", 10, &PointCloudTransform::Callback, this);
 	pub = n.advertise<sensor_msgs::PointCloud2>("/cloud/tf", 10);
 }

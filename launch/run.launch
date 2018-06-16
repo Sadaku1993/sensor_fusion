@@ -8,7 +8,8 @@
 	<include file="$(find sensor_fusion)/launch/laser_tf.launch"/>
 
 	<!--Transform PointCloud2 data at Camera Link-->
-	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="laser_transform_pointcloud"/>
+	<param name="target_frame" type="string" value="/centerlaser"/>
+    <node pkg="sensor_fusion" type="laser_transform_pointcloud" name="laser_transform_pointcloud"/>
 
 	<!--Save PointCloud-->
 	<param name="lcl/save_num" type="int" value="100" />
