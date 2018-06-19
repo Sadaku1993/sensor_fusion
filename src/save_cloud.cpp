@@ -39,7 +39,7 @@ typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
 using namespace std;
 
-string HOME_DIRS="/home/amsl"
+string HOME_DIRS="/home/amsl";
 string FILE_PATH="PCD";
 
 string TARGET_FRAME;
