@@ -40,7 +40,7 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
     pcl::fromROSMsg(*msg, *input_);
 }
 
-void savePCDFile(CloudAPtr cloud, 
+void PCDFileSaver(CloudAPtr cloud, 
                  const tf::TransformListener listener, 
                  int count)
 {
@@ -73,7 +73,7 @@ int main(int argc, char** argv)
     while(ros::ok())
     {
         listener.waitForTransform(TARGET_FRAME, SOURCE_FRAME, ros::Time(0), ros::Duration(1.0));
-        savePCDFile(input_, listener, COUNT);
+        // PCDFileSaver(input_, listener, COUNT);
         COUNT += 1;
     }
     return 0;
