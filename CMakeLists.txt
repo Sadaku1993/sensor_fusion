@@ -167,6 +167,7 @@ add_executable(transform_pointcloud src/transform_pointcloud.cpp)
 add_executable(integration src/integration.cpp)
 add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
 add_executable(lcl src/lcl.cpp)
+add_executable(save_cloud src/save_cloud.cpp)
 
 ## Calibration
 add_executable(pointcloud2image calibration/pointcloud2image.cpp)
@@ -232,6 +233,11 @@ target_link_libraries(laser_transform_pointcloud
   ${PCL_LIBRARIES}
 )
 target_link_libraries(lcl
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(save_cloud
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
