@@ -20,7 +20,8 @@ import math
 class OpticalFlow(object):
     def __init__(self):
         self.image_sub = rospy.Subscriber("/image", Image, self.ImageCallback)
-        self.pub = rospy.Publisher('/optical_flow', Bool, queue_size=1)
+        self.pub = rospy.Publisher('/optical_flow', Bool, queue_size=10)
+        self.image_pub = rospy.Publisher('/image', Image, queue_size=10)
         self.image_flag = False
         self.first_frame = True
         self.stop = Bool()
@@ -80,8 +81,13 @@ class OpticalFlow(object):
         img = cv2.add(self.frame, self.mask)
         # cv2.imshow('mask', self.mask)
         # cv2.imshow('frame', self.frame)
-        cv2.imshow('flow', img)
-        cv2.waitKey(1)
+        # cv2.imshow('flow', img)
+        # cv2.waitKey(1)
+        
+        try:
+            self.image_pub.publish(self.bridge.cv2_to_imgmsg(img, "bgr8"))
+        except CvBridgeError as e:
+            print(e)
 
         # 次のフレーム、ポイントの準備
         self.gray1 = gray2.copy()
@@ -90,7 +96,7 @@ class OpticalFlow(object):
 
 
     def main(self):
-        rospy.init_node("zed0_optical_flow")
+        rospy.init_node("optical_flow")
         rate = rospy.Rate(10)
 
         while not rospy.is_shutdown():
