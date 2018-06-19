@@ -73,7 +73,7 @@ int main(int argc, char** argv)
     while(ros::ok())
     {
         listener.waitForTransform(TARGET_FRAME, SOURCE_FRAME, ros::Time(0), ros::Duration(1.0));
-        // PCDFileSaver(input_, listener, COUNT);
+        PCDFileSaver(input_, listener, COUNT);
         COUNT += 1;
     }
     return 0;
