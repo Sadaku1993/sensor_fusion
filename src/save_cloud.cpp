@@ -66,14 +66,9 @@ int main(int argc, char** argv)
     tf::TransformListener listener;
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
-    
-    if(mkdir("~/PCD/Sensor_Fusion"，0755) == 0) {
-        printf("Create Folder\n");
-    }
-    else {
-        printf("Fail to Create Folder\n");
-    }
-    
+
+    mkdir("aaaa", 0755);
+
     while(ros::ok())
     {
         try{   
