@@ -16,6 +16,12 @@ $roscd sensor_fusion/scropts/sq2
 $./calibration.sh
 ```
 
+## Bag Record
+```
+$roscd sensor_fusion/scripts/bagrec
+$./run_calibration.sh
+```
+
 ## Bagfiles
 
 ### DownLoad BagFiles
