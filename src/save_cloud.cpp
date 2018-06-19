@@ -32,7 +32,7 @@ typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
 using namespace std;
 
-string FILE_PATH="~/PCD/Sensor_Fusion";
+string FILE_PATH="/home/amsl/PCD/Sensor_Fusion";
 
 string TARGET_FRAME;
 string SOURCE_FRAME;
@@ -76,23 +76,25 @@ int main(int argc, char** argv)
 
     while(ros::ok())
     {
+        CloudAPtr cloud_tf(new CloudA);
+
         try{   
             listener.waitForTransform(TARGET_FRAME, SOURCE_FRAME, 
                                       ros::Time(0), ros::Duration(1.0));
+            
+            pcl_ros::transformPointCloud(TARGET_FRAME,
+                    *input_, 
+                    *cloud_tf, 
+                    listener);
+
+            savePCDFile(cloud_tf, COUNT);
+            COUNT += 1;
+
         }
         catch (tf::TransformException ex){
             ROS_ERROR("%s",ex.what());
             ros::Duration(1.0).sleep();
         }
-
-        CloudAPtr cloud_tf(new CloudA);
-        pcl_ros::transformPointCloud(TARGET_FRAME,
-                *input_, 
-                *cloud_tf, 
-                listener);
-            
-        savePCDFile(cloud_tf, COUNT);
-        COUNT += 1;
     }
     return 0;
 }
