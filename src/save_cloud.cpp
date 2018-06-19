@@ -41,23 +41,28 @@ using namespace std;
 
 string HOME_DIRS="/home/amsl";
 string FILE_PATH="PCD";
+string SAVE_PATH="saved";
 
 string TARGET_FRAME;
 string SOURCE_FRAME;
 
 int COUNT = 0;
 
+bool flag = false;
 CloudAPtr input_ (new CloudA);
 void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 {
     pcl::fromROSMsg(*msg, *input_);
+    SOURCE_FRAME = msg->header.frame_id;
+    flag = true;
 }
 
 void savePCDFile(CloudAPtr cloud, 
                  int count)
 {
     string file_name = to_string(count);
-    pcl::io::savePCDFileASCII(FILE_PATH+file_name+".pcd", *cloud);
+    string path = HOME_DIRS + "/" + FILE_PATH + "/" + SAVE_PATH;
+    pcl::io::savePCDFileASCII(path+"/"+file_name+".pcd", *cloud);
     printf("saved %d\n", int(cloud->points.size()));
 }
 
@@ -78,29 +83,39 @@ int main(int argc, char** argv)
     chdir(HOME_DIRS.c_str());
     if(mkdir(FILE_PATH.c_str(), 0755) == 0)
     {
-        printf("Create Folder\n");
+        printf("Create PCD Folder\n");
+    }else{
+        printf("Fail to Create Folder\n");
+    }
+    chdir(FILE_PATH.c_str());
+    if(mkdir(SAVE_PATH.c_str(), 0755) == 0)
+    {
+        printf("Create SAVE Folder\n");
     }else{
         printf("Fail to Create Folder\n");
     }
 
+
     while(ros::ok())
     {
         CloudAPtr cloud_tf(new CloudA);
-
-        try{   
-            listener.waitForTransform(TARGET_FRAME, SOURCE_FRAME, 
-                                      ros::Time(0), ros::Duration(1.0));
-            pcl_ros::transformPointCloud(TARGET_FRAME, *input_, 
-                    *cloud_tf, listener);
-        }
-        catch (tf::TransformException ex){
-            ROS_ERROR("%s",ex.what());
-            ros::Duration(1.0).sleep();
-        }
         
-        if(0<int(cloud_tf->points.size())){
+        if(flag){
+            try{   
+                listener.waitForTransform(TARGET_FRAME, SOURCE_FRAME, 
+                        ros::Time(0), ros::Duration(1.0));
+                pcl_ros::transformPointCloud(TARGET_FRAME, *input_, 
+                        *cloud_tf, listener);
+            }
+            catch (tf::TransformException ex){
+                ROS_ERROR("%s",ex.what());
+                ros::Duration(1.0).sleep();
+            }
+
+            if(0<int(cloud_tf->points.size())){
                 savePCDFile(cloud_tf, COUNT);
                 COUNT += 1;
+            }
         }
     }
     return 0;
