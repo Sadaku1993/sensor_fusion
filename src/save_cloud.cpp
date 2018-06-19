@@ -32,7 +32,7 @@ typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
 using namespace std;
 
-string FILE_PATH="Sensor_Fusion";
+string FILE_PATH="PCD";
 
 string TARGET_FRAME;
 string SOURCE_FRAME;
@@ -57,7 +57,6 @@ int main(int argc, char** argv)
 {
     ros::init(argc, argv, "save_cloud");
     ros::NodeHandle n;
-    
     ros::Rate rate(20);
 
     n.getParam("target_frame", TARGET_FRAME);
@@ -67,6 +66,7 @@ int main(int argc, char** argv)
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
 
+    cd ("~/");
     if(mkdir(FILE_PATH.c_str(), 0755) == 0)
     {
         printf("Create Folder\n");
