@@ -23,7 +23,7 @@ author:
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
 
-#include <direct.h>
+#include <sys/stat.h>
 
 typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
@@ -65,12 +65,17 @@ int main(int argc, char** argv)
     tf::TransformListener listener;
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
-
-    if(_mkdir(FILE_PATH))
+    
+    if (mkdir(FILE_PATH，
+                S_IRUSR | S_IWUSR | S_IXUSR |         /* rwx */
+                S_IRGRP | S_IWGRP | S_IXGRP |         /* rwx */
+                S_IROTH | S_IXOTH | S_IXOTH) == 0) {  /* rwx */
         printf("Create Folder\n");
-    else
+    }
+    else {
         printf("Fail to Create Folder\n");
-
+    }
+    
     while(ros::ok())
     {
         try{   
