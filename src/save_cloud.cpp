@@ -81,19 +81,17 @@ int main(int argc, char** argv)
         try{   
             listener.waitForTransform(TARGET_FRAME, SOURCE_FRAME, 
                                       ros::Time(0), ros::Duration(1.0));
-            
-            pcl_ros::transformPointCloud(TARGET_FRAME,
-                    *input_, 
-                    *cloud_tf, 
-                    listener);
-
-            savePCDFile(cloud_tf, COUNT);
-            COUNT += 1;
-
+            pcl_ros::transformPointCloud(TARGET_FRAME, *input_, 
+                    *cloud_tf, listener);
         }
         catch (tf::TransformException ex){
             ROS_ERROR("%s",ex.what());
             ros::Duration(1.0).sleep();
+        }
+        
+        if(0<int(cloud_tf->points.size())){
+                savePCDFile(cloud_tf, COUNT);
+                COUNT += 1;
         }
     }
     return 0;
