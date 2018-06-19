@@ -42,6 +42,7 @@ using namespace std;
 string HOME_DIRS="/home/amsl";
 string FILE_PATH="PCD";
 string SAVE_PATH="Save";
+string MERGE_PATH="Merge";
 
 string TARGET_FRAME;
 string SOURCE_FRAME;
@@ -94,7 +95,12 @@ int main(int argc, char** argv)
     }else{
         printf("Fail to Create Folder\n");
     }
-
+    if(mkdir(MERGE_PATH.c_str(), 0755) == 0)
+    {
+        printf("Create Merge Folder\n");
+    }else{
+        printf("Fail to Create Folder\n");
+    }
 
     while(ros::ok())
     {
