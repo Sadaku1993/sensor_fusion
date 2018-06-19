@@ -32,7 +32,7 @@ typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
 using namespace std;
 
-string FILE_PATH="/home/amsl/PCD/Sensor_Fusion";
+string FILE_PATH="Sensor_Fusion";
 
 string TARGET_FRAME;
 string SOURCE_FRAME;
