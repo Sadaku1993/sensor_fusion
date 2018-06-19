@@ -66,10 +66,10 @@ int main(int argc, char** argv)
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
     
-    if (mkdir(FILE_PATH，
-                S_IRUSR | S_IWUSR | S_IXUSR |         /* rwx */
-                S_IRGRP | S_IWGRP | S_IXGRP |         /* rwx */
-                S_IROTH | S_IXOTH | S_IXOTH) == 0) {  /* rwx */
+    if (mkdir(FILE_PATH.c_str()，
+                S_IRUSR | S_IWUSR | S_IXUSR |
+                S_IRGRP | S_IWGRP | S_IXGRP |
+                S_IROTH | S_IXOTH | S_IXOTH) == 0) {
         printf("Create Folder\n");
     }
     else {
