@@ -8,6 +8,12 @@ Param:
 author:
     Yudai Sadakuni
 
+warning:
+    prease check your file path
+
+    home
+      Lamsl
+        LPCD
 */
 
 #include <ros/ros.h>
@@ -68,9 +74,8 @@ int main(int argc, char** argv)
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
     
     // move to home dirs and create pcd folder
-    // chdir("/home");
+    chdir("/home/amsl");
     // chdir("amsl");
-    chdir(" ~/");
     if(mkdir(FILE_PATH.c_str(), 0755) == 0)
     {
         printf("Create Folder\n");
