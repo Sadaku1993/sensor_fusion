@@ -25,6 +25,7 @@ author:
 
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <iostream>
 
 typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
@@ -66,7 +67,7 @@ int main(int argc, char** argv)
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
 
-    cd ("~/");
+    chdir("~/");
     if(mkdir(FILE_PATH.c_str(), 0755) == 0)
     {
         printf("Create Folder\n");
