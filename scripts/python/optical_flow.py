@@ -20,8 +20,8 @@ import math
 class OpticalFlow(object):
     def __init__(self):
         self.image_sub = rospy.Subscriber("/image", Image, self.ImageCallback)
-        self.pub = rospy.Publisher('/optical_flow', Bool, queue_size=10)
-        self.image_pub = rospy.Publisher('/image', Image, queue_size=10)
+        self.pub = rospy.Publisher('/move', Bool, queue_size=10)
+        self.image_pub = rospy.Publisher('/optical_flow', Image, queue_size=10)
         self.image_flag = False
         self.first_frame = True
         self.stop = Bool()

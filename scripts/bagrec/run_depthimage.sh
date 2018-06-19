@@ -24,9 +24,11 @@ sleep 1s
 gnome-terminal -e '/opt/ros/kinetic/bin/rosrun sensor_fusion laser_transform_pointcloud' --geometry=50x12+600+500 &
 sleep 1s
 
+# Launch ZED and Optical Flow
+
 # rviz
-gnome-terminal -e '/opt/ros/kinetic/bin/rosrun rviz rviz -d /home/amsl/.rviz/calibration.rviz' --geometry=50x12+600+750 &
+gnome-terminal -e '/opt/ros/kinetic/bin/rosrun rviz rviz -d /home/amsl/.rviz/depthcloud.rviz' --geometry=50x12+600+750 &
 sleep 5s
 
 # bagrec
-gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/bagrec/bag_rec_calibration.sh' --geometry=50x12+1000+0 &
+gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/bagrec/bag_rec_depthimage.sh' --geometry=50x12+1000+0 &
