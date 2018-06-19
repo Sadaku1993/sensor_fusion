@@ -40,19 +40,11 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
     pcl::fromROSMsg(*msg, *input_);
 }
 
-void PCDFileSaver(CloudAPtr cloud, 
-                 const tf::TransformListener listener, 
+void savePCDFile(CloudAPtr cloud, 
                  int count)
 {
-    CloudAPtr cloud_out(new CloudA);
-
-    // pcl_ros::transformPointCloud(TARGET_FRAME,
-    //                              *cloud, 
-    //                              *cloud_out, 
-    //                              listener);
-    // 
     string file_name = to_string(count);
-    pcl::io::savePCDFileASCII(file_name+".pcd", *cloud_out);
+    pcl::io::savePCDFileASCII(file_name+".pcd", *cloud);
     printf("saved %d\n", int(cloud->points.size()));
 }
 
@@ -72,8 +64,22 @@ int main(int argc, char** argv)
 
     while(ros::ok())
     {
-        listener.waitForTransform(TARGET_FRAME, SOURCE_FRAME, ros::Time(0), ros::Duration(1.0));
-        PCDFileSaver(input_, listener, COUNT);
+        try{   
+            listener.waitForTransform(TARGET_FRAME, SOURCE_FRAME, 
+                                      ros::Time(0), ros::Duration(1.0));
+        }
+        catch (tf::TransformException ex){
+            ROS_ERROR("%s",ex.what());
+            ros::Duration(1.0).sleep();
+        }
+
+        CloudAPtr cloud_tf(new CloudA);
+        pcl_ros::transformPointCloud(TARGET_FRAME,
+                *input_, 
+                *cloud_tf, 
+                listener);
+            
+        savePCDFile(cloud_tf, COUNT);
         COUNT += 1;
     }
     return 0;
