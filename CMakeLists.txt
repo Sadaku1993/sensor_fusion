@@ -167,8 +167,10 @@ add_executable(transform_pointcloud src/transform_pointcloud.cpp)
 add_executable(integration src/integration.cpp)
 add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
 add_executable(lcl src/lcl.cpp)
-add_executable(save_cloud src/save_cloud.cpp)
-add_executable(merge_cloud src/merge_cloud.cpp)
+
+## depthimage
+add_executable(save_cloud  depthimage/save_cloud.cpp)
+add_executable(merge_cloud depthimage/merge_cloud.cpp)
 
 ## Calibration
 add_executable(pointcloud2image calibration/pointcloud2image.cpp)
