@@ -62,8 +62,6 @@ void merge()
     int size = file_count_boost(FILE_PATH.c_str());
     printf("PCD File Size : %d\n", size);
 
-    int count = 0;
-
     for(int i=0;i<size-MERGE_SIZE;i++){
         CloudAPtr merge_cloud;
         for(int j=0;j<MERGE_SIZE;j++){
@@ -71,7 +69,7 @@ void merge()
             load(load_cloud, i+j);
             *merge_cloud += *load_cloud;
         }
-        save(merge_cloud, count);
+        save(merge_cloud, i);
     }
 }
 
