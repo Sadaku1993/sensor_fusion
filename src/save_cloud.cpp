@@ -39,6 +39,7 @@ typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
 using namespace std;
 
+string HOME_DIRS="/home/amsl"
 string FILE_PATH="PCD";
 
 string TARGET_FRAME;
@@ -74,8 +75,7 @@ int main(int argc, char** argv)
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
     
     // move to home dirs and create pcd folder
-    chdir("/home/amsl");
-    // chdir("amsl");
+    chdir(HOME_DIRS.c_str());
     if(mkdir(FILE_PATH.c_str(), 0755) == 0)
     {
         printf("Create Folder\n");
