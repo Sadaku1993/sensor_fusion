@@ -46,8 +46,7 @@ void savePCDFile(CloudAPtr cloud,
 {
     CloudAPtr cloud_out(new CloudA);
 
-    pcl_ros::transformPointCloud(TARGET_FRAME, 
-                                 *cloud, 
+    pcl_ros::transformPointCloud(*cloud, 
                                  *cloud_out, 
                                  listener);
     
