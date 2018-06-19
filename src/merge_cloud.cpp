@@ -20,7 +20,7 @@ typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
-string FILE_PATH = "/home/amsl/PCD/";
+string FILE_PATH = "/home/amsl/PCD/Save/";
 string MERGE_PATH = "/home/amsl/PCD/Merge/";
 
 int MERGE_SIZE = 5;
@@ -43,7 +43,7 @@ void load(CloudAPtr& cloud, int count);
     
     if (pcl::io::loadPCDFile<pcl::PointXYZ> (file_name, *cloud) == -1) //* load the file
     {
-        PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+        PCL_ERROR ("Couldn't read file\n");
         return (-1);
     }
     cout<<"Loaded"<<endl;

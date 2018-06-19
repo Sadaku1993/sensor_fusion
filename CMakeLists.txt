@@ -24,7 +24,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 
 find_package(OpenCV 3 REQUIRED)
 find_package(PCL REQUIRED)
@@ -168,6 +168,7 @@ add_executable(integration src/integration.cpp)
 add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
 add_executable(lcl src/lcl.cpp)
 add_executable(save_cloud src/save_cloud.cpp)
+add_executable(merge_cloud src/merge_cloud.cpp)
 
 ## Calibration
 add_executable(pointcloud2image calibration/pointcloud2image.cpp)
@@ -238,6 +239,11 @@ target_link_libraries(lcl
   ${PCL_LIBRARIES}
 )
 target_link_libraries(save_cloud
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(merge_cloud
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}

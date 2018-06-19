@@ -41,7 +41,7 @@ using namespace std;
 
 string HOME_DIRS="/home/amsl";
 string FILE_PATH="PCD";
-string SAVE_PATH="saved";
+string SAVE_PATH="Save";
 
 string TARGET_FRAME;
 string SOURCE_FRAME;
