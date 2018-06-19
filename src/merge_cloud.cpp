@@ -37,7 +37,7 @@ int file_count_boost(const boost::filesystem::path& root) {
     return result;
 }
 
-void load(CloudAPtr& cloud, int count);
+void load(CloudAPtr& cloud, int count)
 {
     string file_name = FILE_PATH + to_string(count) + ".pcd";
     
