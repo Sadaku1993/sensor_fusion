@@ -66,21 +66,11 @@ int main(int argc, char** argv)
     tf::TransformListener listener;
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
-
-    if (chdir("/home") == -1) {
-        printf("fail to move home dirs\n");
-    }else{
-        printf("move to home dirs\n");
-    }
-
-    if (chdir("amsl") == -1) {
-        printf("fail to move home dirs\n");
-    }else{
-        printf("move to home dirs\n");
-    }
-
-
-
+    
+    // move to home dirs and create pcd folder
+    // chdir("/home");
+    // chdir("amsl");
+    chdir(" ~/");
     if(mkdir(FILE_PATH.c_str(), 0755) == 0)
     {
         printf("Create Folder\n");
