@@ -67,7 +67,12 @@ int main(int argc, char** argv)
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
 
-    chdir("~/");
+    if (chdir("~/") == -1) {
+        printf("fail to move home dirs\n");
+    }else{
+        printf("move to home dirs\n");
+    }
+
     if(mkdir(FILE_PATH.c_str(), 0755) == 0)
     {
         printf("Create Folder\n");
