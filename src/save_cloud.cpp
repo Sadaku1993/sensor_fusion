@@ -67,7 +67,12 @@ int main(int argc, char** argv)
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
 
-    mkdir("aaaa", 0755);
+    if(mkdir("aaaa", 0755) == 0)
+    {
+        printf("Create Folder\n");
+    }else{
+        printf("Fail to Create Folder\n");
+    }
 
     while(ros::ok())
     {
