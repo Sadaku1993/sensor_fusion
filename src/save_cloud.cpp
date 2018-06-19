@@ -67,11 +67,19 @@ int main(int argc, char** argv)
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
 
-    if (chdir("/home/amsl/") == -1) {
+    if (chdir("/home") == -1) {
         printf("fail to move home dirs\n");
     }else{
         printf("move to home dirs\n");
     }
+
+    if (chdir("amsl") == -1) {
+        printf("fail to move home dirs\n");
+    }else{
+        printf("move to home dirs\n");
+    }
+
+
 
     if(mkdir(FILE_PATH.c_str(), 0755) == 0)
     {
