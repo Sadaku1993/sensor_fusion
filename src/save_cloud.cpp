@@ -23,11 +23,15 @@ author:
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
 
+#include <direct.h>
+
 typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
 using namespace std;
+
+string FILE_PATH="~/PCD/Sensor_Fusion";
 
 string TARGET_FRAME;
 string SOURCE_FRAME;
@@ -44,7 +48,7 @@ void savePCDFile(CloudAPtr cloud,
                  int count)
 {
     string file_name = to_string(count);
-    pcl::io::savePCDFileASCII(file_name+".pcd", *cloud);
+    pcl::io::savePCDFileASCII(FILE_PATH+file_name+".pcd", *cloud);
     printf("saved %d\n", int(cloud->points.size()));
 }
 
@@ -61,6 +65,11 @@ int main(int argc, char** argv)
     tf::TransformListener listener;
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
+
+    if(_mkdir(FILE_PATH))
+        printf("Create Folder\n");
+    else
+        printf("Fail to Create Folder\n");
 
     while(ros::ok())
     {
