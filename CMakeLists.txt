@@ -159,7 +159,6 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(coloringcloud src/coloringcloud.cpp)
 add_executable(depthimage src/depthimage.cpp)
 add_executable(division src/division.cpp)
 add_executable(division_one_shot src/division_one_shot.cpp)
@@ -167,6 +166,9 @@ add_executable(transform_pointcloud src/transform_pointcloud.cpp)
 add_executable(integration src/integration.cpp)
 add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
 add_executable(lcl src/lcl.cpp)
+
+## coloringcloud
+add_executable(coloringcloud coloring/coloringcloud.cpp)
 
 ## depthimage
 add_executable(save_cloud  depthimage/save_cloud.cpp)

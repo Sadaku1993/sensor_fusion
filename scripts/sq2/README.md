@@ -1,14 +1,8 @@
-# Calibration On Board
+# On Board
 
 ## How to Run
-### Launch Sensor Node
-```
-$roscd sensor_fusion/scripts/sq2
-$./sensor_node.sh
-```
+### Calibration(SQ-LiDAR and ZED)
 
-### Launch Calibration Node
-```
-$roscd sensor_fusion/scripts/sq2
-$./calibration.sh
-```
+### ColoringCloud(SQ-LiDAR and ZED)
+
+### DepthImage(SQ-LIDAR and ZED)

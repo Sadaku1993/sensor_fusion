@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+    <!--Launch Zed Wrapper-->
+	<include file="$(find zed_wrapper)/launch/zed2.launch"/>
+
+    <!--republish-->
+    <node name="republish2" type="republish" pkg="image_transport" output="screen" 
+          args="compressed in:=/zed2/left/image_rect_color raw out:=/zed2/left/image_rect_color/republish" />
+
+    <!--Coloring PointCloud-->
+	<param name="target_frame"  type="string" value="/zed2/zed_left_camera" />
+	<param name="source_frame"  type="string" value="/centerlaser" />
+	<param name="debug" 		type="bool"   value="false" />
+	<node pkg="sensor_fusion" type="coloringcloud" name="coloring_zed2">
+		<remap from="/cloud" 		 to="/sq_lidar/points/left" />
+		<remap from="/camera_info" 	 to="/zed2/left/camera_info" />
+		<remap from="/image" 		 to="/zed2/left/image_rect_color/republish" />
+		<remap from="/cloud/colored" to="/zed2/colored" />
+	</node>
+</launch>
