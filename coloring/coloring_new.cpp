@@ -34,7 +34,6 @@ typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
 ros::Publisher pub;
 
-string target_frame;
 
 void callback(const PointCloud2ConstPtr& pc_msg,
               const ImageConstPtr& image_msg,
@@ -77,7 +76,7 @@ void callback(const PointCloud2ConstPtr& pc_msg,
 
     PointCloud2 output;
     pcl::toROSMsg(*area, output);
-    output.header.frame_id = target_frame;
+    output.header.frame_id = pc_msg->header.frame_id;
     output.header.stamp = ros::Time::now();
     pub.publish(output);
 }
@@ -86,8 +85,6 @@ int main(int argc, char** argv)
 {
     ros::init(argc, argv, "coloring");
     ros::NodeHandle nh;
-
-    nh.getParam("sensor_fusion/target_frame", target_frame);
 
 	message_filters::Subscriber<PointCloud2> cloud_sub(nh, "/cloud", 1);
 	message_filters::Subscriber<Image> image_sub(nh, "/image", 1);

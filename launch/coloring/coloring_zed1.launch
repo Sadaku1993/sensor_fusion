@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
 <launch>
 	<!--Coloring PointCloud-->
-	<node pkg="sensor_fusion" type="coloring" name="coloring_zed1">
-        <param name="target_frame" type="string" value="zed0/zed_left_camera" />
-        <remap from="/cloud"        to="/sq_lidar/points/right" />
+	<node pkg="sensor_fusion" type="coloring_new" name="coloring_zed1">
+		<remap from="/cloud"        to="/sq_lidar/points/right/tf" />
         <remap from="/image"        to="/zed1/left/image_rect_color/republish" />
         <remap from="/camera_info"  to="/zed1/left/camera_info" />
         <remap from="/output"       to="/zed1/colored" />
