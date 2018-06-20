@@ -87,7 +87,7 @@ int main(int argc, char** argv)
     pub_left   = n.advertise<sensor_msgs::PointCloud2>("/cloud/left",10);
     pub_right  = n.advertise<sensor_msgs::PointCloud2>("/cloud/right",10);
 
-    ros::Rate rate(30);
+    ros::Rate rate(60);
     while(ros::ok())
     {
         if(pc_) area(pcl_);

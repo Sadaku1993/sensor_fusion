@@ -6,7 +6,7 @@
 		<remap from="/cloud" to="/cloud/tf" />
 	</node>
     <!--Divide PointCloud-->
-    <node pkg="sensor_fusion" type="division_one_shot" name="division">
+    <node pkg="sensor_fusion" type="division" name="division">
         <remap from="/cloud"        to="/cloud/lcl" />
         <remap from="/cloud/center" to="/sq_lidar/points/center" />
         <remap from="/cloud/left"   to="/sq_lidar/points/left" />

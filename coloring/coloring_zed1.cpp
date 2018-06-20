@@ -14,6 +14,7 @@ sensor calibration (sq_lidar and zed)
 #include <pcl_ros/transforms.h>
 #include <opencv2/opencv.hpp>
 #include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
 #include <image_geometry/pinhole_camera_model.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/PointCloud.h>
@@ -29,7 +30,7 @@ ros::Time t;
 ros::Publisher pub;
 
 // Frame Name
-string target_frame = "/zed2/zed_left_camera";
+string target_frame = "/zed1/zed_left_camera";
 string source_frame = "/centerlaser";
 
 // subscribe data確認用flag
@@ -62,7 +63,6 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
     image_flag = true;
 }
 
-
 // Colouring Function
 void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoConstPtr& cinfo_msg, const sensor_msgs::ImageConstPtr& image_msg)
 {
@@ -76,6 +76,8 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
       return;
     }
     cv::Mat image(cv_img_ptr->image.rows, cv_img_ptr->image.cols, cv_img_ptr->image.type());
+    cv::Mat depth_image(cv_img_ptr->image.rows, cv_img_ptr->image.cols, CV_8UC1);
+    
     image = cv_bridge::toCvShare(image_msg)->image;
 
     image_geometry::PinholeCameraModel cam_model_;
@@ -89,9 +91,9 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
     trans_cloud->header.frame_id = target_frame;
 
     pcl::copyPointCloud(*trans_cloud, *coloured);
-    
+ 	
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr area(new pcl::PointCloud<pcl::PointXYZRGB>);
-
+   
     for (pcl::PointCloud<pcl::PointXYZRGB>::iterator pt = coloured->points.begin(); pt < coloured->points.end(); pt++)
     {
         if ((*pt).x<0) continue;
@@ -103,7 +105,7 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
             (*pt).b = image.at<cv::Vec3b>(uv)[0];
             (*pt).g = image.at<cv::Vec3b>(uv)[1];
             (*pt).r = image.at<cv::Vec3b>(uv)[2];
-			area->points.push_back(*pt);
+ 			area->points.push_back(*pt);
 		}
         else{
             (*pt).b = 255;
@@ -124,20 +126,22 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
 	pc_flag = false;
 	camera_flag = false;
 	image_flag = false;
+
 }
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "sq_coloring_zed2");
+    ros::init(argc, argv, "sq_coloring_zed1");
     ros::NodeHandle n;
+    image_transport::ImageTransport it(n);
     tf::TransformListener listener;
     tf::StampedTransform transform;
 
-    ros::Subscriber pc_sub    = n.subscribe("/sq_lidar/points/left", 10, pcCallback); 
-    ros::Subscriber cinfo_sub = n.subscribe("/zed2/left/camera_info", 10, cameraCallback);
-    ros::Subscriber image_sub = n.subscribe("/zed2/left/image_rect_color/republish", 10, imageCallback);
+    ros::Subscriber pc_sub    = n.subscribe("/sq_lidar/points/right", 10, pcCallback); 
+    ros::Subscriber cinfo_sub = n.subscribe("/zed1/left/camera_info", 10, cameraCallback);
+    ros::Subscriber image_sub = n.subscribe("/zed1/left/image_rect_color/republish", 10, imageCallback);
 
-    pub = n.advertise<sensor_msgs::PointCloud2>("/zed2/coloured_points", 10);
+    pub = n.advertise<sensor_msgs::PointCloud2>("/zed1/colored", 10);
 
     ros::Rate rate(30);
 

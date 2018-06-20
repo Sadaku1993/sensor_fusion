@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+	<node pkg="sensor_fusion" type="integration" name="integration" output="screen">
+		<remap from="/sq_lidar/points/center" to="/zed0/colored/tf" />
+		<remap from="/sq_lidar/points/right" to="/zed1/colored/tf" />
+		<remap from="/sq_lidar/points/left" to="/zed2/colored/tf" />
+		<remap from="/sq_lidar/points/integrate" to="/sq_lidar/colored" />
+	</node>
+</launch>

@@ -40,7 +40,7 @@ class PointCloudTransform{
 };
 
 PointCloudTransform::PointCloudTransform(){
-    n.getParam("target_frame", target_frame);
+    n.getParam("transform_pointcloud/target_frame", target_frame);
 	sub = n.subscribe("/cloud", 10, &PointCloudTransform::Callback, this);
 	pub = n.advertise<sensor_msgs::PointCloud2>("/cloud/tf", 10);
 }
@@ -66,7 +66,7 @@ void PointCloudTransform::Callback(const sensor_msgs::PointCloud2ConstPtr &msg){
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "laser_framsform_pointcloud");
+    ros::init(argc, argv, "laser_tramsform_pointcloud");
 	
 	PointCloudTransform transform;
 	ros::spin();

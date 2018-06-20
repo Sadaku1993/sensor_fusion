@@ -29,7 +29,7 @@ ros::Time t;
 ros::Publisher pub;
 
 // Frame Name
-string target_frame = "/zed0/zed_left_camera";
+string target_frame = "/zed2/zed_left_camera";
 string source_frame = "/centerlaser";
 
 // subscribe data確認用flag
@@ -89,7 +89,7 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
     trans_cloud->header.frame_id = target_frame;
 
     pcl::copyPointCloud(*trans_cloud, *coloured);
- 	
+    
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr area(new pcl::PointCloud<pcl::PointXYZRGB>);
 
     for (pcl::PointCloud<pcl::PointXYZRGB>::iterator pt = coloured->points.begin(); pt < coloured->points.end(); pt++)
@@ -103,9 +103,8 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
             (*pt).b = image.at<cv::Vec3b>(uv)[0];
             (*pt).g = image.at<cv::Vec3b>(uv)[1];
             (*pt).r = image.at<cv::Vec3b>(uv)[2];
-			
 			area->points.push_back(*pt);
-        }
+		}
         else{
             (*pt).b = 255;
             (*pt).g = 255;
@@ -125,21 +124,20 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
 	pc_flag = false;
 	camera_flag = false;
 	image_flag = false;
-
 }
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "sq_coloring_zed0");
+    ros::init(argc, argv, "sq_coloring_zed2");
     ros::NodeHandle n;
     tf::TransformListener listener;
     tf::StampedTransform transform;
 
-    ros::Subscriber pc_sub    = n.subscribe("/sq_lidar/points/center", 10, pcCallback); 
-    ros::Subscriber cinfo_sub = n.subscribe("/zed0/left/camera_info", 10, cameraCallback);
-    ros::Subscriber image_sub = n.subscribe("/zed0/left/image_rect_color/republish", 10, imageCallback);
+    ros::Subscriber pc_sub    = n.subscribe("/sq_lidar/points/left", 10, pcCallback); 
+    ros::Subscriber cinfo_sub = n.subscribe("/zed2/left/camera_info", 10, cameraCallback);
+    ros::Subscriber image_sub = n.subscribe("/zed2/left/image_rect_color/republish", 10, imageCallback);
 
-    pub = n.advertise<sensor_msgs::PointCloud2>("/zed0/coloured_points", 10);
+    pub = n.advertise<sensor_msgs::PointCloud2>("/zed2/colored", 10);
 
     ros::Rate rate(30);
 
