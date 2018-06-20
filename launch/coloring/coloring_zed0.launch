@@ -18,7 +18,7 @@
 	</node>
 
     <!--Transform PointCloud-->
-    <node pkg="sensor_fusion" type="laser_transform_pointcloud" name="/zed0/transform_pointcloud">
+    <node pkg="sensor_fusion" type="laser_transform_pointcloud" name="zed0_transform_pointcloud">
         <remap from="/cloud"    to="/zed0/colored" />
         <remap from="/cloud/tf" to="/zed0/colored/tf" />
     </node>
