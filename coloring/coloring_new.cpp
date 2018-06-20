@@ -28,10 +28,6 @@ using namespace std;
 using namespace sensor_msgs;
 using namespace message_filters;
 
-typedef pcl::PointXYZRGB PointA;
-typedef pcl::PointCloud<PointA> CloudA;
-typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
-
 ros::Publisher pub;
 
 
@@ -57,11 +53,11 @@ void callback(const PointCloud2ConstPtr& pc_msg,
     cam_model_.fromCameraInfo(cinfo_msg);
 
     // Coloring Step
-    CloudAPtr area(new CloudA);
-    CloudAPtr cloud(new CloudA);
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr area(new pcl::PointCloud<pcl::PointXYZRGB>);
+	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromROSMsg(*pc_msg, *cloud);
 
-    for(CloudA::iterator pt = cloud->points.begin(); pt < cloud->points.end(); pt++)
+    for(pcl::PointCloud<pcl::PointXYZ>::iterator pt = cloud->points.begin(); pt < cloud->points.end(); pt++)
     {
         if ((*pt).x<0) continue;
         cv::Point3d pt_cv(-(*pt).y, -(*pt).z, (*pt).x);
@@ -69,7 +65,11 @@ void callback(const PointCloud2ConstPtr& pc_msg,
         uv = cam_model_.project3dToPixel(pt_cv);
 
         if(uv.x>0 && uv.x < image.cols && uv.y > 0 && uv.y < image.rows)
- 			area->points.push_back(*pt);
+			(*pt).b = image.at<cv::Vec3b>(uv)[0];
+            (*pt).g = image.at<cv::Vec3b>(uv)[1];
+            (*pt).r = image.at<cv::Vec3b>(uv)[2];
+	
+			area->points.push_back(*pt);
     }
     
     cout<<" Points size : "<< area->points.size() << endl;
