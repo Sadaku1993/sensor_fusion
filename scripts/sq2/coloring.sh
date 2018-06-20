@@ -23,3 +23,11 @@ sleep 1s
 # Transform PointCloud from /centerlaser_ to /centerlaser
 gnome-terminal -e '/opt/ros/kinetic/bin/rosrun sensor_fusion laser_transform_pointcloud' --geometry=50x12+600+500 &
 sleep 1s
+
+# Divide PointCloud
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion division.launch' --geometry=50x12+600+750 &
+sleep 1s
+
+# rviz
+gnome-terminal -e '/opt/ros/kinetic/bin/rosrun rviz rviz -d /home/amsl/.rviz/coloring.rviz' --geometry=50x12+900+750 &
+sleep 1s

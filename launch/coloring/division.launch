@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <!--Divide PointCloud-->
+    <node pkg="sensor_fusion" type="division" name="division">
+        <remap from="/cloud"        to="/cloud/tf" />
+        <remap from="/cloud/center" to="/sq_lidar/points/center" />
+        <remap from="/cloud/left"   to="/sq_lidar/points/left" />
+        <remap from="/cloud/right"  to="/sq_lidar/points/right" />
+    </node>
+</launch>
