@@ -8,8 +8,8 @@
           args="compressed in:=/zed1/left/image_rect_color raw out:=/zed1/left/image_rect_color/republish" />
 
     <!--Coloring PointCloud-->
-	<param name="target_frame"  type="string" value="/zed1/zed_left_camera" />
-	<param name="source_frame"  type="string" value="/centerlaser" />
+	<param name="coloring/target_frame"  type="string" value="/zed1/zed_left_camera" />
+	<param name="coloring/source_frame"  type="string" value="/centerlaser" />
 	<param name="debug" 		type="bool"   value="false" />
 	<node pkg="sensor_fusion" type="coloringcloud" name="coloring_zed1">
 		<remap from="/cloud" 		 to="/sq_lidar/points/right" />
@@ -17,4 +17,11 @@
 		<remap from="/image" 		 to="/zed1/left/image_rect_color/republish" />
 		<remap from="/cloud/colored" to="/zed1/colored" />
 	</node>
+    
+    <!--Transform PointCloud-->
+    <node pkg="sensor_fusion" type="laser_transform_pointcloud" name="/zed1/transform_pointcloud">
+        <remap from="/cloud" to="/zed1/colored" />
+        <remap from="/cloud/tf" to="/zed1/colored/tf" />
+    </node>
+
 </launch>

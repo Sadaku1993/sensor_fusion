@@ -138,8 +138,8 @@ int main(int argc, char** argv)
     ros::NodeHandle n;
 
     // get param from yaml file
-    n.getParam("target_frame", TARGET_FRAME);
-    n.getParam("source_frame", SOURCE_FRAME);
+    n.getParam("coloring/target_frame", TARGET_FRAME);
+    n.getParam("coloring/source_frame", SOURCE_FRAME);
 
     // define tf
     tf::TransformListener listener;
