@@ -4,8 +4,8 @@
 	<node pkg="sensor_fusion" type="coloring_zed2" name="coloring_zed2"/>
 	
 	<!--Transform PointCloud-->
-	<param name="transform_pointcloud/target_frame" type="string" value="centerlaser" />
 	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="zed2_transform" >
+        <param name="sensor_fusion/target_frame" type="string" value="centerlaser" />
 		<remap from="/cloud"    to="/zed2/colored" />
 		<remap from="/cloud/tf" to="/zed2/colored/tf" />
 	</node>

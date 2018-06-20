@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-	<param name="transform_pointcloud/target_frame" type="string" value="centerlaser" />
-	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="laser_transform_pointcloud"/>
+	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="laser_transform_pointcloud" >
+        <param name="sensor_fusion/target_frame" type="string" value="centerlaser" />
+    </node>
 </launch>

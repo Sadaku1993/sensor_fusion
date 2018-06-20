@@ -5,6 +5,7 @@
 	<node pkg="sensor_fusion" type="lcl" name="lcl" >
 		<remap from="/cloud" to="/cloud/tf" />
 	</node>
+    
     <!--Divide PointCloud-->
     <node pkg="sensor_fusion" type="division" name="division">
         <remap from="/cloud"        to="/cloud/lcl" />
@@ -12,4 +13,27 @@
         <remap from="/cloud/left"   to="/sq_lidar/points/left" />
         <remap from="/cloud/right"  to="/sq_lidar/points/right" />
     </node>
+
+	<!--Transform PointCloud-->
+	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="transform_pointcloud_center">
+		<param name="target_frame" type="string" value="zed0/zed_left_camera" />
+        <remap from="/cloud"    to="/sq_lidar/points/center" />
+		<remap from="/cloud/tf" to="/sq_lidar/points/center/tf" />
+	</node>
+
+	<!--Transform PointCloud-->
+	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="transform_pointcloud_right">
+		<param name="target_frame" type="string" value="zed1/zed_left_camera" />
+        <remap from="/cloud"    to="/sq_lidar/points/right" />
+		<remap from="/cloud/tf" to="/sq_lidar/points/right/tf" />
+	</node>
+
+	<!--Transform PointCloud-->
+	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="transform_pointcloud_left">
+        <param name="target_frame" type="string" value="zed2/zed_left_camera" />
+        <remap from="/cloud"    to="/sq_lidar/points/left" />
+		<remap from="/cloud/tf" to="/sq_lidar/points/left/tf" />
+	</node>
+
+
 </launch>
