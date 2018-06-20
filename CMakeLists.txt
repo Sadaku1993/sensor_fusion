@@ -169,6 +169,7 @@ add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
 add_executable(lcl src/lcl.cpp)
 
 ## coloringcloud
+add_executable(coloring coloring/coloring.cpp)
 add_executable(coloring_zed0 coloring/coloring_zed0.cpp)
 add_executable(coloring_zed1 coloring/coloring_zed1.cpp)
 add_executable(coloring_zed2 coloring/coloring_zed2.cpp)
@@ -247,6 +248,11 @@ target_link_libraries(lcl
 )
 
 # coloring
+target_link_libraries(coloring
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
 target_link_libraries(coloring_zed0
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}

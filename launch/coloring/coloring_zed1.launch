@@ -1,11 +1,17 @@
 <?xml version="1.0"?>
 <launch>
 	<!--Coloring PointCloud-->
-	<node pkg="sensor_fusion" type="coloring_zed1" name="coloring_zed1"/>
+	<node pkg="sensor_fusion" type="coloring" name="coloring_zed1">
+        <param name="target_frame" type="string" value="zed0/zed_left_camera" />
+        <remap from="/cloud"        to="/sq_lidar/points/right" />
+        <remap from="/image"        to="/zed1/left/image_rect_color/republish" />
+        <remap from="/camera_info"  to="/zed1/left/camera_info" />
+        <remap from="/output"       to="/zed1/colored" />
+    </node>
 	
 	<!--Transform PointCloud-->
 	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="zed1_transform" >
-        <param name="sensor_fusion/target_frame" type="string" value="centerlaser" />
+        <param name="target_frame" type="string" value="centerlaser" />
 		<remap from="/cloud"    to="/zed1/colored" />
 		<remap from="/cloud/tf" to="/zed1/colored/tf" />
 	</node>
