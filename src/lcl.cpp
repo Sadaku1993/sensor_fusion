@@ -138,7 +138,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "lsl");
     ros::NodeHandle n;
     n.getParam("lcl/save_num", save_num);
-    ros::Rate rate(20);
+    // ros::Rate rate(20);
 
     ros::Subscriber sub_pc = n.subscribe("/cloud", 30, pc_callback);
     ros::Subscriber sub_lcl = n.subscribe("/odom", 30, lcl_callback);
@@ -159,9 +159,10 @@ int main(int argc, char** argv)
 
     cout<<"start"<<endl;
 
-    while(ros::ok()){
-        ros::spinOnce();
-        rate.sleep();
-    }
+	ros::spin();
+    // while(ros::ok()){
+    //     ros::spinOnce();
+    //     rate.sleep();
+    // }
     return 0;
 }

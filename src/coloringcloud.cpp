@@ -138,8 +138,8 @@ int main(int argc, char** argv)
     ros::NodeHandle n;
 
     // get param from yaml file
-    n.getParam("coloring/target_frame", TARGET_FRAME);
-    n.getParam("coloring/source_frame", SOURCE_FRAME);
+    n.getParam("target_frame", TARGET_FRAME);
+    n.getParam("source_frame", SOURCE_FRAME);
 
     // define tf
     tf::TransformListener listener;
@@ -151,7 +151,7 @@ int main(int argc, char** argv)
     ros::Subscriber image_sub = n.subscribe("/image",10,imageCallback);
     pub = n.advertise<sensor_msgs::PointCloud2>("/cloud/colored",10);
 
-    ros::Rate rate(20);
+    ros::Rate rate(60);
 
     while(ros::ok()){
         // Transform pointcloud 

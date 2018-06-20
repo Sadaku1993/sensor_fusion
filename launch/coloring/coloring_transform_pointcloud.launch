@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+
+	<!--Transform PointCloud-->
+	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="zed0_transform_pointcloud">
+		<remap from="/cloud"    to="/zed0/colored" />
+		<remap from="/cloud/tf" to="/zed0/colored/tf" />
+	</node>
+
+	<!--Transform PointCloud-->
+	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="zed1_transform_pointcloud">
+		<remap from="/cloud" to="/zed1/colored" />
+		<remap from="/cloud/tf" to="/zed1/colored/tf" />
+	</node>
+
+
+	<!--Transform PointCloud-->
+	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="zed2_transform_pointcloud">
+		<remap from="/cloud"    to="/zed2/colored" />
+		<remap from="/cloud/tf" to="/zed2/colored/tf" />
+	</node>
+
+</launch>

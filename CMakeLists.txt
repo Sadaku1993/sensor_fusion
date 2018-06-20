@@ -168,7 +168,7 @@ add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
 add_executable(lcl src/lcl.cpp)
 
 ## coloringcloud
-add_executable(coloringcloud coloring/coloringcloud.cpp)
+add_executable(coloringcloud src/coloringcloud.cpp)
 
 ## depthimage
 add_executable(save_cloud  depthimage/save_cloud.cpp)

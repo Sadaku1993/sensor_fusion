@@ -5,6 +5,6 @@ export ROS_MASTER_URI="http://192.168.0.142:11311"
 
 sleep 1s
 
-/opt/ros/kinetic/bin/roslaunch sensor_fusion coloring_zed2.launch
+/opt/ros/kinetic/bin/roslaunch zed_wrapper zed2.launch
 
 sleep 1s
