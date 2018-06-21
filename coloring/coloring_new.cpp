@@ -65,11 +65,17 @@ void callback(const PointCloud2ConstPtr& pc_msg,
         uv = cam_model_.project3dToPixel(pt_cv);
 
         if(uv.x>0 && uv.x < image.cols && uv.y > 0 && uv.y < image.rows)
-			(*pt).b = image.at<cv::Vec3b>(uv)[0];
-            (*pt).g = image.at<cv::Vec3b>(uv)[1];
-            (*pt).r = image.at<cv::Vec3b>(uv)[2];
-	
-			area->points.push_back(*pt);
+        {
+            pcl::PointXYZRGB p;
+            p.x = (*pt).x;
+            p.y = (*pt).y;
+            p.z = (*pt).z;
+            p.b = image.at<cv::Vec3b>(uv)[0];
+            p.g = image.at<cv::Vec3b>(uv)[1];
+            p.r = image.at<cv::Vec3b>(uv)[2];
+
+            area->points.push_back(p);
+        }
     }
     
     cout<<" Points size : "<< area->points.size() << endl;
