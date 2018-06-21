@@ -159,7 +159,6 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(coloringcloud src/coloringcloud.cpp)
 add_executable(depthimage src/depthimage.cpp)
 add_executable(division src/division.cpp)
 add_executable(division_one_shot src/division_one_shot.cpp)
@@ -169,7 +168,7 @@ add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
 add_executable(lcl src/lcl.cpp)
 
 ## coloringcloud
-add_executable(coloring_new  coloring/coloring_new.cpp)
+add_executable(coloringcloud coloring/coloringcloud.cpp)
 add_executable(coloring_zed0 coloring/coloring_zed0.cpp)
 add_executable(coloring_zed1 coloring/coloring_zed1.cpp)
 add_executable(coloring_zed2 coloring/coloring_zed2.cpp)
@@ -206,11 +205,6 @@ add_executable(rm_ground_division calibration/rm_ground_division.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(coloringcloud
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
 target_link_libraries(depthimage
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
@@ -248,7 +242,7 @@ target_link_libraries(lcl
 )
 
 # coloring
-target_link_libraries(coloring_new
+target_link_libraries(coloringcloud
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}

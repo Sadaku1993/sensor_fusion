@@ -56,7 +56,10 @@ void callback(const PointCloud2ConstPtr& pc_msg,
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr area(new pcl::PointCloud<pcl::PointXYZRGB>);
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromROSMsg(*pc_msg, *cloud);
-
+	cloud->header.frame_id = pc_msg->header.frame_id;
+	
+	cout<<"Input Size : "<<cloud->points.size()
+		<<" Frame : "<<pc_msg->header.frame_id<<endl;
     for(pcl::PointCloud<pcl::PointXYZ>::iterator pt = cloud->points.begin(); pt < cloud->points.end(); pt++)
     {
         if ((*pt).x<0) continue;
@@ -78,7 +81,7 @@ void callback(const PointCloud2ConstPtr& pc_msg,
         }
     }
     
-    cout<<" Points size : "<< area->points.size() << endl;
+    cout<<"Points size : "<< area->points.size() << endl;
 
     PointCloud2 output;
     pcl::toROSMsg(*area, output);

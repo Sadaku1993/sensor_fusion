@@ -24,22 +24,26 @@ sleep 1s
 gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion laser_transform_pointcloud.launch' --geometry=50x12+250+500 &
 sleep 1s
 
+# lcl
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion lcl.launch' --geometry=50x12+250+750 &
+sleep 1s
+
 # Divide PointCloud
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion division.launch' --geometry=50x12+250+750 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion division.launch' --geometry=50x12+500+0 &
 sleep 1s
 
 # Republish
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion republish.launch' --geometry=50x12+500+0 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion republish.launch' --geometry=50x12+500+250 &
 sleep 1s
 
 # Coloring PointCloud
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion coloring_zed0.launch' --geometry=50x12+500+250 &
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion coloring_zed1.launch' --geometry=50x12+500+500 &
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion coloring_zed2.launch' --geometry=50x12+500+750 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion coloring_zed0.launch' --geometry=50x12+500+500 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion coloring_zed1.launch' --geometry=50x12+500+750 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion coloring_zed2.launch' --geometry=50x12+750+0 &
 sleep 1s
 
 # Integration
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion integration.launch' --geometry=50x12+750+0 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion integration.launch' --geometry=50x12+750+250 &
 
 sleep 4s
 

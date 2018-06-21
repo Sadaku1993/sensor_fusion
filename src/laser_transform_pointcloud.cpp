@@ -25,24 +25,27 @@ using namespace std;
 
 class PointCloudTransform{
 	private:
-		ros::NodeHandle n;
+		ros::NodeHandle nh;
+		ros::NodeHandle nhPrivate;
 		tf::TransformListener listener;
 		tf::StampedTransform transform;
 		ros::Publisher pub;
 		ros::Subscriber sub;
 		ros::Time t;
 		sensor_msgs::PointCloud pc_;
-		string target_frame = "/centerlaser";
+		string target_frame = "centerlaser";
 
 	public:
 		PointCloudTransform();
 		void Callback(const sensor_msgs::PointCloud2ConstPtr& msg);
 };
 
-PointCloudTransform::PointCloudTransform(){
-    n.getParam("sensor_fusion/target_frame", target_frame);
-	sub = n.subscribe("/cloud", 10, &PointCloudTransform::Callback, this);
-	pub = n.advertise<sensor_msgs::PointCloud2>("/cloud/tf", 10);
+PointCloudTransform::PointCloudTransform()
+	: nhPrivate("~")
+{
+    nhPrivate.getParam("target_frame", target_frame);
+	sub = nh.subscribe("/cloud", 10, &PointCloudTransform::Callback, this);
+	pub = nh.advertise<sensor_msgs::PointCloud2>("/cloud/tf", 10);
 }
 
 void PointCloudTransform::Callback(const sensor_msgs::PointCloud2ConstPtr &msg){
