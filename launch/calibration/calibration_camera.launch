@@ -29,11 +29,9 @@
     </node>
 
     <!--Transform PointCloud from "/zed/left_camera" to "zed/center"-->
-    <param name="target_frame" type="string" value="/zed0/zed_center" />
     <node pkg="sensor_fusion" type="laser_transform_pointcloud" name="zed_transform_pointcloud">
+        <param name="target_frame" type="string" value="/zed0/zed_center" />
         <remap from="/cloud"    to="/camera/average" />
         <remap from="/cloud/tf" to="/camera/average/tf" />
     </node>
-
-
 </launch>

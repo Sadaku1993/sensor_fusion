@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="sensor_fusion" type="icp_transform" name="icp_transform" output="screen">
+        <remap from="/lidar"    to="/center/average" />
+        <remap from="/camera"   to="/camera/average/tf" />
+    </node>
+</launch>

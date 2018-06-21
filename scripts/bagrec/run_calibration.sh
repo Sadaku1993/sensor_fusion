@@ -21,7 +21,7 @@ gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion sq2_zed.launch' 
 sleep 1s
 
 # Transform PointCloud from /centerlaser_ to /centerlaser
-gnome-terminal -e '/opt/ros/kinetic/bin/rosrun sensor_fusion laser_transform_pointcloud' --geometry=50x12+600+500 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion laser_transform_pointcloud.launch' --geometry=50x12+600+500 &
 sleep 1s
 
 # rviz

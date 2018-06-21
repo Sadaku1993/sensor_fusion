@@ -169,9 +169,6 @@ add_executable(lcl src/lcl.cpp)
 
 ## coloringcloud
 add_executable(coloringcloud coloring/coloringcloud.cpp)
-add_executable(coloring_zed0 coloring/coloring_zed0.cpp)
-add_executable(coloring_zed1 coloring/coloring_zed1.cpp)
-add_executable(coloring_zed2 coloring/coloring_zed2.cpp)
 
 ## depthimage
 add_executable(save_cloud  depthimage/save_cloud.cpp)
@@ -185,6 +182,7 @@ add_executable(lidar_seg_circle calibration/lidar_seg_circle.cpp)
 add_executable(camera_seg_plane calibration/camera_seg_plane.cpp)
 add_executable(camera_seg_circle calibration/camera_seg_circle.cpp)
 add_executable(camera_downsample calibration/camera_downsample.cpp)
+add_executable(icp_transform calibration/icp_transform.cpp)
 
 
 add_executable(detection_circle calibration/detection_circle.cpp)
@@ -247,21 +245,7 @@ target_link_libraries(coloringcloud
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
-target_link_libraries(coloring_zed0
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(coloring_zed1
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(coloring_zed2
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
+
 
 
 target_link_libraries(save_cloud
@@ -309,6 +293,12 @@ target_link_libraries(camera_downsample
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
+target_link_libraries(icp_transform
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+
 target_link_libraries(detection_circle
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
