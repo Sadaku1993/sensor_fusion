@@ -3,7 +3,7 @@
 #include <pcl/point_types.h>
 #include <pcl/filters/voxel_grid.h>
 
-typedef pcl::PointXYZ PointA;
+typedef pcl::PointXYZRGB PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
