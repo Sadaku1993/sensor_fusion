@@ -4,8 +4,8 @@
 	<include file="$(find zed_wrapper)/launch/zed2.launch"/>
 
     <!--Down sampling-->
-    <param name="camera/ds_size" type="double" value="0.05" />
     <node pkg="sensor_fusion" type="camera_downsample" name="camera_downsample">
+        <param name="ds_size" type="double" value="0.05" />
         <remap from="/cloud" to="/zed2/point_cloud/cloud_registered" />
         <remap from="/output" to="/zed2/ds_cloud" />
     </node>

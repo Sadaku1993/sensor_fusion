@@ -29,8 +29,9 @@ int main(int argc, char**argv)
 {
     ros::init(argc, argv, "camera_downsample");
     ros::NodeHandle n;
+    ros::NodeHandle nh("~");
 
-    // n.getParam("camera/ds_size", DS_SIZE);
+    nh.getParam("ds_size", DS_SIZE);
 
     ros::Subscriber sub = n.subscribe("/cloud", 10, pcCallback);
     pub_ds_cloud = n.advertise<sensor_msgs::PointCloud2>("/output", 10);

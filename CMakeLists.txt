@@ -159,10 +159,10 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
+add_executable(camera_downsample src/camera_downsample.cpp)
 add_executable(depthimage src/depthimage.cpp)
 add_executable(division src/division.cpp)
 add_executable(division_one_shot src/division_one_shot.cpp)
-add_executable(transform_pointcloud src/transform_pointcloud.cpp)
 add_executable(integration src/integration.cpp)
 add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
 add_executable(lcl src/lcl.cpp)
@@ -181,7 +181,6 @@ add_executable(lidar_seg_plane calibration/lidar_seg_plane.cpp)
 add_executable(lidar_seg_circle calibration/lidar_seg_circle.cpp)
 add_executable(camera_seg_plane calibration/camera_seg_plane.cpp)
 add_executable(camera_seg_circle calibration/camera_seg_circle.cpp)
-add_executable(camera_downsample calibration/camera_downsample.cpp)
 add_executable(icp_transform calibration/icp_transform.cpp)
 
 
@@ -203,6 +202,12 @@ add_executable(rm_ground_division calibration/rm_ground_division.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
+
+target_link_libraries(camera_downsample
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
 target_link_libraries(depthimage
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
@@ -214,11 +219,6 @@ target_link_libraries(division
   ${PCL_LIBRARIES}
 )
 target_link_libraries(division_one_shot
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(transform_pointcloud
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
@@ -247,7 +247,7 @@ target_link_libraries(coloringcloud
 )
 
 
-
+# calibration
 target_link_libraries(save_cloud
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
@@ -284,11 +284,6 @@ target_link_libraries(camera_seg_plane
   ${PCL_LIBRARIES}
 )
 target_link_libraries(camera_seg_circle
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(camera_downsample
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
