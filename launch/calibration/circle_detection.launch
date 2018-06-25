@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+    <!--Circle Detection-->
+    <node pkg="sensor_fusion" type="detection_circle" name="detection_circle" output="screen">
+        <param name="ratio"     type="int" value="1" />
+        <param name="minD"      type="int" value="40" />
+        <param name="param1"    type="int" value="10" />
+        <param name="param2"    type="int" value="40" />
+        <param name="minR"      type="int" value="10" />
+        <param name="maxR"      type="int" value="100" />
+        <remap from="/image" to="/zed0/left/image_rect_color/republish" />
+    </node>
+</launch>
