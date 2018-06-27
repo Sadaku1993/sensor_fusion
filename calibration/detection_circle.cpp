@@ -8,6 +8,12 @@
 
 using namespace std;
 
+int ratio = 1;
+int minD = 30;
+int param1 = 20;
+int param2 = 50;
+int minR = 10;
+int maxR = 100;
 // Callback(Image)
 void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
@@ -35,12 +41,12 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
     cv::HoughCircles(gray_image, 
                      circles, 
                      CV_HOUGH_GRADIENT, 
-                     1,    // 画像分解能に対する投票分解能の比率の逆数
-                     100,  // 検出される円の中心同士の最小距離
-                     20,   // param1
-                     50,   // param2 
-                     20,   // minRadius
-                     100   // maxRadius
+                     ratio,    // 画像分解能に対する投票分解能の比率の逆数
+                     minD,  // 検出される円の中心同士の最小距離
+                     param1,   // param1
+                     param2,   // param2 
+                     minR,   // minRadius
+                     maxR   // maxRadius
 					 );
 
     // Show results
@@ -58,9 +64,16 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "depthimage");
+    ros::init(argc, argv, "detection_circle");
     ros::NodeHandle n;
+    ros::NodeHandle nh("~");
 
+    nh.getParam("ratio", ratio);
+    nh.getParam("minD", minD);
+    nh.getParam("param1", param1);
+    nh.getParam("param2", param2);
+    nh.getParam("minR", minR);
+    nh.getParam("maxR", maxR);
     ros::Subscriber image_sub = n.subscribe("/image", 10, imageCallback);
 
     ros::spin();

@@ -181,6 +181,7 @@ add_executable(lidar_seg_plane calibration/lidar_seg_plane.cpp)
 add_executable(lidar_seg_circle calibration/lidar_seg_circle.cpp)
 add_executable(camera_seg_plane calibration/camera_seg_plane.cpp)
 add_executable(camera_seg_circle calibration/camera_seg_circle.cpp)
+add_executable(sphere_fitting calibration/sphere_fitting.cpp)
 add_executable(icp_transform calibration/icp_transform.cpp)
 
 
@@ -284,6 +285,11 @@ target_link_libraries(camera_seg_plane
   ${PCL_LIBRARIES}
 )
 target_link_libraries(camera_seg_circle
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(sphere_fitting
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
