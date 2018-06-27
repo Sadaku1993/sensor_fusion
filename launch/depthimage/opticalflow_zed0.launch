@@ -9,11 +9,11 @@
         <remap from="/cloud" to="/zed0/point_cloud/cloud_registered" />
         <remap from="/output" to="/zed0/ds_cloud" />
     </node>
-    
+
     <!--Optical Flow-->
-    <node pkg="sensor_fusion" type="optical_flow.py" name="optical_flow_zed0" >
+    <node pkg="sensor_fusion" type="optical_flow.py" name="optical_flow_zed0" output="screen">
         <param name="threshold" type="int" value="400" />
-        <remap from="image" to="/zed0/left/image_rect_color/republish" />
+        <remap from="image" to="/zed0/left/image_rect_color" />
         <remap from="optical_flow" to="/zed0/optical_flow" />
         <remap from="mode" to="/zed0/move" />
     </node>
