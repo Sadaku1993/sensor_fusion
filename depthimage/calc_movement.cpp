@@ -52,10 +52,9 @@ void Movement::Callback(const nav_msgs::OdometryConstPtr msg)
         double dt = sqrt( pow((new_odom.pose.pose.position.x - old_odom.pose.pose.position.x), 2) + 
                 pow((new_odom.pose.pose.position.y - old_odom.pose.pose.position.y), 2) );
         distance += dt;
+		meter += dt;
         printf("dt:%.2f, distance:%.2f meter:%.2f\n", dt, distance, meter); 
         old_odom = *msg;
-
-        meter = distance;
     }
 }
 
@@ -76,15 +75,16 @@ void Movement::detect()
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "calc_movement");
-    ros::Rate rate(40);
 
     Movement mv;
 
+    ros::Rate rate(40);
     while(ros::ok())
     {
         mv.detect();
+		ros::spinOnce();
+		rate.sleep();
     }
 
-    ros::spin();
     return 0;
 }

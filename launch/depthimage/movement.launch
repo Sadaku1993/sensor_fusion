@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+	<!--calc movement-->
+	<node pkg="sensor_fusion" type="calc_movement" name="calc_movement" output="screen">
+		<param name="threshold" type="double" value="2.0" />
+    </node>
+</launch>
