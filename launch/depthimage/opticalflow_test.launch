@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+    <!--Launch Usb Cam-->
+    <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" >
+        <param name="video_device" value="/dev/video0" />
+        <param name="image_width" value="640" />
+        <param name="image_height" value="480" />
+        <param name="pixel_format" value="yuyv" />
+        <param name="camera_frame_id" value="usb_cam" />
+        <param name="io_method" value="mmap"/>
+    </node>
+
+    <!--Optical Flow-->
+    <node pkg="sensor_fusion" type="optical_flow.py" name="optical_flow_zed0" output="screen">
+        <param name="threshold" type="int" value="600" />
+        <remap from="image"         to="/usb_cam/image_raw" />
+        <remap from="optical_flow"  to="/usb_cam/optical_flow" />
+        <remap from="mode"          to="/usb_cam/move" />
+    </node>
+</launch>

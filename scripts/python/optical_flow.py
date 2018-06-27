@@ -25,6 +25,7 @@ class OpticalFlow(object):
         self.image_flag = False
         self.first_frame = True
         self.stop = Bool()
+        self.bridge = CvBridge()
 
         # Shi-Tomasi法のパラメータ（コーナー検出用）
         self.ft_params = dict(maxCorners=100, qualityLevel=0.3, minDistance=7, blockSize=7) 
@@ -47,14 +48,14 @@ class OpticalFlow(object):
         self.stop.data = False
         self.move = 0
 
-    def optical_flow(self):
+    def optical_flow(self, threshold):
         # グレイスケールに変換
         gray2 = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
         # Lucas-Kanade法でオプティカルフローの検出
         ft2, status, err = cv2.calcOpticalFlowPyrLK(self.gray1, gray2, self.ft1, None, **self.lk_params)
         # オプティカルフローを検出した特徴点を取得
         if np.sum(ft2) == None:
-            print("reset")
+            print("Fail to find Optical Flow")
             self.first_processing()
             return 0;
             
@@ -70,19 +71,15 @@ class OpticalFlow(object):
             if 4 < math.hypot(x2-x1, y2-y1):
                 self.move += math.hypot(x2-x1, y2-y1)
 
-        if 400 < self.move:
-            print("moved:"+str(self.move))
+        if threshold < self.move:
+            print("moved:{:>4} threshold:{}".format(int(self.move), threshold))
             self.first_processing()
         else:
-            print("stop:"+str(self.move))
+            print("stop :{:>4} threshold:{}".format(int(self.move), threshold))
             self.stop.data = True
 
         # フレームとマスクの論理積(合成)
         img = cv2.add(self.frame, self.mask)
-        # cv2.imshow('mask', self.mask)
-        # cv2.imshow('frame', self.frame)
-        # cv2.imshow('flow', img)
-        # cv2.waitKey(1)
         
         try:
             self.image_pub.publish(self.bridge.cv2_to_imgmsg(img, "bgr8"))
@@ -97,15 +94,16 @@ class OpticalFlow(object):
 
     def main(self):
         rospy.init_node("optical_flow")
+        threshold = rospy.get_param("~threshold", 500)
         rate = rospy.Rate(10)
 
         while not rospy.is_shutdown():
             if self.image_flag:
-                print("Callback")
+                # print("Callback")
                 if self.first_frame:
                     self.first_processing()
                 else:
-                    self.optical_flow()
+                    self.optical_flow(threshold)
             else:
                 print("Waiting...")
             self.pub.publish(self.stop)

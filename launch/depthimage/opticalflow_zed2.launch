@@ -12,6 +12,7 @@
     
     <!--Optical Flow-->
     <node pkg="sensor_fusion" type="optical_flow.py" name="optical_flow_zed2" >
+        <param name="threshold" type="int" value="400" />
         <remap from="image" to="/zed2/left/image_rect_color/republish" />
         <remap from="optical_flow" to="/zed2/optical_flow" />
         <remap from="mode" to="/zed2/move" />
