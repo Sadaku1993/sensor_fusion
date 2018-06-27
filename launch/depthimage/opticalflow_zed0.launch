@@ -4,12 +4,13 @@
 	<include file="$(find zed_wrapper)/launch/zed0.launch"/>
 
     <!--Down sampling-->
-    <param name="camera/ds_size" type="double" value="0.05" />
+    <param name="camera/ds_size" type="double" value="0.10" />
     <node pkg="sensor_fusion" type="camera_downsample" name="camera_downsample">
         <remap from="/cloud" to="/zed0/point_cloud/cloud_registered" />
         <remap from="/output" to="/zed0/ds_cloud" />
     </node>
-
+    
+    <!--Optical Flow-->
     <node pkg="sensor_fusion" type="optical_flow.py" name="optical_flow_zed0" >
         <remap from="image" to="/zed0/left/image_rect_color/republish" />
         <remap from="optical_flow" to="/zed0/optical_flow" />
