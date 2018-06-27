@@ -191,6 +191,8 @@ add_executable(sq_rm_ground_min_max calibration/sq_rm_ground_min_max.cpp)
 add_executable(save_points calibration/save_points.cpp)
 add_executable(rm_ground_division calibration/rm_ground_division.cpp)
 
+## Depth Image
+add_executable(calc_movement depthimage/calc_movement.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -325,6 +327,14 @@ target_link_libraries(rm_ground_division
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
+
+## Depth Image
+target_link_libraries(calc_movement
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
