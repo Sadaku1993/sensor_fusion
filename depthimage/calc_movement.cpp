@@ -39,7 +39,7 @@ Movement::Movement()
 void Movement::Callback(const nav_msgs::OdometryConstPtr msg)
 {
     if(!flag){
-        printf("init");
+        printf("init\n");
         old_odom = *msg;
         flag = true;
     }
