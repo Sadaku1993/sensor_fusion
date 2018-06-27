@@ -34,20 +34,25 @@ Movement::Movement()
     pub = nh.advertise<std_msgs::Bool>("/stop", 10);
     distance = 0;
     flag = false;
-    old_odom.pose.pose.position.x = 0;
-    old_odom.pose.pose.position.y = 0;
 }
 
 void Movement::Callback(const nav_msgs::OdometryConstPtr msg)
-{   
-    new_odom = *msg;
+{
+    if(!flag){
+        printf("init");
+        old_odom = *msg;
+        flag = true;
+    }
+    else{
+        new_odom = *msg;
 
-    double dt = sqrt( pow((new_odom.pose.pose.position.x - old_odom.pose.pose.position.x), 2) + 
-            pow((new_odom.pose.pose.position.y - old_odom.pose.pose.position.y), 2) );
-    distance += dt;
-    printf("dt:%.2f, distance:%.2f\n", dt, distance); 
+        double dt = sqrt( pow((new_odom.pose.pose.position.x - old_odom.pose.pose.position.x), 2) + 
+                pow((new_odom.pose.pose.position.y - old_odom.pose.pose.position.y), 2) );
+        distance += dt;
+        printf("dt:%.2f, distance:%.2f\n", dt, distance); 
 
-    old_odom = *msg;
+        old_odom = *msg;
+    }
 }
 
 int main(int argc, char** argv)
