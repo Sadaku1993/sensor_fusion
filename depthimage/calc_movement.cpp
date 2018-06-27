@@ -53,13 +53,15 @@ void Movement::Callback(const nav_msgs::OdometryConstPtr msg)
                 pow((new_odom.pose.pose.position.y - old_odom.pose.pose.position.y), 2) );
         distance += dt;
 		meter += dt;
-        printf("dt:%.2f, distance:%.2f meter:%.2f\n", dt, distance, meter); 
         old_odom = *msg;
+		// printf("dt:%.2f, distance:%.2f meter:%.2f\n", dt, distance, meter); 
+
     }
 }
 
 void Movement::detect()
 {
+	printf("distance:%.2f meter:%.2f\n", distance, meter); 
     std_msgs::Bool move;
     if(meter < threshold)  
         move.data = false;
