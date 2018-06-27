@@ -14,7 +14,8 @@
     <node pkg="sensor_fusion" type="optical_flow.py" name="optical_flow_zed0" output="screen">
         <param name="threshold" type="int" value="600" />
         <remap from="image"         to="/usb_cam/image_raw" />
-        <remap from="optical_flow"  to="/usb_cam/optical_flow" />
+        <remap from="optical_flow/raw"  to="/usb_cam/optical_flow/raw" />
+        <remap from="optical_flow/compressed" to="/usb_cam/optical_flow/compressed" />
         <remap from="mode"          to="/usb_cam/move" />
     </node>
 </launch>

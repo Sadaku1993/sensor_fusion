@@ -11,6 +11,7 @@ optical flow for ros
 import rospy
 from std_msgs.msg import Bool
 from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage
 from cv_bridge import CvBridge, CvBridgeError
 
 import cv2
@@ -21,7 +22,8 @@ class OpticalFlow(object):
     def __init__(self):
         self.image_sub = rospy.Subscriber("/image", Image, self.ImageCallback)
         self.pub = rospy.Publisher('/move', Bool, queue_size=10)
-        self.image_pub = rospy.Publisher('/optical_flow', Image, queue_size=10)
+        self.image_pub = rospy.Publisher('/optical_flow/raw', Image)
+        self.image_pub_compress = rospy.Publisher('/optical_flow/compressed', CompressedImage)
         self.image_flag = False
         self.first_frame = True
         self.stop = Bool()
@@ -85,6 +87,12 @@ class OpticalFlow(object):
             self.image_pub.publish(self.bridge.cv2_to_imgmsg(img, "bgr8"))
         except CvBridgeError as e:
             print(e)
+
+        compress = CompressedImage()
+        compress.header.stamp = rospy.Time.now()
+        compress.format = "jpeg"
+        compress.data = np.array(cv2.imencode('.jpg', img)[1]).tostring()
+        self.image_pub_compress.publish(compress)
 
         # 次のフレーム、ポイントの準備
         self.gray1 = gray2.copy()

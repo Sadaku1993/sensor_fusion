@@ -5,7 +5,7 @@
 
     <!--Down sampling-->
     <param name="camera/ds_size" type="double" value="0.05" />
-    <node pkg="sensor_fusion" type="camera_downsample" name="camera_downsample">
+    <node pkg="sensor_fusion" type="camera_downsample" name="camera_downsample_zed2">
         <remap from="/cloud" to="/zed2/point_cloud/cloud_registered" />
         <remap from="/output" to="/zed2/ds_cloud" />
     </node>
@@ -13,8 +13,9 @@
     <!--Optical Flow-->
     <node pkg="sensor_fusion" type="optical_flow.py" name="optical_flow_zed2" output="screen">
         <param name="threshold" type="int" value="400" />
-        <remap from="image" to="/zed2/left/image_rect_color" />
-        <remap from="optical_flow" to="/zed2/optical_flow" />
-        <remap from="mode" to="/zed2/move" />
+        <remap from="image"                     to="/zed2/left/image_rect_color" />
+        <remap from="optical_flow/raw"          to="/zed2/optical_flow/raw" />
+        <remap from="optical_flow/compressed"   to="/zed2/optical_flow/compressed" />
+        <remap from="mode"                      to="/zed2/move" />
     </node>
 </launch>
