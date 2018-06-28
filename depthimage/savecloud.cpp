@@ -160,15 +160,20 @@ void SaveCloud::odomCallback(const nav_msgs::OdometryConstPtr msg)
         distance += dt;
 		meter += dt;
         old_odom = *msg;
+
     }
 
-    if(threshold < meter)
+    if(threshold<meter)
+	{
+		// cout<<"--------RESET------"<<endl;
         save_flag = true;
+	}
 }
 
 
 void SaveCloud::cloudCallback(const sensor_msgs::PointCloud2ConstPtr msg)
 {
+
     std_msgs::Bool stop;
 	double vel = sqrt( pow(odom_.twist.twist.linear.x, 2) + pow(odom_.twist.twist.linear.y, 2) );
     if(save_flag){
@@ -211,6 +216,7 @@ void SaveCloud::cloudCallback(const sensor_msgs::PointCloud2ConstPtr msg)
 
 				save_flag = false;
 				count = 0;
+				meter = 0.0;
 				pcd_count++;
 				cout<<"Finish Save Cloud"<<endl;
 			}
@@ -225,7 +231,8 @@ void SaveCloud::cloudCallback(const sensor_msgs::PointCloud2ConstPtr msg)
 	}
 
     else{
-        cout<<"Waitting Arrive WayPoint"<<endl;
+		printf("distance:%.2f meter:%.2f threshold:%.2f \n", distance, meter, threshold); 
+        // cout<<"Waitting Arrive WayPoint"<<endl;
         stop.data = false;
     }
 

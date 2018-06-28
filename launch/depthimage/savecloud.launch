@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <launch>
 	<node pkg="sensor_fusion" type="savecloud" name="savecloud" output="screen">
-		<param name="timer" type="double" value="5.0" />
+		<param name="timer" type="double" value="4.0" />
 		<param name="save_count" type="int" value="1000" />
-        <param name="threshold"  type="double" value="5.0" />
+        <param name="threshold"  type="double" value="4.0" />
         <!--remap from="waypoint"  to="waypoint" /-->
         <remap from="odom"      to="odom" />
         <remap from="cloud"     to="cloud/tf" />
