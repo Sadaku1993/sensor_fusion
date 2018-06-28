@@ -3,7 +3,8 @@
 	<node pkg="sensor_fusion" type="savecloud" name="savecloud" output="screen">
 		<param name="timer" type="double" value="5.0" />
 		<param name="save_count" type="int" value="1000" />
-        <remap from="waypoint"  to="waypoint" />
+        <param name="threshold"  type="double" value="5.0" />
+        <!--remap from="waypoint"  to="waypoint" /-->
         <remap from="odom"      to="odom" />
         <remap from="cloud"     to="cloud/tf" />
         <remap from="cloud/lcl" to="cloud/lcl/savecloud" />

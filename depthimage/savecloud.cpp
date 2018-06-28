@@ -31,7 +31,7 @@ class SaveCloud{
     private:
         ros::NodeHandle nh;
         
-        ros::Subscriber waypoint_sub;
+        // ros::Subscriber waypoint_sub;
         ros::Subscriber odom_sub;
         ros::Subscriber cloud_sub;
 
@@ -54,9 +54,17 @@ class SaveCloud{
         // waypoint
         bool waypoint_flag;
 
+        // odom flag
+        bool odom_flag;
+        double threshold;
+        double distance;
+        double meter;
+        nav_msgs::Odometry old_odom;
+        nav_msgs::Odometry new_odom;
+
     public:
         SaveCloud();
-        void waypointCallback(const std_msgs::BoolConstPtr msg);
+        // void waypointCallback(const std_msgs::BoolConstPtr msg);
         void odomCallback(const nav_msgs::OdometryConstPtr msg);
         void cloudCallback(const sensor_msgs::PointCloud2ConstPtr msg);
         Eigen::Matrix4f create_matrix(nav_msgs::Odometry odom_now, float reflect);
@@ -68,8 +76,9 @@ SaveCloud::SaveCloud()
     : nh("~"), save_cloud(new CloudA), old_cloud(new CloudA)
 {
     nh.getParam("save_count", save_count);
+    nh.getParam("threshold", threshold);
 
-    waypoint_sub    = nh.subscribe("/waypoint" , 10, &SaveCloud::waypointCallback,  this);
+    // waypoint_sub    = nh.subscribe("/waypoint" , 10, &SaveCloud::waypointCallback,  this);
     odom_sub        = nh.subscribe("/odom"     , 10, &SaveCloud::odomCallback,      this);
     cloud_sub       = nh.subscribe("/cloud"    , 10, &SaveCloud::cloudCallback,     this);
 
@@ -92,6 +101,11 @@ SaveCloud::SaveCloud()
     save_flag = false;
 
     waypoint_flag = false;
+    
+    // odom flag
+    odom_flag = false;
+    distance = 0;
+    meter = 0;
 
 	pcd_count = 0;
 }
@@ -118,7 +132,7 @@ Eigen::Matrix4f SaveCloud::create_matrix(nav_msgs::Odometry odom_now, float refl
     return init_guess;
 }
 
-
+/*
 void SaveCloud::waypointCallback(const std_msgs::BoolConstPtr msg)
 {
     waypoint_flag = msg->data;
@@ -127,12 +141,31 @@ void SaveCloud::waypointCallback(const std_msgs::BoolConstPtr msg)
         cout<<"Arrive WayPoint"<<endl;
     }
 }
+*/
 
 void SaveCloud::odomCallback(const nav_msgs::OdometryConstPtr msg)
 {
     odom_ = *msg;
     transform_matrix = create_matrix(odom_, 1.0);
+
+    if(!odom_flag){
+        printf("init odom\n");
+        old_odom = *msg;
+        odom_flag = true;
+    }
+    else{
+        new_odom = *msg;
+        double dt = sqrt( pow((new_odom.pose.pose.position.x - old_odom.pose.pose.position.x), 2) + 
+                pow((new_odom.pose.pose.position.y - old_odom.pose.pose.position.y), 2) );
+        distance += dt;
+		meter += dt;
+        old_odom = *msg;
+    }
+
+    if(threshold < meter)
+        save_flag = true;
 }
+
 
 void SaveCloud::cloudCallback(const sensor_msgs::PointCloud2ConstPtr msg)
 {
