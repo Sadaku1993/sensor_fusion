@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+	<!--core-->
+	<node pkg="sensor_fusion" type="core" name="core" output="screen">
+        <param name="timer" type="double" value="5.0" />
+        <remap from="stop" to="movement" />
+        <remap from="bool" to="joy_flag" />
+    </node>
+</launch>
