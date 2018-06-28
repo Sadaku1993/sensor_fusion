@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+	<!--core-->
+	<node pkg="sensor_fusion" type="core" name="core" output="screen">
+        <param name="timer" type="double" value="5.0" />
+        <remap from="waypoint"  to="waypoint" />
+        <remap from="odom"      to="odom" />
+        <remap from="cloud"     to="cloud/tf" />
+        <remap from="cloud/lcl" to="cloud/lcl/savecloud" />
+        <remap from="stop"      to="joy_flag" />
+    </node>
+</launch>

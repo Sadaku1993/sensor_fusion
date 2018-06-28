@@ -195,6 +195,7 @@ add_executable(rm_ground_division calibration/rm_ground_division.cpp)
 add_executable(calc_movement depthimage/calc_movement.cpp)
 add_executable(core depthimage/core.cpp)
 add_executable(lcl_for_depthimage depthimage/lcl_for_depthimage.cpp)
+add_executable(savecloud depthimage/savecloud.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -342,6 +343,11 @@ target_link_libraries(core
   ${PCL_LIBRARIES}
 )
 target_link_libraries(lcl_for_depthimage
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(savecloud
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
