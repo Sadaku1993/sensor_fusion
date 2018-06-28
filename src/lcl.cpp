@@ -53,7 +53,9 @@ Eigen::Matrix4f transform_matrix;
 Eigen::Matrix4f inverse_transform_matrix;
 
 int count_ = 0;
-int save_num;
+int skip = 0;
+int save_num = 0;
+int skip_count = 10;
 
 bool init_lcl_flag = false;
 
@@ -117,20 +119,25 @@ void pc_callback(const sensor_msgs::PointCloud2ConstPtr msg)
     if(count_ < save_num){
         *save_pc_ += *output_save_pc;
         old_pc_ = output_save_pc;
+        count_++;
     }else{
         int old_pc_size = (int)old_pc_->points.size();
         save_pc_->points.erase(save_pc_->points.begin(), save_pc_->points.begin()+old_pc_size);
         *save_pc_ += *output_save_pc;
         old_pc_ = output_save_pc;
     }
+    
+    if(skip%skip_count == 0){
+        sensor_msgs::PointCloud2 pc_;
+        pcl::toROSMsg(*save_pc_, pc_);
+        pc_.header.stamp = ros::Time::now();
+        pc_.header.frame_id = msg->header.frame_id;
+        pub.publish(pc_);
+        skip = 0;
+    }
 
-    sensor_msgs::PointCloud2 pc_;
-    pcl::toROSMsg(*save_pc_, pc_);
-    pc_.header.stamp = ros::Time::now();
-    pc_.header.frame_id = msg->header.frame_id;
-    pub.publish(pc_);
+    skip++;
 
-    count_++;
 }
 
 int main(int argc, char** argv)
@@ -138,6 +145,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "lsl");
     ros::NodeHandle n;
     n.getParam("lcl/save_num", save_num);
+    n.getParam("lcl/skip_num", skip_count);
     // ros::Rate rate(20);
 
     ros::Subscriber sub_pc = n.subscribe("/cloud/tf", 30, pc_callback);
