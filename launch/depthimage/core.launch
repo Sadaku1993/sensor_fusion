@@ -3,7 +3,9 @@
 	<!--core-->
 	<node pkg="sensor_fusion" type="core" name="core" output="screen">
         <param name="timer" type="double" value="5.0" />
-        <remap from="stop" to="movement" />
-        <remap from="bool" to="joy_flag" />
+        <remap from="waypoint" to="waypoint" />
+        <remap from="info" to="save_info" />
+        <remap from="stop" to="joy_flag" />
+        <remap from="save" to="lcl_save" />
     </node>
 </launch>

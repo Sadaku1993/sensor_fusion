@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+	<!--core-->
+	<node pkg="sensor_fusion" type="lcl_for_depthimage" name="lcl_for_depthimage" output="screen">
+        <param name="save_cloud" type="int" value="1000" />
+        <remap from="start" to="lcl_save" />
+        <remap from="odom" to="odom" />
+        <remap from="cloud" to="cloud/tf" />
+        <remap from="info" to="save_info" />
+        <remap from="cloud/lcl" to="cloud/lcl/depthimage" />
+    </node>
+</launch>
