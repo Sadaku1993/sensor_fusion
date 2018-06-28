@@ -5,8 +5,14 @@
 #include <nav_msgs/Odometry.h>
 #include <pcl/point_cloud.h>
 #include <pcl/common/transforms.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/point_types.h>
 #include <pcl_ros/point_cloud.h>
 #include <tf/tf.h>
+
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <iostream>
 
 #include "Eigen/Core"
 #include "Eigen/Dense"
@@ -42,6 +48,8 @@ class SaveCloud{
         int count;
         int save_count;
         bool save_flag;
+
+		int pcd_count;
         
         // waypoint
         bool waypoint_flag;
@@ -53,6 +61,7 @@ class SaveCloud{
         void cloudCallback(const sensor_msgs::PointCloud2ConstPtr msg);
         Eigen::Matrix4f create_matrix(nav_msgs::Odometry odom_now, float reflect);
         void detection();
+		void savePCDFile(CloudAPtr cloud, int count);
 };
 
 SaveCloud::SaveCloud()
@@ -83,7 +92,19 @@ SaveCloud::SaveCloud()
     save_flag = false;
 
     waypoint_flag = false;
+
+	pcd_count = 0;
 }
+
+void SaveCloud::savePCDFile(CloudAPtr cloud, int count)
+{
+    string file_name = to_string(count);
+    // string path = HOME_DIRS + "/" + FILE_PATH + "/" + SAVE_PATH;
+    pcl::io::savePCDFileASCII("/home/amsl/PCD/Save/"+file_name+".pcd", *cloud);
+    printf("Num:%d saved %d\n", count, int(cloud->points.size()));
+}
+
+
 
 Eigen::Matrix4f SaveCloud::create_matrix(nav_msgs::Odometry odom_now, float reflect){
     double roll_now, pitch_now, yaw_now;
@@ -116,52 +137,60 @@ void SaveCloud::odomCallback(const nav_msgs::OdometryConstPtr msg)
 void SaveCloud::cloudCallback(const sensor_msgs::PointCloud2ConstPtr msg)
 {
     std_msgs::Bool stop;
+	double vel = sqrt( pow(odom_.twist.twist.linear.x, 2) + pow(odom_.twist.twist.linear.y, 2) );
     if(save_flag){
-        CloudAPtr input_cloud(new CloudA);
-        CloudAPtr transform_cloud(new CloudA);
-        CloudAPtr threshold_cloud(new CloudA);
-        CloudAPtr inverse_cloud(new CloudA);
+		stop.data = true;
+		
+		if(vel < 0.001){
+			CloudAPtr input_cloud(new CloudA);
+			CloudAPtr transform_cloud(new CloudA);
+			CloudAPtr threshold_cloud(new CloudA);
+			CloudAPtr inverse_cloud(new CloudA);
 
-        pcl::fromROSMsg(*msg, *input_cloud);
-        pcl::transformPointCloud(*input_cloud, *transform_cloud, transform_matrix);
+			pcl::fromROSMsg(*msg, *input_cloud);
+			pcl::transformPointCloud(*input_cloud, *transform_cloud, transform_matrix);
 
-        for(size_t i=0;i<input_cloud->points.size();i++){
-            double distance = sqrt(pow(input_cloud->points[i].x, 2)+
-                    pow(input_cloud->points[i].y, 2)+
-                    pow(input_cloud->points[i].z, 2));
-            if(distance < 30)
-                threshold_cloud->points.push_back(transform_cloud->points[i]);
-        }
+			for(size_t i=0;i<input_cloud->points.size();i++){
+				double distance = sqrt(pow(input_cloud->points[i].x, 2)+
+						pow(input_cloud->points[i].y, 2)+
+						pow(input_cloud->points[i].z, 2));
+				if(distance < 30)
+					threshold_cloud->points.push_back(transform_cloud->points[i]);
+			}
 
-        // Eigen::Matrix4f inverse_transform_matrix = transform_matrix.inverse();
-        // pcl::transformPointCloud(*threshold_cloud, *inverse_cloud, inverse_transform_matrix);
-        // *save_cloud += *inverse_cloud;
+			// Eigen::Matrix4f inverse_transform_matrix = transform_matrix.inverse();
+			// pcl::transformPointCloud(*threshold_cloud, *inverse_cloud, inverse_transform_matrix);
+			// *save_cloud += *inverse_cloud;
 
-        *save_cloud = *threshold_cloud;
+			*save_cloud += *threshold_cloud;
 
-        if(count == save_count){
-            sensor_msgs::PointCloud2 pc2;
-            pcl::toROSMsg(*save_cloud, pc2);
-            // pc2.header.frame_id = msg->header.frame_id;  
-            pc2.header.frame_id = init_odom.header.frame_id;
-            pc2.header.stamp = ros::Time::now();
-            cloud_pub.publish(pc2);
+			if(count == save_count){
+				sensor_msgs::PointCloud2 pc2;
+				pcl::toROSMsg(*save_cloud, pc2);
+				// pc2.header.frame_id = msg->header.frame_id;  
+				pc2.header.frame_id = init_odom.header.frame_id;
+				pc2.header.stamp = ros::Time::now();
+				cloud_pub.publish(pc2);
 
-            save_cloud->points.clear();
+				savePCDFile(save_cloud, pcd_count);
+		
+				save_cloud->points.clear();
 
-            save_flag = false;
-            count = 0;
-            cout<<"Finish Save Cloud"<<endl;
-        }
-        else{
-            cout<<"Saving Cloud"<<endl;
-        }
+				save_flag = false;
+				count = 0;
+				pcd_count++;
+				cout<<"Finish Save Cloud"<<endl;
+			}
+			else if(count%100==0){
+				printf("count:%4d size:%6d max:%d\n", 
+						count, 
+						int(save_cloud->points.size()),
+						save_count);
+			}
+			count++;
+		}
+	}
 
-        stop.data = true;
-
-        count++;
-    }
-    
     else{
         cout<<"Waitting Arrive WayPoint"<<endl;
         stop.data = false;

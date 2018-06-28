@@ -80,7 +80,7 @@ int main(int argc, char** argv)
 
     Movement mv;
 
-    ros::Rate rate(40);
+    ros::Rate rate(20);
     while(ros::ok())
     {
         mv.detect();

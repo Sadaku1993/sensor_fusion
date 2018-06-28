@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <launch>
-	<!--core-->
-	<node pkg="sensor_fusion" type="core" name="core" output="screen">
-        <param name="timer" type="double" value="5.0" />
+	<node pkg="sensor_fusion" type="savecloud" name="savecloud" output="screen">
+		<param name="timer" type="double" value="5.0" />
+		<param name="save_count" type="int" value="1000" />
         <remap from="waypoint"  to="waypoint" />
         <remap from="odom"      to="odom" />
         <remap from="cloud"     to="cloud/tf" />
