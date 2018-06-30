@@ -103,7 +103,7 @@ class OpticalFlow(object):
     def main(self):
         rospy.init_node("optical_flow")
         threshold = rospy.get_param("~threshold", 500)
-        rate = rospy.Rate(10)
+        rate = rospy.Rate(20)
 
         while not rospy.is_shutdown():
             if self.image_flag:
