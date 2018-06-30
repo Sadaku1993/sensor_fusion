@@ -23,7 +23,7 @@ void SaveData::odomCallback(const OdometryConstPtr msg)
 void SaveData::cloudCallback(const PointCloud2ConstPtr msg)
 {
     if(save_flag)
-        save(msg);
+        save_pointcloud(msg);
     else
         save_count = 0;
 }
@@ -79,25 +79,25 @@ void SaveData::zed2_callback(const ImageConstPtr& image, const CameraInfoConstPt
     }
 }
 
-void SaveData::zed0_optical_flow_calback(const BoolConstPtr data)
+void SaveData::zed0_optical_flow_calback(const BoolConstPtr msg)
 {
     printf("zed0 optical_flow\n");
-    zed0_data = data;
+    zed0_data = msg->data;
 }
 
-void SaveData::zed1_optical_flow_calback(const BoolConstPtr data)
+void SaveData::zed1_optical_flow_calback(const BoolConstPtr msg)
 {
     printf("zed1 optical_flow\n");
-    zed1_data = data;
+    zed1_data = msg->data;
 }
 
-void SaveData::zed2_optical_flow_calback(const BoolConstPtr data)
+void SaveData::zed2_optical_flow_calback(const BoolConstPtr msg)
 {
     printf("zed2 optical_flow\n");
-    zed2_data = data;
+    zed2_data = msg->data;
 }
 
-void SaveData::save(const PointCloud2ConstPtr cloud)
+void SaveData::save_pointcloud(const PointCloud2ConstPtr cloud)
 {
     CloudAPtr input_cloud(new CloudA);
     CloudAPtr transform_cloud(new CloudA);
@@ -131,3 +131,26 @@ bool SaveData::check_savepoint()
         return false;
     }
 }
+
+void SaveData::save_data()
+{
+	double vel = sqrt( pow(odom.twist.twist.linear.x, 2) + pow(odom.twist.twist.linear.y, 2) );
+    if(arrival && vel < 0.00001)
+    {
+        cout<<"Stanby OK!!!!!"<<endl;
+        cout<<"check world movement..."<<endl;
+
+        if(zed0_data && zed1_data && zed2_data)
+            cout<<"world is stop"<<endl;
+        else
+            cout<<"zed0:"<<zed0_data<<" zed1:"<<zed1_data<<" zed2:"<<zed2_data<<endl;
+    }
+    else if(arrival)
+    {
+        cout<<"speed down and reset optical_flow "<<endl;
+        Bool reset;
+        reset.data = true;
+        optical_flow_reset_pub.publish(reset);
+    }
+}
+

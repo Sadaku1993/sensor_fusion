@@ -59,6 +59,7 @@ class SaveData{
         ros::Subscriber zed2_optical_flow_sub;
 
         ros::Publisher emergency_pub;
+        ros::Publisher optical_flow_reset_pub;
 
         // odometry
         bool odom_flag;
@@ -73,26 +74,26 @@ class SaveData{
         // ZED0
         ImageConstPtr zed0_image;
         CameraInfoConstPtr zed0_cinfo;
-        BoolConstPtr zed0_data;
         Matrix4f zed0_transform_matrix;
         tf::TransformListener zed0_listener;
         tf::StampedTransform  zed0_transform;
+        bool zed0_data;
       
         // ZED1
         ImageConstPtr zed1_image;
         CameraInfoConstPtr zed1_cinfo;
-        BoolConstPtr zed1_data;
         Matrix4f zed1_transform_matrix;
         tf::TransformListener zed1_listener;
         tf::StampedTransform  zed1_transform;
+        bool zed1_data;
 
         // ZED2
         ImageConstPtr zed2_image;
         CameraInfoConstPtr zed2_cinfo;
-        BoolConstPtr zed2_data;
         Matrix4f zed2_transform_matrix;
         tf::TransformListener zed2_listener;
         tf::StampedTransform  zed2_transform;
+        bool zed2_data;
 
         // savecloud
         bool save_flag;
@@ -134,9 +135,11 @@ class SaveData{
         void zed2_optical_flow_calback(const BoolConstPtr data);
 
         // save pointcloud at save point        
-        void save(const PointCloud2::ConstPtr cloud);
+        void save_pointcloud(const PointCloud2::ConstPtr cloud);
 
         bool check_savepoint();
+
+        void save_data();
 };
 
 SaveData::SaveData()
@@ -162,6 +165,7 @@ SaveData::SaveData()
 	zed2_sync.registerCallback(boost::bind(&SaveData::zed2_callback, this, _1, _2));
 
     emergency_pub = nh.advertise<Bool>("/emergency_flag", 10);
+    optical_flow_reset_pub = nh.advertise<Bool>("/optical_flow_reset", 10);
 
     // odom
     odom_flag = false;
@@ -185,6 +189,11 @@ SaveData::SaveData()
     // stop
     emergency_flag.data = false;
     arrival = false;
+
+    // ZED
+    zed0_data = true;
+    zed1_data = true;
+    zed2_data = true;
 }
 
 
