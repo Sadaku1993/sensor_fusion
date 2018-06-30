@@ -1,8 +1,11 @@
 <?xml version="1.0"?>
 <launch>
 	<node pkg="sensor_fusion" type="save_data" name="save_data" output="screen">
-        <param name="distance" type="vdouble" value="5.0" />
+        <param name="threshold" type="double" value="5.0" />
         <remap from="odom"      to="odom" />
-        <remap from="cloud"     to="cloud/tf" />
+		<remap from="cloud"     to="cloud/tf" />
+		<remap from="/zed0/optical_flow" to="/zed0/move" />
+		<remap from="/zed1/optical_flow" to="/zed1/move" />
+		<remap from="/zed2/optical_flow" to="/zed2/move" />
     </node>
 </launch>

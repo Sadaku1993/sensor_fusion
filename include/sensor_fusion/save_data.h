@@ -151,7 +151,7 @@ SaveData::SaveData()
       zed1_sync(ZED_sync_subs(10), zed1_image_sub, zed1_cinfo_sub),
       zed2_sync(ZED_sync_subs(10), zed2_image_sub, zed2_cinfo_sub)
 {
-    nh.getParam("distance", distance);
+    nh.getParam("threshold", threshold);
 
     odom_sub = nh.subscribe("/odom", 10, &SaveData::odomCallback, this);
     cloud_sub = nh.subscribe("/cloud", 10, &SaveData::cloudCallback, this);
@@ -164,7 +164,7 @@ SaveData::SaveData()
 	zed1_sync.registerCallback(boost::bind(&SaveData::zed1_callback, this, _1, _2));
 	zed2_sync.registerCallback(boost::bind(&SaveData::zed2_callback, this, _1, _2));
 
-    emergency_pub = nh.advertise<Bool>("/emergency_flag", 10);
+    emergency_pub = nh.advertise<Bool>("/emergency_stop", 10);
     optical_flow_reset_pub = nh.advertise<Bool>("/optical_flow_reset", 10);
 
     // odom

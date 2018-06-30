@@ -21,10 +21,12 @@ import math
 class OpticalFlow(object):
     def __init__(self):
         self.image_sub = rospy.Subscriber("/image", Image, self.ImageCallback)
+        self.bool_sub  = rospy.Subscriber("/start", Bool, self.BoolCallback)
         self.pub = rospy.Publisher('/move', Bool, queue_size=10)
-        self.image_pub = rospy.Publisher('/optical_flow/raw', Image)
-        self.image_pub_compress = rospy.Publisher('/optical_flow/compressed', CompressedImage)
+        self.image_pub = rospy.Publisher('/optical_flow/raw', Image, queue_size=10)
+        self.image_pub_compress = rospy.Publisher('/optical_flow/compressed', CompressedImage, queue_size=10)
         self.image_flag = False
+        self.start = False
         self.first_frame = True
         self.stop = Bool()
         self.bridge = CvBridge()
@@ -40,6 +42,9 @@ class OpticalFlow(object):
         except CvBridgeerror as e:
             print (e)
         self.image_flag = True
+
+    def BoolCallback(self, msg):
+        self.start = msg.data
 
     def first_processing(self):
         self.frame = self.cv_image
@@ -107,13 +112,12 @@ class OpticalFlow(object):
 
         while not rospy.is_shutdown():
             if self.image_flag:
-                # print("Callback")
                 if self.first_frame:
                     self.first_processing()
                 else:
                     self.optical_flow(threshold)
             else:
-                print("Waiting...")
+                print("Waiting Image Data...")
             self.pub.publish(self.stop)
             rate.sleep()
         return 0

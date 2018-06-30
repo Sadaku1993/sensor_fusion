@@ -5,8 +5,9 @@ void SaveData::odomCallback(const OdometryConstPtr msg)
 
     if(!odom_flag)
     {
+		cout<<"first odom"<<endl;
         old_odom = *msg;
-        odom_flag = false;
+        odom_flag = true;
     }
     else{
         new_odom = *msg;
@@ -127,7 +128,8 @@ bool SaveData::check_savepoint()
         return true;
     }
     else{
-        cout<<"arrive save point!!! Publish Stop Flag!!!"<<endl;
+        cout<<"move to save point!!!"<<endl;
+		printf("distance:%.2f / %.2f\n", distance, threshold);
         emergency_flag.data = false;
         emergency_pub.publish(emergency_flag);
         return false;

@@ -16,6 +16,6 @@
         <remap from="image" to="/zed0/left/image_rect_color" />
         <remap from="optical_flow/raw"          to="/zed0/optical_flow/raw" />
         <remap from="optical_flow/compressed"   to="/zed0/optical_flow/compressed" />
-        <remap from="mode" to="/zed0/move" />
+        <remap from="move" to="/zed0/move" />
     </node>
 </launch>
