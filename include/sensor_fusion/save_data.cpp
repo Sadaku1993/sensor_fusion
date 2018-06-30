@@ -18,6 +18,8 @@ void SaveData::odomCallback(const OdometryConstPtr msg)
     }
 
     arrival = check_savepoint();
+
+    save_data();
 }
 
 void SaveData::cloudCallback(const PointCloud2ConstPtr msg)
