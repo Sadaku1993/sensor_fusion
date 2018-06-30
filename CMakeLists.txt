@@ -47,7 +47,7 @@ include_directories(${Eigen_INCLUDE_DIRS})
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
 # catkin_python_setup()
 
-################################################
+###############################################a
 ## Declare ROS messages, services and actions ##
 ################################################
 
@@ -76,6 +76,7 @@ add_message_files(
   FILES
   Cluster.msg
   ClusterArray.msg
+  Data.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -97,6 +98,7 @@ add_message_files(
    DEPENDENCIES
    sensor_msgs   
    std_msgs
+   geometry_msgs
 )
 
 ################################################
@@ -196,6 +198,11 @@ add_executable(calc_movement depthimage/calc_movement.cpp)
 add_executable(core depthimage/core.cpp)
 add_executable(lcl_for_depthimage depthimage/lcl_for_depthimage.cpp)
 add_executable(savecloud depthimage/savecloud.cpp)
+
+
+## Save Cloud
+add_executable(save_data savecloud/save_data.cpp)
+add_executable(message_filters_test savecloud/message_filters_test.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -348,6 +355,19 @@ target_link_libraries(lcl_for_depthimage
   ${PCL_LIBRARIES}
 )
 target_link_libraries(savecloud
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+
+## SaveCloud
+target_link_libraries(save_data
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+
+target_link_libraries(message_filters_test
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}

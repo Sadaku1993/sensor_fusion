@@ -26,15 +26,15 @@ typedef pcl::PointXYZI PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
+#include <sensor_fusion/create_matrix.h>
+#include <sensor_fusion/savePCDFile.h>
 
 class SaveCloud{
     private:
         ros::NodeHandle nh;
         
-        // ros::Subscriber waypoint_sub;
         ros::Subscriber odom_sub;
         ros::Subscriber cloud_sub;
-
         ros::Publisher cloud_pub;
         ros::Publisher stop_pub;
 
@@ -64,12 +64,8 @@ class SaveCloud{
 
     public:
         SaveCloud();
-        // void waypointCallback(const std_msgs::BoolConstPtr msg);
         void odomCallback(const nav_msgs::OdometryConstPtr msg);
         void cloudCallback(const sensor_msgs::PointCloud2ConstPtr msg);
-        Eigen::Matrix4f create_matrix(nav_msgs::Odometry odom_now, float reflect);
-        void detection();
-		void savePCDFile(CloudAPtr cloud, int count);
 };
 
 SaveCloud::SaveCloud()
@@ -78,7 +74,6 @@ SaveCloud::SaveCloud()
     nh.getParam("save_count", save_count);
     nh.getParam("threshold", threshold);
 
-    // waypoint_sub    = nh.subscribe("/waypoint" , 10, &SaveCloud::waypointCallback,  this);
     odom_sub        = nh.subscribe("/odom"     , 10, &SaveCloud::odomCallback,      this);
     cloud_sub       = nh.subscribe("/cloud"    , 10, &SaveCloud::cloudCallback,     this);
 
@@ -110,39 +105,6 @@ SaveCloud::SaveCloud()
 	pcd_count = 0;
 }
 
-void SaveCloud::savePCDFile(CloudAPtr cloud, int count)
-{
-    string file_name = to_string(count);
-    // string path = HOME_DIRS + "/" + FILE_PATH + "/" + SAVE_PATH;
-    pcl::io::savePCDFileASCII("/home/amsl/PCD/Save/"+file_name+".pcd", *cloud);
-    printf("Num:%d saved %d\n", count, int(cloud->points.size()));
-}
-
-
-
-Eigen::Matrix4f SaveCloud::create_matrix(nav_msgs::Odometry odom_now, float reflect){
-    double roll_now, pitch_now, yaw_now;
-    tf::Quaternion q_now(odom_now.pose.pose.orientation.x, odom_now.pose.pose.orientation.y, odom_now.pose.pose.orientation.z, odom_now.pose.pose.orientation.w);
-    tf::Matrix3x3(q_now).getRPY(roll_now, pitch_now, yaw_now);
-    Eigen::Translation3f init_translation(reflect*odom_now.pose.pose.position.x, reflect*odom_now.pose.pose.position.y, reflect*odom_now.pose.pose.position.z);
-    Eigen::AngleAxisf init_rotation_x(reflect*roll_now, Eigen::Vector3f::UnitX());
-    Eigen::AngleAxisf init_rotation_y(reflect*pitch_now, Eigen::Vector3f::UnitY());
-    Eigen::AngleAxisf init_rotation_z(reflect*yaw_now, Eigen::Vector3f::UnitZ());
-    Eigen::Matrix4f init_guess = (init_translation * init_rotation_z * init_rotation_y * init_rotation_x).matrix();
-    return init_guess;
-}
-
-/*
-void SaveCloud::waypointCallback(const std_msgs::BoolConstPtr msg)
-{
-    waypoint_flag = msg->data;
-    if(waypoint_flag){
-        save_flag = true;
-        cout<<"Arrive WayPoint"<<endl;
-    }
-}
-*/
-
 void SaveCloud::odomCallback(const nav_msgs::OdometryConstPtr msg)
 {
     odom_ = *msg;
@@ -165,7 +127,6 @@ void SaveCloud::odomCallback(const nav_msgs::OdometryConstPtr msg)
 
     if(threshold<meter)
 	{
-		// cout<<"--------RESET------"<<endl;
         save_flag = true;
 	}
 }
