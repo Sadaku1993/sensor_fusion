@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+	<node pkg="sensor_fusion" type="save_data" name="save_data" output="screen">
+        <param name="distance" type="vdouble" value="5.0" />
+        <remap from="odom"      to="odom" />
+        <remap from="cloud"     to="cloud/tf" />
+    </node>
+</launch>
