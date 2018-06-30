@@ -32,7 +32,7 @@
 #include "Eigen/Dense"
 #include "Eigen/LU"
 
-typedef pcl::PointXYZI PointA;
+typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
@@ -59,7 +59,6 @@ class SaveData{
         ros::Subscriber zed2_optical_flow_sub;
 
         ros::Publisher emergency_pub;
-        ros::Publisher optical_flow_reset_pub;
 
         // odometry
         bool odom_flag;
@@ -100,10 +99,13 @@ class SaveData{
         int save_count;
         int count;
         CloudAPtr save_cloud;
+		int node_num;
 
         // Stop
         Bool emergency_flag;
         bool arrival;
+		int fail_count;
+		int trial_count;
 
     public:
         SaveData();
@@ -140,6 +142,8 @@ class SaveData{
         bool check_savepoint();
 
         void save_data();
+
+		void reset();
 };
 
 SaveData::SaveData()
@@ -149,9 +153,12 @@ SaveData::SaveData()
       zed2_image_sub(nh, "/zed2/image", 10), zed2_cinfo_sub(nh, "/zed2/cinfo", 10),
       zed0_sync(ZED_sync_subs(10), zed0_image_sub, zed0_cinfo_sub),
       zed1_sync(ZED_sync_subs(10), zed1_image_sub, zed1_cinfo_sub),
-      zed2_sync(ZED_sync_subs(10), zed2_image_sub, zed2_cinfo_sub)
+      zed2_sync(ZED_sync_subs(10), zed2_image_sub, zed2_cinfo_sub),
+	  save_cloud(new CloudA)
 {
     nh.getParam("threshold", threshold);
+	nh.getParam("save_count",save_count);
+	nh.getParam("trial_count", trial_count);
 
     odom_sub = nh.subscribe("/odom", 10, &SaveData::odomCallback, this);
     cloud_sub = nh.subscribe("/cloud", 10, &SaveData::cloudCallback, this);
@@ -165,7 +172,6 @@ SaveData::SaveData()
 	zed2_sync.registerCallback(boost::bind(&SaveData::zed2_callback, this, _1, _2));
 
     emergency_pub = nh.advertise<Bool>("/emergency_stop", 10);
-    optical_flow_reset_pub = nh.advertise<Bool>("/optical_flow_reset", 10);
 
     // odom
     odom_flag = false;
@@ -183,8 +189,8 @@ SaveData::SaveData()
 
     //save cloud
     save_flag = false;
-    save_count = 0;
     count = 0;
+	node_num = 0;
 
     // stop
     emergency_flag.data = false;
@@ -194,6 +200,8 @@ SaveData::SaveData()
     zed0_data = true;
     zed1_data = true;
     zed2_data = true;
+
+	fail_count = 0;
 }
 
 

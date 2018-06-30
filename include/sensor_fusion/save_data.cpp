@@ -28,7 +28,7 @@ void SaveData::cloudCallback(const PointCloud2ConstPtr msg)
     if(save_flag)
         save_pointcloud(msg);
     else
-        save_count = 0;
+        count = 0;
 }
 
 void SaveData::zed0_callback(const ImageConstPtr& image, const CameraInfoConstPtr& cinfo)
@@ -84,19 +84,19 @@ void SaveData::zed2_callback(const ImageConstPtr& image, const CameraInfoConstPt
 
 void SaveData::zed0_optical_flow_calback(const BoolConstPtr msg)
 {
-    printf("zed0 optical_flow\n");
+    // printf("zed0 optical_flow\n");
     zed0_data = msg->data;
 }
 
 void SaveData::zed1_optical_flow_calback(const BoolConstPtr msg)
 {
-    printf("zed1 optical_flow\n");
+    // printf("zed1 optical_flow\n");
     zed1_data = msg->data;
 }
 
 void SaveData::zed2_optical_flow_calback(const BoolConstPtr msg)
 {
-    printf("zed2 optical_flow\n");
+    // printf("zed2 optical_flow\n");
     zed2_data = msg->data;
 }
 
@@ -107,28 +107,38 @@ void SaveData::save_pointcloud(const PointCloud2ConstPtr cloud)
     CloudAPtr threshold_cloud(new CloudA);
     
     pcl::fromROSMsg(*cloud, *input_cloud);
-    pcl::transformPointCloud(*input_cloud, *transform_cloud, transform_matrix);
-
+	pcl::transformPointCloud(*input_cloud, *transform_cloud, transform_matrix);
+	
     for(size_t i=0;i<input_cloud->points.size();i++){
         double distance = sqrt(pow(input_cloud->points[i].x, 2)+ pow(input_cloud->points[i].y, 2) + pow(input_cloud->points[i].z, 2));
         if(distance < 30)
             threshold_cloud->points.push_back(transform_cloud->points[i]);
     }
+
     if(count < save_count)
-        *save_cloud += *threshold_cloud;
+	{
+		*save_cloud += *threshold_cloud;
+		if(count % 100 == 0) printf("count:%d/%d Cloud_Size:%d\n", count, save_count, int(save_cloud->points.size()));
+	}
+
+	if(count == save_count)
+	{
+		cout<<"Node:"<<node_num<<" Success Save PointCloud!!! Next Node"<<endl;
+		reset();
+	}
     count++;
 }
 
 bool SaveData::check_savepoint()
 {
     if(threshold < distance){
-        cout<<"arrive save point!!! Publish Stop Flag!!!"<<endl;
+        // cout<<"arrive save point!!! Publish Stop Flag!!!"<<endl;
         emergency_flag.data = true;
         emergency_pub.publish(emergency_flag);
         return true;
     }
     else{
-        cout<<"move to save point!!!"<<endl;
+        // cout<<"move to save point!!!"<<endl;
 		printf("distance:%.2f / %.2f\n", distance, threshold);
         emergency_flag.data = false;
         emergency_pub.publish(emergency_flag);
@@ -139,22 +149,41 @@ bool SaveData::check_savepoint()
 void SaveData::save_data()
 {
 	double vel = sqrt( pow(odom.twist.twist.linear.x, 2) + pow(odom.twist.twist.linear.y, 2) );
-    if(arrival && vel < 0.00001)
+    if(arrival && vel < 0.01)
     {
-        cout<<"Stanby OK!!!!!"<<endl;
-        cout<<"check world movement..."<<endl;
+        // cout<<"Stand by OK!!!!!"<<endl;
 
-        if(zed0_data && zed1_data && zed2_data)
-            cout<<"world is stop"<<endl;
-        else
-            cout<<"zed0:"<<zed0_data<<" zed1:"<<zed1_data<<" zed2:"<<zed2_data<<endl;
+        if(zed0_data && zed1_data && zed2_data){
+			// cout<<"   world is stop"<<endl;
+			save_flag = true;
+		}
+        else{
+			count = 0;
+			save_cloud->points.clear();
+			fail_count++;
+            cout<<"   Fail to Save PointCloud!!!!! "<<"FAIL COUNT:"<<fail_count<<endl;;
+		}
+
+		if(trial_count == fail_count)
+		{
+			cout<<"Node:"<<node_num<<" Fail... Move to Next Node"<<endl;
+			reset();
+		}
     }
     else if(arrival)
     {
-        cout<<"speed down and reset optical_flow "<<endl;
-        Bool reset;
-        reset.data = true;
-        optical_flow_reset_pub.publish(reset);
+        cout<<"speed down"<<endl;
     }
+}
+
+void SaveData::reset()
+{
+	node_num++;
+	fail_count = 0;
+	count = 0;
+	distance = 0;
+	save_cloud->points.clear();
+	arrival = false;
+	save_flag = false;
 }
 

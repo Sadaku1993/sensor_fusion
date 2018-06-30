@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+    <node name="republish_optical_flow0" type="republish" pkg="image_transport" output="screen" 
+          args="compressed in:=/zed0/optical_flow raw out:=/zed0/optical_flow/republish" />
+    <node name="republish_optical_flow1" type="republish" pkg="image_transport" output="screen" 
+          args="compressed in:=/zed1/optical_flow raw out:=/zed1/optical_flow/republish" />
+    <node name="republish_optical_flow2" type="republish" pkg="image_transport" output="screen" 
+          args="compressed in:=/zed2/optical_flow raw out:=/zed2/optical_flow/republish" />
+</launch>
