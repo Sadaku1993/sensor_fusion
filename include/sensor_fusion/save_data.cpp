@@ -218,7 +218,7 @@ void SaveData::transform_pointcloud(CloudAPtr cloud,
     transform.setOrigin(tf::Vector3(x, y, z));
     transform.setRotation(tf::Quaternion(q_x, q_y, q_z, q_w));
 
-    CloudAPtr trans_cloud;
+    CloudAPtr trans_cloud(new CloudA);
     pcl_ros::transformPointCloud(*cloud, *trans_cloud, transform);
-    cout<<"TF Cloud"<<" Frame:"<<trans_cloud->header<<" Size:"<<trans_cloud->points.size()<<endl;
+    cout<<"TF Cloud"<<" Frame:"<<trans_cloud->header.frame_id<<" Size:"<<trans_cloud->points.size()<<endl;
 }
