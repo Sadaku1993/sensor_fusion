@@ -37,8 +37,7 @@
 #include "Eigen/Dense"
 #include "Eigen/LU"
 
-//typedef pcl::PointXYZ PointA;
-typedef pcl::PointXYZRGBNormal PointA;
+typedef pcl::PointXYZRGB PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 
@@ -190,6 +189,9 @@ class SaveData{
         void pub_cloud(CloudAPtr cloud,
                        string frame,
                        ros::Publisher pub);
+
+		void savePCDFile(CloudAPtr cloud, int count);
+ 
 };
 
 SaveData::SaveData()
@@ -241,7 +243,7 @@ SaveData::SaveData()
     distance = 0.0;
 
     //save cloud
-    save_flag = false;
+    save_flag = true;
     count = 0;
 	node_num = 0;
 

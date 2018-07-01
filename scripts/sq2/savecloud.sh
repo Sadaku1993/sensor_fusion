@@ -6,7 +6,7 @@ source /home/amsl/.bashrc
 
 # Launch SQ Lidar
 # gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sq1_extra sensor_fusion_for_joy.launch' --geometry=50x12+0+0 &
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sq1_extra run_sq2_for_joy.launch' --geometry=50x12+0+0 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sq1_extra sensor_fusion_for_joy.launch ' --geometry=50x12+0+0 &
 
 sleep 1s
 
@@ -34,8 +34,8 @@ gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion republish_optica
 sleep 1s
 
 # imu complement
-# gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion imu_complement.launch' --geometry=50x12+250+750 &
-# sleep 1s
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion imu_complement.launch' --geometry=50x12+250+750 &
+sleep 1s
 
 # SaveCloud
 gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion savecloud.launch' --geometry=50x12+500+250 &

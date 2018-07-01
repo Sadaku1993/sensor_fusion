@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <launch>
 	<node pkg="sensor_fusion" type="save_data" name="save_data" output="screen">
-		<param name="threshold"     type="double"   value="2.0" />
+		<param name="threshold"     type="double"   value="5.0" />
 		<param name="save_count"    type="int"      value="1000" />
 		<param name="trial_count"   type="int"      value="10" />
+		<param name="global_frame"  type="string"   value="/odom" />
         <param name="laser_frame"   type="string"   value="/centerlaser" />
         <param name="zed0_frame"    type="string"   value="/zed0/zed_left_camera" />
         <param name="zed1_frame"    type="string"   value="/zed1/zed_left_camera" />
