@@ -27,7 +27,10 @@ gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion laser_transform_
 sleep 1s
 
 # republish
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion republish_optical_flow.launch ' --geometry=50x12+250+750 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion republish.launch ' --geometry=50x12+250+750 &
+sleep 1s
+
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion republish_optical_flow.launch ' --geometry=50x12+500+0 &
 sleep 1s
 
 # imu complement
@@ -35,7 +38,7 @@ sleep 1s
 # sleep 1s
 
 # SaveCloud
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion savecloud.launch' --geometry=50x12+500+0 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion savecloud.launch' --geometry=50x12+500+250 &
 sleep 4s
 
 # rviz

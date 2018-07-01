@@ -9,5 +9,11 @@
 		<remap from="/zed0/optical_flow" to="/zed0/move" />
 		<remap from="/zed1/optical_flow" to="/zed1/move" />
 		<remap from="/zed2/optical_flow" to="/zed2/move" />
+        <remap from="/zed0/image" to="/zed0/left/image_rect_color/republish" />
+        <remap from="/zed0/cinfo" to="/zed0/left/camera_info" />
+        <remap from="/zed1/image" to="/zed1/left/image_rect_color/republish" />
+        <remap from="/zed1/cinfo" to="/zed1/left/camera_info" />
+        <remap from="/zed2/image" to="/zed2/left/image_rect_color/republish" />
+        <remap from="/zed2/cinfo" to="/zed2/left/camera_info" />
     </node>
 </launch>
