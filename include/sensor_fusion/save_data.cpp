@@ -19,7 +19,6 @@ void SaveData::odomCallback(const OdometryConstPtr msg)
     }
 
     arrival = check_savepoint();
-
     save_data();
 }
 
@@ -130,6 +129,7 @@ void SaveData::save_pointcloud(const PointCloud2ConstPtr cloud)
     count++;
 }
 
+// savepointに到達したかを判定し, emergency_flagによりsq2を停止
 bool SaveData::check_savepoint()
 {
     if(threshold < distance){
@@ -147,6 +147,11 @@ bool SaveData::check_savepoint()
     }
 }
 
+// savepointに到達し, かつ停止が確認された場合
+// optical_flowにより動的物体がカメラの画角内にいないか判定する
+// 動的物体がない場合はsave_flag=trueとし, 点群を保存するプロセス save_pointcloudへ移行
+// 確認された場合は一定回数(trial_count)試行
+// 失敗した場合, reset()により次のsavepointを目指す
 void SaveData::save_data()
 {
 	double vel = sqrt( pow(odom.twist.twist.linear.x, 2) + pow(odom.twist.twist.linear.y, 2) );
@@ -221,7 +226,7 @@ void SaveData::camera_process(CloudAPtr cloud,
                     string source_frame,
                     CloudAPtr &output)
 {
-    cout<<"Camera Process : "<<"target_frame"<<endl;
+    cout<<"Camera Process : "<<"target_frame : "<<target_frame<<" source_frame : "<<source_frame<<endl;
     tf::Transform transform;
     double x = stamp_transform.getOrigin().x();
     double y = stamp_transform.getOrigin().y();
@@ -232,6 +237,15 @@ void SaveData::camera_process(CloudAPtr cloud,
     double q_w = stamp_transform.getRotation().w();
     transform.setOrigin(tf::Vector3(x, y, z));
     transform.setRotation(tf::Quaternion(q_x, q_y, q_z, q_w));
+
+    double roll, pitch, yaw;
+    tf::Matrix3x3(tf::Quaternion(q_x, q_y, q_z, q_w)).getRPY(roll ,pitch, yaw);
+    printf("---x:%.2f y:%.2f z:%.2f roll:%.2f pitch:%.2f yaw:%.2f\n", x, y, z, roll, pitch, yaw);
+
+
+    tf::Transform inverse_transform;
+    inverse_transform = transform.inverse();
+
 
     CloudAPtr trans_cloud(new CloudA);
     transform_pointcloud(cloud, trans_cloud, transform, target_frame, source_frame);
@@ -248,8 +262,8 @@ void SaveData::transform_pointcloud(CloudAPtr cloud,
                                     string target_frame, 
                                     string source_frame)
 {
-    // cout<<"TF PointCloud..."<<"target_frame"<<"---->"<<source_frame<<endl;
     pcl_ros::transformPointCloud(*cloud, *trans_cloud, transform);
+    trans_cloud->header.frame_id = target_frame;
     cout<<"---TF Cloud"<<" Frame:"<<trans_cloud->header.frame_id<<" Size:"<<trans_cloud->points.size()<<endl;
 }
 
