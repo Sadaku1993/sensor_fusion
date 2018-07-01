@@ -174,6 +174,12 @@ class SaveData{
                                CloudAPtr& pickup_cloud,
                                ImageConstPtr image,
                                CameraInfoConstPtr cinfo);
+
+        void inverse_pointcloud(CloudAPtr cloud,
+                                CloudAPtr& inverse_cloud,
+                                tf::Transform transform,
+                                string target_frame,
+                                string source_frame);
 };
 
 SaveData::SaveData()

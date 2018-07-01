@@ -226,7 +226,7 @@ void SaveData::camera_process(CloudAPtr cloud,
                     string source_frame,
                     CloudAPtr &output)
 {
-    cout<<"Camera Process : "<<"target_frame : "<<target_frame<<" source_frame : "<<source_frame<<endl;
+    cout<<"Camera Process : "<<"target_frame:"<<target_frame<<" source_frame:"<<source_frame<<endl;
     tf::Transform transform;
     double x = stamp_transform.getOrigin().x();
     double y = stamp_transform.getOrigin().y();
@@ -243,15 +243,14 @@ void SaveData::camera_process(CloudAPtr cloud,
     printf("---x:%.2f y:%.2f z:%.2f roll:%.2f pitch:%.2f yaw:%.2f\n", x, y, z, roll, pitch, yaw);
 
 
-    tf::Transform inverse_transform;
-    inverse_transform = transform.inverse();
-
-
     CloudAPtr trans_cloud(new CloudA);
     transform_pointcloud(cloud, trans_cloud, transform, target_frame, source_frame);
     
     CloudAPtr pickup_cloud(new CloudA);
     pickup_pointcloud(trans_cloud, pickup_cloud, image, cinfo);
+
+    CloudAPtr inverse_cloud(new CloudA);
+    inverse_pointcloud(pickup_cloud, inverse_cloud, transform, target_frame, source_frame);
 }
 
 
@@ -306,5 +305,30 @@ void SaveData::pickup_pointcloud(CloudAPtr cloud,
             pickup_cloud->points.push_back(p);
         }
     }
-    cout<<"---pickup cloud..."<<pickup_cloud->points.size()<<endl;
+    cout<<"---Pickup Cloud"<<" Frame:"<<pickup_cloud->header.frame_id<<" Size:"<<pickup_cloud->points.size()<<endl;
 }
+
+void SaveData::inverse_pointcloud(CloudAPtr cloud,
+                                  CloudAPtr& inverse_cloud,
+                                  tf::Transform transform,
+                                  string target_frame,
+                                  string source_frame)
+{
+    tf::Transform inverse_transform;
+    inverse_transform = transform.inverse();
+
+    double x = inverse_transform.getOrigin().x();
+    double y = inverse_transform.getOrigin().y();
+    double z = inverse_transform.getOrigin().z();
+    tf::Quaternion q = inverse_transform.getRotation();
+
+    double roll, pitch, yaw;
+    tf::Matrix3x3(q).getRPY(roll ,pitch, yaw);
+
+    pcl_ros::transformPointCloud(*cloud, *inverse_cloud, inverse_transform);
+    inverse_cloud->header.frame_id = source_frame;
+    cout<<"---Inverse Cloud"<<" Frame:"<<inverse_cloud->header.frame_id<<" Size:"<<inverse_cloud->points.size()<<endl;
+
+    printf("---x:%.2f y:%.2f z:%.2f roll:%.2f pitch:%.2f yaw:%.2f\n", x, y, z, roll, pitch, yaw);
+}
+
