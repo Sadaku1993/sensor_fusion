@@ -17,6 +17,11 @@
 #include <pcl_ros/point_cloud.h>
 #include <pcl_ros/transforms.h>
 
+#include <opencv2/opencv.hpp>
+#include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
+#include <image_geometry/pinhole_camera_model.h>
+
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
@@ -151,11 +156,24 @@ class SaveData{
 
         void save_process();
 
-        void transform_pointcloud(CloudAPtr cloud, 
-                                  CameraInfo cinfo, 
-                                  tf::StampedTransform stamp_transform, 
+        void camera_process(CloudAPtr cloud,
+                            CameraInfoConstPtr cinfo,
+                            ImageConstPtr image,
+                            tf::StampedTransform stamp_transform,
+                            string target_frame,
+                            string source_frame,
+                            CloudAPtr &output);
+
+        void transform_pointcloud(CloudAPtr cloud,
+                                  CloudAPtr& trans_cloud,
+                                  tf::Transform transform, 
                                   string target_frame,
                                   string source_frame);
+
+        void pickup_pointcloud(CloudAPtr cloud,
+                               CloudAPtr& pickup_cloud,
+                               ImageConstPtr image,
+                               CameraInfoConstPtr cinfo);
 };
 
 SaveData::SaveData()

@@ -39,8 +39,8 @@ void SaveData::zed0_callback(const ImageConstPtr& image, const CameraInfoConstPt
 
     try{
         ros::Time now = ros::Time::now();
-        zed0_listener.waitForTransform("/centerlaser", "/zed0/zed_left_camera", now, ros::Duration(1.0));
-        zed0_listener.lookupTransform("/centerlaser", "/zed0/zed_left_camera",  now, zed0_transform);
+        zed0_listener.waitForTransform(zed0_frame, laser_frame, now, ros::Duration(1.0));
+        zed0_listener.lookupTransform(zed0_frame, laser_frame,  now, zed0_transform);
     }
     catch (tf::TransformException ex){
         ROS_ERROR("%s",ex.what());
@@ -56,8 +56,8 @@ void SaveData::zed1_callback(const ImageConstPtr& image, const CameraInfoConstPt
 
     try{
         ros::Time now = ros::Time::now();
-        zed1_listener.waitForTransform("/centerlaser", "/zed1/zed_left_camera", now, ros::Duration(1.0));
-        zed1_listener.lookupTransform("/centerlaser", "/zed1/zed_left_camera",  now, zed1_transform);
+        zed1_listener.waitForTransform(zed1_frame, laser_frame, now, ros::Duration(1.0));
+        zed1_listener.lookupTransform(zed1_frame, laser_frame,  now, zed1_transform);
     }
     catch (tf::TransformException ex){
         ROS_ERROR("%s",ex.what());
@@ -73,8 +73,8 @@ void SaveData::zed2_callback(const ImageConstPtr& image, const CameraInfoConstPt
 
     try{
         ros::Time now = ros::Time::now();
-        zed2_listener.waitForTransform("/centerlaser", "/zed2/zed_left_camera", now, ros::Duration(1.0));
-        zed2_listener.lookupTransform("/centerlaser", "/zed2/zed_left_camera",  now, zed2_transform);
+        zed2_listener.waitForTransform(zed2_frame, laser_frame, now, ros::Duration(1.0));
+        zed2_listener.lookupTransform(zed2_frame, laser_frame,  now, zed2_transform);
     }
     catch (tf::TransformException ex){
         ROS_ERROR("%s",ex.what());
@@ -191,22 +191,37 @@ void SaveData::reset()
 void SaveData::save_process()
 {
     cout<<"save process"<<endl;
+    CloudAPtr zed0_cloud(new CloudA);
+    CloudAPtr zed1_cloud(new CloudA);
+    CloudAPtr zed2_cloud(new CloudA);
+
     // zed0
-    transform_pointcloud(save_cloud, *zed0_cinfo, zed0_transform, laser_frame, zed0_frame);
-    // zed1
-    transform_pointcloud(save_cloud, *zed1_cinfo, zed1_transform, laser_frame, zed1_frame);
-    // zed2
-    transform_pointcloud(save_cloud, *zed2_cinfo, zed2_transform, laser_frame, zed2_frame);
+    camera_process(save_cloud, zed0_cinfo, zed0_image,
+                   zed0_transform,
+                   zed0_frame, laser_frame,
+                   zed0_cloud);
+    // zed1 
+    camera_process(save_cloud, zed1_cinfo, zed1_image,
+            zed1_transform,
+            zed1_frame, laser_frame,
+            zed1_cloud);
+    // zed2                                                                 
+    camera_process(save_cloud, zed2_cinfo, zed2_image,
+            zed2_transform,
+            zed2_frame, laser_frame,
+            zed2_cloud);
 
 }
 
-void SaveData::transform_pointcloud(CloudAPtr cloud,
-                                    CameraInfo cinfo,
-                                    tf::StampedTransform stamp_transform,
-                                    string target_frame, string source_frame)
+void SaveData::camera_process(CloudAPtr cloud, 
+                    CameraInfoConstPtr cinfo, 
+                    ImageConstPtr image,
+                    tf::StampedTransform stamp_transform,
+                    string target_frame, 
+                    string source_frame,
+                    CloudAPtr &output)
 {
-    cout<<"TF PointCloud..."<<"target_frame"<<"---->"<<source_frame<<endl;
-
+    cout<<"Camera Process : "<<"target_frame"<<endl;
     tf::Transform transform;
     double x = stamp_transform.getOrigin().x();
     double y = stamp_transform.getOrigin().y();
@@ -219,6 +234,63 @@ void SaveData::transform_pointcloud(CloudAPtr cloud,
     transform.setRotation(tf::Quaternion(q_x, q_y, q_z, q_w));
 
     CloudAPtr trans_cloud(new CloudA);
+    transform_pointcloud(cloud, trans_cloud, transform, target_frame, source_frame);
+    
+    CloudAPtr pickup_cloud(new CloudA);
+    pickup_pointcloud(trans_cloud, pickup_cloud, image, cinfo);
+}
+
+
+
+void SaveData::transform_pointcloud(CloudAPtr cloud,
+                                    CloudAPtr& trans_cloud,
+                                    tf::Transform transform,
+                                    string target_frame, 
+                                    string source_frame)
+{
+    // cout<<"TF PointCloud..."<<"target_frame"<<"---->"<<source_frame<<endl;
     pcl_ros::transformPointCloud(*cloud, *trans_cloud, transform);
-    cout<<"TF Cloud"<<" Frame:"<<trans_cloud->header.frame_id<<" Size:"<<trans_cloud->points.size()<<endl;
+    cout<<"---TF Cloud"<<" Frame:"<<trans_cloud->header.frame_id<<" Size:"<<trans_cloud->points.size()<<endl;
+}
+
+void SaveData::pickup_pointcloud(CloudAPtr cloud, 
+                       CloudAPtr& pickup_cloud,
+                       ImageConstPtr image_msg,
+                       CameraInfoConstPtr cinfo_msg)
+{
+    cv_bridge::CvImageConstPtr cv_img_ptr;
+    try{
+      cv_img_ptr = cv_bridge::toCvShare(image_msg);
+    }catch (cv_bridge::Exception& e){
+      ROS_ERROR("cv_bridge exception: %s", e.what());
+      return;
+    }
+
+    cv::Mat image(cv_img_ptr->image.rows, cv_img_ptr->image.cols, cv_img_ptr->image.type());
+    image = cv_bridge::toCvShare(image_msg)->image;
+
+    image_geometry::PinholeCameraModel cam_model;
+    cam_model.fromCameraInfo(cinfo_msg);
+
+    pickup_cloud->header.frame_id = cloud->header.frame_id;
+
+    for(CloudA::iterator pt = cloud->points.begin(); pt<cloud->points.end(); pt++)
+    {
+        if ((*pt).x<0) continue;
+        cv::Point3d pt_cv(-(*pt).y, -(*pt).z, (*pt).x);
+        cv::Point2d uv;
+        uv = cam_model.project3dToPixel(pt_cv);
+
+        if(uv.x>0 && uv.x < image.cols && uv.y > 0 && uv.y < image.rows){
+            PointA p;
+            p.x = (*pt).x;
+            p.y = (*pt).y;
+            p.z = (*pt).z;
+            // p.b = image.at<cv::Vec3b>(uv)[0];
+            // p.g = image.at<cv::Vec3b>(uv)[1];
+            // p.r = image.at<cv::Vec3b>(uv)[2];
+            pickup_cloud->points.push_back(p);
+        }
+    }
+    cout<<"---pickup cloud..."<<pickup_cloud->points.size()<<endl;
 }
