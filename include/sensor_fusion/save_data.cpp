@@ -33,7 +33,7 @@ void SaveData::cloudCallback(const PointCloud2ConstPtr msg)
 
 void SaveData::zed0_callback(const ImageConstPtr& image, const CameraInfoConstPtr& cinfo)
 {
-    printf("zed0 callback\n");
+    // printf("zed0 callback\n");
     zed0_image = image;
     zed0_cinfo = cinfo;
 
@@ -50,7 +50,7 @@ void SaveData::zed0_callback(const ImageConstPtr& image, const CameraInfoConstPt
 
 void SaveData::zed1_callback(const ImageConstPtr& image, const CameraInfoConstPtr& cinfo)
 {
-    printf("zed1 callback\n");
+    // printf("zed1 callback\n");
     zed1_image = image;
     zed1_cinfo = cinfo;
 
@@ -67,7 +67,7 @@ void SaveData::zed1_callback(const ImageConstPtr& image, const CameraInfoConstPt
 
 void SaveData::zed2_callback(const ImageConstPtr& image, const CameraInfoConstPtr& cinfo)
 {
-    cout<<"zed2 Callback"<<endl;
+    // cout<<"zed2 Callback"<<endl;
     zed2_image = image;
     zed2_cinfo = cinfo;
 
