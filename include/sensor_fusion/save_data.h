@@ -12,10 +12,10 @@
 #include <nav_msgs/Odometry.h>
 
 #include <pcl/point_cloud.h>
-#include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
 #include <pcl_ros/point_cloud.h>
+#include <pcl_ros/transforms.h>
 
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
@@ -59,6 +59,10 @@ class SaveData{
         ros::Subscriber zed2_optical_flow_sub;
 
         ros::Publisher emergency_pub;
+
+        //Frame
+        string laser_frame;
+        string zed0_frame, zed1_frame, zed2_frame;
 
         // odometry
         bool odom_flag;
@@ -144,6 +148,14 @@ class SaveData{
         void save_data();
 
 		void reset();
+
+        void save_process();
+
+        void transform_pointcloud(CloudAPtr cloud, 
+                                  CameraInfo cinfo, 
+                                  tf::StampedTransform stamp_transform, 
+                                  string target_frame,
+                                  string source_frame);
 };
 
 SaveData::SaveData()
@@ -159,6 +171,10 @@ SaveData::SaveData()
     nh.getParam("threshold", threshold);
 	nh.getParam("save_count",save_count);
 	nh.getParam("trial_count", trial_count);
+    nh.getParam("laser_frame", laser_frame);
+    nh.getParam("zed0_frame", zed0_frame);
+    nh.getParam("zed1_frame", zed1_frame);
+    nh.getParam("zed2_frame", zed2_frame);
 
     odom_sub = nh.subscribe("/odom", 10, &SaveData::odomCallback, this);
     cloud_sub = nh.subscribe("/cloud", 10, &SaveData::cloudCallback, this);

@@ -124,6 +124,7 @@ void SaveData::save_pointcloud(const PointCloud2ConstPtr cloud)
 	if(count == save_count)
 	{
 		cout<<"Node:"<<node_num<<" Success Save PointCloud!!! Next Node"<<endl;
+        save_process();
 		reset();
 	}
     count++;
@@ -187,3 +188,22 @@ void SaveData::reset()
 	save_flag = false;
 }
 
+void SaveData::save_process()
+{
+    cout<<"save process"<<endl;
+    // zed0
+    transform_pointcloud(save_cloud, *zed0_cinfo, zed0_transform, laser_frame, zed0_frame);
+    // zed1
+    transform_pointcloud(save_cloud, *zed1_cinfo, zed1_transform, laser_frame, zed1_frame);
+    // zed2
+    transform_pointcloud(save_cloud, *zed2_cinfo, zed2_transform, laser_frame, zed2_frame);
+
+}
+
+void SaveData::transform_pointcloud(CloudAPtr cloud,
+                                    CameraInfo cinfo,
+                                    tf::StampedTransform stamp_transform,
+                                    string target_frame, string source_frame)
+{
+    cout<<target_frame<<"---->"<<source_frame<<" transform pointcloud"<<endl;
+}
