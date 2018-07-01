@@ -205,5 +205,20 @@ void SaveData::transform_pointcloud(CloudAPtr cloud,
                                     tf::StampedTransform stamp_transform,
                                     string target_frame, string source_frame)
 {
-    cout<<target_frame<<"---->"<<source_frame<<" transform pointcloud"<<endl;
+    cout<<"TF PointCloud..."<<"target_frame"<<"---->"<<source_frame<<endl;
+
+    tf::Transform transform;
+    double x = stamp_transform.getOrigin().x();
+    double y = stamp_transform.getOrigin().y();
+    double z = stamp_transform.getOrigin().z();
+    double q_x = stamp_transform.getRotation().x();
+    double q_y = stamp_transform.getRotation().y();
+    double q_z = stamp_transform.getRotation().z();
+    double q_w = stamp_transform.getRotation().w();
+    transform.setOrigin(tf::Vector3(x, y, z));
+    transform.setRotation(tf::Quaternion(q_x, q_y, q_z, q_w));
+
+    CloudAPtr trans_cloud;
+    pcl_ros::transformPointCloud(*cloud, *trans_cloud, transform);
+    cout<<"TF Cloud"<<" Frame:"<<trans_cloud->header<<" Size:"<<trans_cloud->points.size()<<endl;
 }
