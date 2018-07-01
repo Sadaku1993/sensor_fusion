@@ -67,10 +67,16 @@ class SaveData{
         ros::Publisher emergency_pub;
 
         ros::Publisher cloud_pub;
+        ros::Publisher global_pub;
 
         //Frame
+        string global_frame;
         string laser_frame;
         string zed0_frame, zed1_frame, zed2_frame;
+
+        //global transform
+        tf::TransformListener global_listener;
+        tf::StampedTransform  global_transform;
 
         // odometry
         bool odom_flag;
@@ -85,7 +91,6 @@ class SaveData{
         // ZED0
         ImageConstPtr zed0_image;
         CameraInfoConstPtr zed0_cinfo;
-        Matrix4f zed0_transform_matrix;
         tf::TransformListener zed0_listener;
         tf::StampedTransform  zed0_transform;
         bool zed0_data;
@@ -93,7 +98,6 @@ class SaveData{
         // ZED1
         ImageConstPtr zed1_image;
         CameraInfoConstPtr zed1_cinfo;
-        Matrix4f zed1_transform_matrix;
         tf::TransformListener zed1_listener;
         tf::StampedTransform  zed1_transform;
         bool zed1_data;
@@ -101,7 +105,6 @@ class SaveData{
         // ZED2
         ImageConstPtr zed2_image;
         CameraInfoConstPtr zed2_cinfo;
-        Matrix4f zed2_transform_matrix;
         tf::TransformListener zed2_listener;
         tf::StampedTransform  zed2_transform;
         bool zed2_data;
@@ -202,6 +205,7 @@ SaveData::SaveData()
     nh.getParam("threshold", threshold);
 	nh.getParam("save_count",save_count);
 	nh.getParam("trial_count", trial_count);
+    nh.getParam("global_frame", global_frame);
     nh.getParam("laser_frame", laser_frame);
     nh.getParam("zed0_frame", zed0_frame);
     nh.getParam("zed1_frame", zed1_frame);
@@ -220,6 +224,7 @@ SaveData::SaveData()
 
     emergency_pub = nh.advertise<Bool>("/emergency_stop", 10);
     cloud_pub = nh.advertise<PointCloud2>("/cloud/saved", 10);
+    global_pub = nh.advertise<PointCloud2>("/cloud/global", 10);
 
     // odom
     odom_flag = false;

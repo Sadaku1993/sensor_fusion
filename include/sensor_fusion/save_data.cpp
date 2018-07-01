@@ -2,6 +2,16 @@ void SaveData::odomCallback(const OdometryConstPtr msg)
 {
     odom = *msg;
     transform_matrix = create_matrix(odom, 1.0);
+    
+    try{
+        ros::Time now = ros::Time::now();
+        global_listener.waitForTransform(global_frame, laser_frame, now, ros::Duration(1.0));
+        global_listener.lookupTransform(global_frame, laser_frame,  now, zed0_transform);
+    }
+    catch (tf::TransformException ex){
+        ROS_ERROR("%s",ex.what());
+        ros::Duration(1.0).sleep();
+    }
 
     if(!odom_flag)
     {
@@ -106,13 +116,20 @@ void SaveData::save_pointcloud(const PointCloud2ConstPtr cloud)
     CloudAPtr threshold_cloud(new CloudA);
     
     pcl::fromROSMsg(*cloud, *input_cloud);
-	pcl::transformPointCloud(*input_cloud, *transform_cloud, transform_matrix);
+    for(size_t i=0;i<input_cloud->points.size();i++){
+        double distance = sqrt(pow(input_cloud->points[i].x, 2)+ pow(input_cloud->points[i].y, 2) + pow(input_cloud->points[i].z, 2));
+        if(distance < 30)
+            threshold_cloud->points.push_back(input_cloud->points[i]);
+    }
+	
+    /*Laser座標系からGlobal座標系に変換
+    pcl::transformPointCloud(*input_cloud, *transform_cloud, transform_matrix);
 	
     for(size_t i=0;i<input_cloud->points.size();i++){
         double distance = sqrt(pow(input_cloud->points[i].x, 2)+ pow(input_cloud->points[i].y, 2) + pow(input_cloud->points[i].z, 2));
         if(distance < 30)
             threshold_cloud->points.push_back(transform_cloud->points[i]);
-    }
+    }*/
 
     if(count < save_count)
 	{
@@ -227,7 +244,22 @@ void SaveData::save_process()
     pub_cloud(zed_cloud, laser_frame, cloud_pub);
 
 	cout<<"Transform for Global"<<endl;
-
+    tf::Transform transform;
+    double x   = global_transform.getOrigin().x();
+    double y   = global_transform.getOrigin().y();
+    double z   = global_transform.getOrigin().z();
+    double q_x = global_transform.getRotation().x();
+    double q_y = global_transform.getRotation().y();
+    double q_z = global_transform.getRotation().z();
+    double q_w = global_transform.getRotation().w();
+    transform.setOrigin(tf::Vector3(x, y, z));
+    transform.setRotation(tf::Quaternion(q_x, q_y, q_z, q_w));
+    double roll, pitch, yaw;
+    tf::Matrix3x3(tf::Quaternion(q_x, q_y, q_z, q_w)).getRPY(roll ,pitch, yaw);
+    printf("---x:%.2f y:%.2f z:%.2f roll:%.2f pitch:%.2f yaw:%.2f\n", x, y, z, roll, pitch, yaw);
+    CloudAPtr global_cloud(new CloudA);
+    transform_pointcloud(zed_cloud, global_cloud, transform, global_frame, laser_frame);
+    pub_cloud(global_cloud, global_frame, global_pub);
 }
 
 void SaveData::camera_process(CloudAPtr cloud, 
