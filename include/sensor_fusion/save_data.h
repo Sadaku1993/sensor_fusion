@@ -37,7 +37,8 @@
 #include "Eigen/Dense"
 #include "Eigen/LU"
 
-typedef pcl::PointXYZ PointA;
+//typedef pcl::PointXYZ PointA;
+typedef pcl::PointXYZRGBNormal PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 

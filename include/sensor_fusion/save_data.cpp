@@ -226,6 +226,8 @@ void SaveData::save_process()
     cout<<"Publish Cloud"<<endl;
     pub_cloud(zed_cloud, laser_frame, cloud_pub);
 
+	cout<<"Transform for Global"<<endl;
+
 }
 
 void SaveData::camera_process(CloudAPtr cloud, 
@@ -309,9 +311,9 @@ void SaveData::pickup_pointcloud(CloudAPtr cloud,
             p.x = (*pt).x;
             p.y = (*pt).y;
             p.z = (*pt).z;
-            // p.b = image.at<cv::Vec3b>(uv)[0];
-            // p.g = image.at<cv::Vec3b>(uv)[1];
-            // p.r = image.at<cv::Vec3b>(uv)[2];
+            p.b = image.at<cv::Vec3b>(uv)[0];
+            p.g = image.at<cv::Vec3b>(uv)[1];
+            p.r = image.at<cv::Vec3b>(uv)[2];
             pickup_cloud->points.push_back(p);
         }
     }
