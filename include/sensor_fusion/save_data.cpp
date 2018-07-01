@@ -216,6 +216,16 @@ void SaveData::save_process()
             zed2_frame, laser_frame,
             zed2_cloud);
 
+    cout<<"Integrate PointCloud"<<endl;
+    CloudAPtr zed_cloud(new CloudA);
+    zed_cloud->header.frame_id = laser_frame;
+    *zed_cloud += *zed0_cloud;
+    *zed_cloud += *zed1_cloud;
+    *zed_cloud += *zed2_cloud;
+    
+    cout<<"Publish Cloud"<<endl;
+    pub_cloud(zed_cloud, laser_frame, cloud_pub);
+
 }
 
 void SaveData::camera_process(CloudAPtr cloud, 
@@ -224,7 +234,7 @@ void SaveData::camera_process(CloudAPtr cloud,
                     tf::StampedTransform stamp_transform,
                     string target_frame, 
                     string source_frame,
-                    CloudAPtr &output)
+                    CloudAPtr &output_cloud)
 {
     cout<<"Camera Process : "<<"target_frame:"<<target_frame<<" source_frame:"<<source_frame<<endl;
     tf::Transform transform;
@@ -249,8 +259,8 @@ void SaveData::camera_process(CloudAPtr cloud,
     CloudAPtr pickup_cloud(new CloudA);
     pickup_pointcloud(trans_cloud, pickup_cloud, image, cinfo);
 
-    CloudAPtr inverse_cloud(new CloudA);
-    inverse_pointcloud(pickup_cloud, inverse_cloud, transform, target_frame, source_frame);
+    // CloudAPtr inverse_cloud(new CloudA);
+    inverse_pointcloud(pickup_cloud, output_cloud, transform, target_frame, source_frame);
 }
 
 
@@ -332,3 +342,11 @@ void SaveData::inverse_pointcloud(CloudAPtr cloud,
     printf("---x:%.2f y:%.2f z:%.2f roll:%.2f pitch:%.2f yaw:%.2f\n", x, y, z, roll, pitch, yaw);
 }
 
+void SaveData::pub_cloud(CloudAPtr cloud, string frame, ros::Publisher pub)
+{
+    PointCloud2 pc2;
+    pcl::toROSMsg(*cloud, pc2);
+    pc2.header.frame_id = cloud->header.frame_id;
+    pc2.header.stamp = ros::Time::now();
+    pub.publish(pc2);
+}

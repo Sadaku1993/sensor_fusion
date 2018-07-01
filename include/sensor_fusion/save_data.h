@@ -65,6 +65,8 @@ class SaveData{
 
         ros::Publisher emergency_pub;
 
+        ros::Publisher cloud_pub;
+
         //Frame
         string laser_frame;
         string zed0_frame, zed1_frame, zed2_frame;
@@ -180,6 +182,10 @@ class SaveData{
                                 tf::Transform transform,
                                 string target_frame,
                                 string source_frame);
+        
+        void pub_cloud(CloudAPtr cloud,
+                       string frame,
+                       ros::Publisher pub);
 };
 
 SaveData::SaveData()
@@ -212,6 +218,7 @@ SaveData::SaveData()
 	zed2_sync.registerCallback(boost::bind(&SaveData::zed2_callback, this, _1, _2));
 
     emergency_pub = nh.advertise<Bool>("/emergency_stop", 10);
+    cloud_pub = nh.advertise<PointCloud2>("/cloud/saved", 10);
 
     // odom
     odom_flag = false;
