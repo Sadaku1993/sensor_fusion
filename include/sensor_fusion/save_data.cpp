@@ -137,12 +137,12 @@ void SaveData::transform_listener()
 {
 	try{
 		ros::Time now = ros::Time::now();
-		global_listener.waitForTransform(global_frame, laser_frame, now, ros::Duration(0.05));
+		global_listener.waitForTransform(global_frame, laser_frame, now, ros::Duration(0.02));
 		global_listener.lookupTransform(global_frame, laser_frame,  now, global_transform);
 	}
 	catch (tf::TransformException ex){
 		ROS_ERROR("%s",ex.what());
-		ros::Duration(0.05).sleep();
+		ros::Duration(0.02).sleep();
 	}
 	// Publish Transform
     geometry_msgs::Transform transform;
@@ -258,10 +258,12 @@ void SaveData::save_process()
     pub_cloud(global_cloud, global_frame, global_pub);
 
     // Publish Node info
+	cout<<"publish node"<<endl;
     sensor_fusion::Node node;
     node.header.frame_id = global_frame;
     node.header.stamp = ros::Time::now();
     node.node = node_num;
+	node_pub.publish(node);
     // pcl::toROSMsg(*global_cloud, node.cloud);
     // node.cloud.header.frame_id = global_frame;
     // node.cloud.header.stamp = ros::Time::now();
@@ -408,6 +410,7 @@ void SaveData::global_pointcloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cl
 void SaveData::normal_estimation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud, 
                                  pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& normal_cloud)
 {
+	cout<<"Normal Estimation"<<endl;
     pcl::NormalEstimation<pcl::PointXYZRGB, pcl::Normal> ne;
     ne.setInputCloud(cloud);
     pcl::search::KdTree<pcl::PointXYZRGB>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZRGB> ());
@@ -468,9 +471,16 @@ void SaveData::pub_cloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
 void SaveData::savePCDFile(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud, 
                            int count)
 {
+	pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr save_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
+	pcl::copyPointCloud(*cloud, *save_cloud);
+ 
+	save_cloud->width = 1;
+	save_cloud->height = save_cloud->points.size();
+
     string file_name = to_string(count);
     // string path = HOME_DIRS + "/" + FILE_PATH + "/" + SAVE_PATH;
-    pcl::io::savePCDFileASCII("/home/amsl/PCD/Save/"+file_name+".pcd", *cloud);
+    // pcl::io::savePCDFileASCII("/home/amsl/PCD/Save/"+file_name+".pcd", *cloud);
+	pcl::io::savePCDFile("/home/amsl/PCD/Save/"+file_name+".pcd", *save_cloud);
     printf("Num:%d saved %d\n", count, int(cloud->points.size()));
 }
 

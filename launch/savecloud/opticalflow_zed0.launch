@@ -12,7 +12,7 @@
 
     <!--Optical Flow-->
     <node pkg="sensor_fusion" type="optical_flow.py" name="optical_flow_zed0" output="screen">
-        <param name="threshold" type="int" value="400" />
+        <param name="threshold" type="int" value="1000" />
         <remap from="image" to="/zed0/left/image_rect_color" />
         <remap from="optical_flow/raw"          to="/zed0/optical_flow/raw" />
         <remap from="optical_flow/compressed"   to="/zed0/optical_flow/compressed" />

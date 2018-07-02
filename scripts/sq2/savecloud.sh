@@ -35,12 +35,14 @@ sleep 1s
 
 # imu complement
 gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion imu_complement.launch' --geometry=50x12+250+750 &
-sleep 1s
-
-# SaveCloud
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion savecloud.launch' --geometry=50x12+500+250 &
-sleep 4s
+sleep 3s
 
 # rviz
 gnome-terminal -e '/opt/ros/kinetic/bin/rosrun rviz rviz -d /home/amsl/.rviz/savecloud.rviz' --geometry=50x12+1200+750 &
+sleep 2s
+
+# SaveCloud
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion savecloud.launch' --geometry=50x12+500+250 &
 sleep 1s
+
+

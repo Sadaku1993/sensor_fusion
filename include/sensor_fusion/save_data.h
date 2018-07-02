@@ -206,6 +206,9 @@ class SaveData{
                                 string target_frame,
                                 string source_frame);
 
+        void normal_estimation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,
+                               pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& normal_cloud);
+
         void global_pointcloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
                                pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& global_cloud);
 
@@ -215,9 +218,6 @@ class SaveData{
 
 		void savePCDFile(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud, 
                          int count);
-
-        void normal_estimation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,
-                               pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& normal_cloud);
  
 };
 
