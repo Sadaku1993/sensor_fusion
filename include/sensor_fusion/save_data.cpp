@@ -1,25 +1,11 @@
 void SaveData::odomCallback(const OdometryConstPtr msg)
 {
     odom = *msg;
-    transform_matrix = create_matrix(odom, 1.0);
-    
-    
+    // transform_matrix = create_matrix(odom, 1.0);
 
-    if(!odom_flag)
-    {
-		cout<<"first odom"<<endl;
-        old_odom = *msg;
-        odom_flag = true;
-    }
-    else{
-        new_odom = *msg;
-        // 移動量を算出
-        double dt = sqrt( pow((new_odom.pose.pose.position.x - old_odom.pose.pose.position.x), 2) + 
-                pow((new_odom.pose.pose.position.y - old_odom.pose.pose.position.y), 2) );
-        distance += dt;
-        old_odom = *msg;
-    }
+    movement(msg);
 
+    
     arrival = check_savepoint();
     save_data();
 }
@@ -129,6 +115,24 @@ void SaveData::save_pointcloud(const PointCloud2ConstPtr cloud)
     count++;
 }
 
+// Odometryから移動量を算出
+void SaveData::movement(const OdometryConstPtr odom)
+{
+    if(!odom_flag)
+    {
+        cout<<"first odom"<<endl;
+        old_odom = *odom;
+        odom_flag = true;
+    }
+    else{
+        new_odom = *odom;
+        double dt = sqrt( pow((new_odom.pose.pose.position.x - old_odom.pose.pose.position.x), 2) + 
+                pow((new_odom.pose.pose.position.y - old_odom.pose.pose.position.y), 2) );
+        distance += dt;
+        old_odom = *odom;
+    }
+}
+
 // savepointに到達したかを判定し, emergency_flagによりsq2を停止
 bool SaveData::check_savepoint()
 {
@@ -222,37 +226,20 @@ void SaveData::save_process()
     *zed_cloud += *zed0_cloud;
     *zed_cloud += *zed1_cloud;
     *zed_cloud += *zed2_cloud;
-    
-    cout<<"Publish Cloud"<<endl;
-    pub_cloud(zed_cloud, laser_frame, cloud_pub);
+   
+    // Publish PointCloud
+    // pub_cloud(zed_cloud, laser_frame, cloud_pub);
 
-	cout<<"Transform for Global"<<endl;
-    try{
-        ros::Time now = ros::Time::now();
-        global_listener.waitForTransform(global_frame, laser_frame, now, ros::Duration(1.0));
-        global_listener.lookupTransform(global_frame, laser_frame,  now, global_transform);
-    }
-    catch (tf::TransformException ex){
-        ROS_ERROR("%s",ex.what());
-        ros::Duration(1.0).sleep();
-    }
-	tf::Transform transform;
-    double x   = global_transform.getOrigin().x();
-    double y   = global_transform.getOrigin().y();
-    double z   = global_transform.getOrigin().z();
-    double q_x = global_transform.getRotation().x();
-    double q_y = global_transform.getRotation().y();
-    double q_z = global_transform.getRotation().z();
-    double q_w = global_transform.getRotation().w();
-    transform.setOrigin(tf::Vector3(x, y, z));
-    transform.setRotation(tf::Quaternion(q_x, q_y, q_z, q_w));
-    double roll, pitch, yaw;
-    tf::Matrix3x3(tf::Quaternion(q_x, q_y, q_z, q_w)).getRPY(roll ,pitch, yaw);
-    printf("---x:%.2f y:%.2f z:%.2f roll:%.2f pitch:%.2f yaw:%.2f\n", x, y, z, roll, pitch, yaw);
+    // Transform Pointcloud for global
     CloudAPtr global_cloud(new CloudA);
-	pcl_ros::transformPointCloud(*zed_cloud, *global_cloud, transform);
+    geometry_msgs::Transform global_transform;
+    global_pointcloud(zed_cloud, global_cloud, global_transform);
+    
+    // Publish PointCloud
     pub_cloud(global_cloud, global_frame, global_pub);
-	
+    // Publish Transform
+    transform_pub.publish(global_transform);
+
 	savePCDFile(global_cloud, node_num);
 }
 
@@ -372,6 +359,7 @@ void SaveData::inverse_pointcloud(CloudAPtr cloud,
 
 void SaveData::pub_cloud(CloudAPtr cloud, string frame, ros::Publisher pub)
 {
+    cout<<"Publish PointCLoud"<<endl;
     PointCloud2 pc2;
     pcl::toROSMsg(*cloud, pc2);
     pc2.header.frame_id = frame;
@@ -387,3 +375,36 @@ void SaveData::savePCDFile(CloudAPtr cloud, int count)
     printf("Num:%d saved %d\n", count, int(cloud->points.size()));
 }
 
+void SaveData::global_pointcloud(CloudAPtr cloud, 
+                                 CloudAPtr& global_cloud,
+                                 geometry_msgs::Transform& transform_msg)
+{
+    cout<<"Transform for Global"<<endl;
+    try{
+        ros::Time now = ros::Time::now();
+        global_listener.waitForTransform(global_frame, laser_frame, now, ros::Duration(1.0));
+        global_listener.lookupTransform(global_frame, laser_frame,  now, global_transform);
+    }
+    catch (tf::TransformException ex){
+        ROS_ERROR("%s",ex.what());
+        ros::Duration(1.0).sleep();
+    }
+    tf::Transform transform;
+    double x   = global_transform.getOrigin().x();
+    double y   = global_transform.getOrigin().y();
+    double z   = global_transform.getOrigin().z();
+    double q_x = global_transform.getRotation().x();
+    double q_y = global_transform.getRotation().y();
+    double q_z = global_transform.getRotation().z();
+    double q_w = global_transform.getRotation().w();
+    transform.setOrigin(tf::Vector3(x, y, z));
+    transform.setRotation(tf::Quaternion(q_x, q_y, q_z, q_w));
+    double roll, pitch, yaw;
+    tf::Matrix3x3(tf::Quaternion(q_x, q_y, q_z, q_w)).getRPY(roll ,pitch, yaw);
+    printf("---x:%.2f y:%.2f z:%.2f roll:%.2f pitch:%.2f yaw:%.2f\n", x, y, z, roll, pitch, yaw);
+    pcl_ros::transformPointCloud(*cloud, *global_cloud, transform);
+
+    // global frame to base_link
+    tf::transformTFToMsg(transform, transform_msg);
+
+}

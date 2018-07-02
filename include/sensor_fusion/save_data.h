@@ -11,6 +11,9 @@
 
 #include <nav_msgs/Odometry.h>
 
+#include <geometry_msgs/Pose.h>
+#include <geometry_msgs/Transform.h>
+
 #include <pcl/point_cloud.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
@@ -47,9 +50,9 @@ using namespace std;
 using namespace std_msgs;
 using namespace nav_msgs;
 using namespace sensor_msgs;
+using namespace geometry_msgs;
 using namespace message_filters;
 using namespace Eigen;
-
 
 
 class SaveData{
@@ -67,6 +70,7 @@ class SaveData{
 
         ros::Publisher cloud_pub;
         ros::Publisher global_pub;
+        ros::Publisher transform_pub;
 
         //Frame
         string global_frame;
@@ -150,6 +154,8 @@ class SaveData{
         void zed1_optical_flow_calback(const BoolConstPtr data);
         void zed2_optical_flow_calback(const BoolConstPtr data);
 
+        void movement(const OdometryConstPtr odom);
+
         // save pointcloud at save point        
         void save_pointcloud(const PointCloud2::ConstPtr cloud);
 
@@ -191,6 +197,10 @@ class SaveData{
                        ros::Publisher pub);
 
 		void savePCDFile(CloudAPtr cloud, int count);
+
+        void global_pointcloud(CloudAPtr cloud,
+                               CloudAPtr& global_cloud,
+                               geometry_msgs::Transform& transform_msg);
  
 };
 
@@ -227,6 +237,7 @@ SaveData::SaveData()
     emergency_pub = nh.advertise<Bool>("/emergency_stop", 10);
     cloud_pub = nh.advertise<PointCloud2>("/cloud/saved", 10);
     global_pub = nh.advertise<PointCloud2>("/cloud/global", 10);
+    transform_pub = nh.advertise<geometry_msgs::Transform>("/transform", 10);
 
     // odom
     odom_flag = false;
