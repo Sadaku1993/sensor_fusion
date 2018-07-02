@@ -58,7 +58,6 @@ using namespace geometry_msgs;
 using namespace message_filters;
 using namespace Eigen;
 
-
 class SaveData{
     private:
         ros::NodeHandle nh;

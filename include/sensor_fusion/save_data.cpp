@@ -137,12 +137,12 @@ void SaveData::transform_listener()
 {
 	try{
 		ros::Time now = ros::Time::now();
-		global_listener.waitForTransform(global_frame, laser_frame, now, ros::Duration(0.025));
+		global_listener.waitForTransform(global_frame, laser_frame, now, ros::Duration(0.05));
 		global_listener.lookupTransform(global_frame, laser_frame,  now, global_transform);
 	}
 	catch (tf::TransformException ex){
 		ROS_ERROR("%s",ex.what());
-		ros::Duration(0.025).sleep();
+		ros::Duration(0.05).sleep();
 	}
 	// Publish Transform
     geometry_msgs::Transform transform;
