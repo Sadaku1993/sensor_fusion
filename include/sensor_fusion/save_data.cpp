@@ -218,6 +218,18 @@ void SaveData::reset()
 // PointCloudを保存するメインプロセス
 void SaveData::save_process()
 {
+	// Save Node Infomation
+    sensor_fusion::Node node;
+    node.header.frame_id = global_frame;
+    node.node = node_num;
+	tf::transformTFToMsg(global_transform, node.transform);
+	node.zed0_image = *zed0_image;
+	node.zed0_cinfo = *zed0_cinfo;
+	node.zed1_image = *zed1_image;
+	node.zed1_cinfo = *zed1_cinfo;
+	node.zed2_image = *zed2_image;
+	node.zed2_cinfo = *zed2_cinfo;
+
     cout<<"save process"<<endl;
     ColorCloudAPtr zed0_cloud(new ColorCloudA);
     ColorCloudAPtr zed1_cloud(new ColorCloudA);
@@ -259,10 +271,15 @@ void SaveData::save_process()
 
     // Publish Node info
 	cout<<"publish node"<<endl;
-    sensor_fusion::Node node;
-    node.header.frame_id = global_frame;
-    node.header.stamp = ros::Time::now();
-    node.node = node_num;
+	ros::Time time = ros::Time::now();
+    node.header.stamp = time;
+	node.zed0_image.header.stamp = time;
+	node.zed0_cinfo.header.stamp = time;
+	node.zed1_image.header.stamp = time;
+	node.zed1_cinfo.header.stamp = time;
+	node.zed2_image.header.stamp = time;
+	node.zed2_cinfo.header.stamp = time;
+	
 	node_pub.publish(node);
     // pcl::toROSMsg(*global_cloud, node.cloud);
     // node.cloud.header.frame_id = global_frame;
