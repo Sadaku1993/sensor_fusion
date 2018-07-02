@@ -90,7 +90,6 @@ void SaveData::zed2_optical_flow_calback(const BoolConstPtr msg)
 void SaveData::save_pointcloud(const PointCloud2ConstPtr cloud)
 {
     CloudAPtr input_cloud(new CloudA);
-    CloudAPtr transform_cloud(new CloudA);
     CloudAPtr threshold_cloud(new CloudA);
     
     pcl::fromROSMsg(*cloud, *input_cloud);
@@ -219,9 +218,9 @@ void SaveData::reset()
 void SaveData::save_process()
 {
     cout<<"save process"<<endl;
-    CloudAPtr zed0_cloud(new CloudA);
-    CloudAPtr zed1_cloud(new CloudA);
-    CloudAPtr zed2_cloud(new CloudA);
+    ColorCloudAPtr zed0_cloud(new ColorCloudA);
+    ColorCloudAPtr zed1_cloud(new ColorCloudA);
+    ColorCloudAPtr zed2_cloud(new ColorCloudA);
 
     // zed0
     camera_process(save_cloud, zed0_cinfo, zed0_image,
@@ -240,7 +239,7 @@ void SaveData::save_process()
             zed2_cloud);
 
     cout<<"Integrate PointCloud"<<endl;
-    CloudAPtr zed_cloud(new CloudA);
+    ColorCloudAPtr zed_cloud(new ColorCloudA);
     zed_cloud->header.frame_id = laser_frame;
     *zed_cloud += *zed0_cloud;
     *zed_cloud += *zed1_cloud;
@@ -250,7 +249,7 @@ void SaveData::save_process()
     // pub_cloud(zed_cloud, laser_frame, cloud_pub);
 
     // Transform Pointcloud for global
-    CloudAPtr global_cloud(new CloudA);
+    ColorCloudAPtr global_cloud(new ColorCloudA);
     global_pointcloud(zed_cloud, global_cloud);
     
     // Publish PointCloud
@@ -264,7 +263,7 @@ void SaveData::camera_process(CloudAPtr cloud,
                     tf::StampedTransform stamp_transform,
                     string target_frame, 
                     string source_frame,
-                    CloudAPtr &output_cloud)
+                    ColorCloudAPtr &output_cloud)
 {
     cout<<"Camera Process : "<<"target_frame:"<<target_frame<<" source_frame:"<<source_frame<<endl;
     tf::Transform transform;
@@ -286,7 +285,7 @@ void SaveData::camera_process(CloudAPtr cloud,
     CloudAPtr trans_cloud(new CloudA);
     transform_pointcloud(cloud, trans_cloud, transform, target_frame, source_frame);
     
-    CloudAPtr pickup_cloud(new CloudA);
+    ColorCloudAPtr pickup_cloud(new ColorCloudA);
     pickup_pointcloud(trans_cloud, pickup_cloud, image, cinfo);
 
     // CloudAPtr inverse_cloud(new CloudA);
@@ -307,7 +306,7 @@ void SaveData::transform_pointcloud(CloudAPtr cloud,
 }
 
 void SaveData::pickup_pointcloud(CloudAPtr cloud, 
-                       CloudAPtr& pickup_cloud,
+                       ColorCloudAPtr& pickup_cloud,
                        ImageConstPtr image_msg,
                        CameraInfoConstPtr cinfo_msg)
 {
@@ -335,7 +334,7 @@ void SaveData::pickup_pointcloud(CloudAPtr cloud,
         uv = cam_model.project3dToPixel(pt_cv);
 
         if(uv.x>0 && uv.x < image.cols && uv.y > 0 && uv.y < image.rows){
-            PointA p;
+            ColorPointA p;
             p.x = (*pt).x;
             p.y = (*pt).y;
             p.z = (*pt).z;
@@ -348,8 +347,8 @@ void SaveData::pickup_pointcloud(CloudAPtr cloud,
     cout<<"---Pickup Cloud"<<" Frame:"<<pickup_cloud->header.frame_id<<" Size:"<<pickup_cloud->points.size()<<endl;
 }
 
-void SaveData::inverse_pointcloud(CloudAPtr cloud,
-                                  CloudAPtr& inverse_cloud,
+void SaveData::inverse_pointcloud(ColorCloudAPtr cloud,
+                                  ColorCloudAPtr& inverse_cloud,
                                   tf::Transform transform,
                                   string target_frame,
                                   string source_frame)
@@ -372,7 +371,7 @@ void SaveData::inverse_pointcloud(CloudAPtr cloud,
     printf("---x:%.2f y:%.2f z:%.2f roll:%.2f pitch:%.2f yaw:%.2f\n", x, y, z, roll, pitch, yaw);
 }
 
-void SaveData::pub_cloud(CloudAPtr cloud, string frame, ros::Publisher pub)
+void SaveData::pub_cloud(ColorCloudAPtr cloud, string frame, ros::Publisher pub)
 {
     cout<<"Publish PointCLoud"<<endl;
     PointCloud2 pc2;
@@ -382,7 +381,7 @@ void SaveData::pub_cloud(CloudAPtr cloud, string frame, ros::Publisher pub)
     pub.publish(pc2);
 }
 
-void SaveData::savePCDFile(CloudAPtr cloud, int count)
+void SaveData::savePCDFile(ColorCloudAPtr cloud, int count)
 {
     string file_name = to_string(count);
     // string path = HOME_DIRS + "/" + FILE_PATH + "/" + SAVE_PATH;
@@ -390,8 +389,8 @@ void SaveData::savePCDFile(CloudAPtr cloud, int count)
     printf("Num:%d saved %d\n", count, int(cloud->points.size()));
 }
 
-void SaveData::global_pointcloud(CloudAPtr cloud, 
-                                 CloudAPtr& global_cloud)
+void SaveData::global_pointcloud(ColorCloudAPtr cloud, 
+                                 ColorCloudAPtr& global_cloud)
 {
     cout<<"Transform for Global"<<endl;
 	tf::Transform transform;

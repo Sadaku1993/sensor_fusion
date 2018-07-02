@@ -40,9 +40,13 @@
 #include "Eigen/Dense"
 #include "Eigen/LU"
 
-typedef pcl::PointXYZRGB PointA;
+typedef pcl::PointXYZ PointA;
 typedef pcl::PointCloud<PointA> CloudA;
 typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
+
+typedef pcl::PointXYZRGB ColorPointA;
+typedef pcl::PointCloud<ColorPointA> ColorCloudA;
+typedef pcl::PointCloud<ColorPointA>::Ptr ColorCloudAPtr;
 
 #include <sensor_fusion/create_matrix.h>
 
@@ -176,7 +180,7 @@ class SaveData{
                             tf::StampedTransform stamp_transform,
                             string target_frame,
                             string source_frame,
-                            CloudAPtr &output);
+                            ColorCloudAPtr &output);
 
         void transform_pointcloud(CloudAPtr cloud,
                                   CloudAPtr& trans_cloud,
@@ -185,24 +189,24 @@ class SaveData{
                                   string source_frame);
 
         void pickup_pointcloud(CloudAPtr cloud,
-                               CloudAPtr& pickup_cloud,
+                               ColorCloudAPtr& pickup_cloud,
                                ImageConstPtr image,
                                CameraInfoConstPtr cinfo);
 
-        void inverse_pointcloud(CloudAPtr cloud,
-                                CloudAPtr& inverse_cloud,
+        void inverse_pointcloud(ColorCloudAPtr cloud,
+                                ColorCloudAPtr& inverse_cloud,
                                 tf::Transform transform,
                                 string target_frame,
                                 string source_frame);
         
-        void pub_cloud(CloudAPtr cloud,
+        void pub_cloud(ColorCloudAPtr cloud,
                        string frame,
                        ros::Publisher pub);
 
-		void savePCDFile(CloudAPtr cloud, int count);
+		void savePCDFile(ColorCloudAPtr cloud, int count);
 
-        void global_pointcloud(CloudAPtr cloud,
-                               CloudAPtr& global_cloud);
+        void global_pointcloud(ColorCloudAPtr cloud,
+                               ColorCloudAPtr& global_cloud);
  
 };
 
