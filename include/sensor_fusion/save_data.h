@@ -154,7 +154,10 @@ class SaveData{
         void zed1_optical_flow_calback(const BoolConstPtr data);
         void zed2_optical_flow_calback(const BoolConstPtr data);
 
+		// check distance
         void movement(const OdometryConstPtr odom);
+
+		void transform_listener();
 
         // save pointcloud at save point        
         void save_pointcloud(const PointCloud2::ConstPtr cloud);
@@ -199,8 +202,7 @@ class SaveData{
 		void savePCDFile(CloudAPtr cloud, int count);
 
         void global_pointcloud(CloudAPtr cloud,
-                               CloudAPtr& global_cloud,
-                               geometry_msgs::Transform& transform_msg);
+                               CloudAPtr& global_cloud);
  
 };
 
