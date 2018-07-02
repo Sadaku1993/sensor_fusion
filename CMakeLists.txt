@@ -174,9 +174,8 @@ add_executable(odom2baselink src/imu_complement.cpp)
 ## coloringcloud
 add_executable(coloringcloud coloring/coloringcloud.cpp)
 
-## depthimage
-add_executable(save_cloud  depthimage/save_cloud.cpp)
-add_executable(merge_cloud depthimage/merge_cloud.cpp)
+## Depth Image
+
 
 ## Calibration
 add_executable(pointcloud2image calibration/pointcloud2image.cpp)
@@ -194,11 +193,6 @@ add_executable(sq_rm_ground_min_max calibration/sq_rm_ground_min_max.cpp)
 add_executable(save_points calibration/save_points.cpp)
 add_executable(rm_ground_division calibration/rm_ground_division.cpp)
 
-## Depth Image
-add_executable(calc_movement depthimage/calc_movement.cpp)
-add_executable(core depthimage/core.cpp)
-add_executable(lcl_for_depthimage depthimage/lcl_for_depthimage.cpp)
-add_executable(savecloud depthimage/savecloud.cpp)
 
 
 ## Save Cloud
@@ -262,16 +256,6 @@ target_link_libraries(coloringcloud
 
 
 # calibration
-target_link_libraries(save_cloud
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(merge_cloud
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
 target_link_libraries(pointcloud2image
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
@@ -340,26 +324,6 @@ target_link_libraries(rm_ground_division
 )
 
 ## Depth Image
-target_link_libraries(calc_movement
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(core
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(lcl_for_depthimage
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(savecloud
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
 
 ## SaveCloud
 target_link_libraries(save_data
