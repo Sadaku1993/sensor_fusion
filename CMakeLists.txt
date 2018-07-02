@@ -77,6 +77,7 @@ add_message_files(
   Cluster.msg
   ClusterArray.msg
   Data.msg
+  Node.msg
 )
 
 ## Generate services in the 'srv' folder

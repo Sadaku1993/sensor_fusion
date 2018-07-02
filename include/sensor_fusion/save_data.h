@@ -19,6 +19,7 @@
 #include <pcl/point_types.h>
 #include <pcl_ros/point_cloud.h>
 #include <pcl_ros/transforms.h>
+#include <pcl/features/normal_3d_omp.h>
 
 #include <opencv2/opencv.hpp>
 #include <cv_bridge/cv_bridge.h>
@@ -32,6 +33,9 @@
 
 #include <tf/tf.h>
 #include <tf/transform_listener.h>
+
+#include <sensor_fusion/Node.h>
+
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <iostream>
@@ -47,6 +51,10 @@ typedef pcl::PointCloud<PointA>::Ptr CloudAPtr;
 typedef pcl::PointXYZRGB ColorPointA;
 typedef pcl::PointCloud<ColorPointA> ColorCloudA;
 typedef pcl::PointCloud<ColorPointA>::Ptr ColorCloudAPtr;
+
+typedef pcl::PointXYZRGBNormal NormalPointA;
+typedef pcl::PointCloud<NormalPointA> NormalCloudA;
+typedef pcl::PointCloud<NormalPointA>::Ptr NormalCloudAPtr;
 
 #include <sensor_fusion/create_matrix.h>
 
@@ -71,9 +79,9 @@ class SaveData{
 
         ros::Publisher emergency_pub;
 
-        ros::Publisher cloud_pub;
         ros::Publisher global_pub;
         ros::Publisher transform_pub;
+        ros::Publisher node_pub;
 
         //Frame
         string global_frame;
@@ -197,15 +205,19 @@ class SaveData{
                                 tf::Transform transform,
                                 string target_frame,
                                 string source_frame);
-        
-        void pub_cloud(ColorCloudAPtr cloud,
+
+        void global_pointcloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
+                               pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& global_cloud);
+
+        void pub_cloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
                        string frame,
                        ros::Publisher pub);
 
-		void savePCDFile(ColorCloudAPtr cloud, int count);
+		void savePCDFile(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud, 
+                         int count);
 
-        void global_pointcloud(ColorCloudAPtr cloud,
-                               ColorCloudAPtr& global_cloud);
+        void normal_estimation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,
+                               pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& normal_cloud);
  
 };
 
@@ -240,9 +252,9 @@ SaveData::SaveData()
 	zed2_sync.registerCallback(boost::bind(&SaveData::zed2_callback, this, _1, _2));
 
     emergency_pub = nh.advertise<Bool>("/emergency_stop", 10);
-    cloud_pub = nh.advertise<PointCloud2>("/cloud/saved", 10);
     global_pub = nh.advertise<PointCloud2>("/cloud/global", 10);
     transform_pub = nh.advertise<geometry_msgs::Transform>("/transform", 10);
+    node_pub = nh.advertise<sensor_fusion::Node>("/node", 10);
 
     // odom
     odom_flag = false;

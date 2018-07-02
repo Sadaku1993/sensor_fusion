@@ -166,7 +166,6 @@ bool SaveData::check_savepoint()
         emergency_pub.publish(emergency_flag);
         return false;
     }
-
 }
 
 // savepointに到達し, かつ停止が確認された場合
@@ -215,6 +214,8 @@ void SaveData::reset()
 	save_flag = false;
 }
 
+
+// PointCloudを保存するメインプロセス
 void SaveData::save_process()
 {
     cout<<"save process"<<endl;
@@ -244,17 +245,29 @@ void SaveData::save_process()
     *zed_cloud += *zed0_cloud;
     *zed_cloud += *zed1_cloud;
     *zed_cloud += *zed2_cloud;
-   
-    // Publish PointCloud
-    // pub_cloud(zed_cloud, laser_frame, cloud_pub);
 
+    // Normal Estimation
+    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr normal_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
+    normal_estimation(zed_cloud, normal_cloud);
+   
     // Transform Pointcloud for global
-    ColorCloudAPtr global_cloud(new ColorCloudA);
-    global_pointcloud(zed_cloud, global_cloud);
+    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr global_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
+    global_pointcloud(normal_cloud, global_cloud);
     
     // Publish PointCloud
     pub_cloud(global_cloud, global_frame, global_pub);
-	savePCDFile(global_cloud, node_num);
+
+    // Publish Node info
+    sensor_fusion::Node node;
+    node.header.frame_id = global_frame;
+    node.header.stamp = ros::Time::now();
+    node.node = node_num;
+    // pcl::toROSMsg(*global_cloud, node.cloud);
+    // node.cloud.header.frame_id = global_frame;
+    // node.cloud.header.stamp = ros::Time::now();
+	
+    // SavePCDFile
+    savePCDFile(global_cloud, node_num);
 }
 
 void SaveData::camera_process(CloudAPtr cloud, 
@@ -371,26 +384,9 @@ void SaveData::inverse_pointcloud(ColorCloudAPtr cloud,
     printf("---x:%.2f y:%.2f z:%.2f roll:%.2f pitch:%.2f yaw:%.2f\n", x, y, z, roll, pitch, yaw);
 }
 
-void SaveData::pub_cloud(ColorCloudAPtr cloud, string frame, ros::Publisher pub)
-{
-    cout<<"Publish PointCLoud"<<endl;
-    PointCloud2 pc2;
-    pcl::toROSMsg(*cloud, pc2);
-    pc2.header.frame_id = frame;
-    pc2.header.stamp = ros::Time::now();
-    pub.publish(pc2);
-}
 
-void SaveData::savePCDFile(ColorCloudAPtr cloud, int count)
-{
-    string file_name = to_string(count);
-    // string path = HOME_DIRS + "/" + FILE_PATH + "/" + SAVE_PATH;
-    pcl::io::savePCDFileASCII("/home/amsl/PCD/Save/"+file_name+".pcd", *cloud);
-    printf("Num:%d saved %d\n", count, int(cloud->points.size()));
-}
-
-void SaveData::global_pointcloud(ColorCloudAPtr cloud, 
-                                 ColorCloudAPtr& global_cloud)
+void SaveData::global_pointcloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud, 
+                                 pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& global_cloud)
 {
     cout<<"Transform for Global"<<endl;
 	tf::Transform transform;
@@ -408,3 +404,73 @@ void SaveData::global_pointcloud(ColorCloudAPtr cloud,
     printf("---x:%.2f y:%.2f z:%.2f roll:%.2f pitch:%.2f yaw:%.2f\n", x, y, z, roll, pitch, yaw);
     pcl_ros::transformPointCloud(*cloud, *global_cloud, transform);
 }
+
+void SaveData::normal_estimation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud, 
+                                 pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& normal_cloud)
+{
+    pcl::NormalEstimation<pcl::PointXYZRGB, pcl::Normal> ne;
+    ne.setInputCloud(cloud);
+    pcl::search::KdTree<pcl::PointXYZRGB>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZRGB> ());
+    ne.setSearchMethod (tree);
+    pcl::PointCloud<pcl::Normal>::Ptr normals (new pcl::PointCloud<pcl::Normal>);
+    ne.setRadiusSearch (0.2);
+    ne.compute(*normals);
+
+    pcl::PointXYZRGBNormal tmp;
+    for(size_t i=0;i<cloud->points.size();i++)
+    {
+		tmp.x = cloud->points[i].x;
+		tmp.y = cloud->points[i].y;
+		tmp.z = cloud->points[i].z;
+		tmp.r = cloud->points[i].r;
+		tmp.g = cloud->points[i].g;
+		tmp.b = cloud->points[i].b;
+		if(!isnan(normals->points[i].normal_x)){
+			tmp.normal_x = normals->points[i].normal_x;
+		}
+		else{
+			tmp.normal_x = 0.0;
+		}
+		if(!isnan(normals->points[i].normal_y)){
+			tmp.normal_y = normals->points[i].normal_y;
+		}
+		else{
+			tmp.normal_y = 0.0;
+		}
+		if(!isnan(normals->points[i].normal_z)){
+			tmp.normal_z = normals->points[i].normal_z;
+		}
+		else{
+			tmp.normal_z = 0.0;
+		}
+		if(!isnan(normals->points[i].curvature)){
+			tmp.curvature = normals->points[i].curvature;
+		}
+		else{
+			tmp.curvature = 0.0;
+		}
+		normal_cloud->points.push_back(tmp);
+	}
+}
+
+void SaveData::pub_cloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud, 
+                         string frame, 
+                         ros::Publisher pub)
+{
+    cout<<"Publish PointCLoud"<<endl;
+    PointCloud2 pc2;
+    pcl::toROSMsg(*cloud, pc2);
+    pc2.header.frame_id = frame;
+    pc2.header.stamp = ros::Time::now();
+    pub.publish(pc2);
+}
+
+void SaveData::savePCDFile(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud, 
+                           int count)
+{
+    string file_name = to_string(count);
+    // string path = HOME_DIRS + "/" + FILE_PATH + "/" + SAVE_PATH;
+    pcl::io::savePCDFileASCII("/home/amsl/PCD/Save/"+file_name+".pcd", *cloud);
+    printf("Num:%d saved %d\n", count, int(cloud->points.size()));
+}
+
