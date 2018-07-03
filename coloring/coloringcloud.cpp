@@ -95,9 +95,9 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "coloring");
     ros::NodeHandle nh;
 
-	message_filters::Subscriber<PointCloud2> cloud_sub(nh, "/cloud", 1);
-	message_filters::Subscriber<Image> image_sub(nh, "/image", 1);
-	message_filters::Subscriber<CameraInfo> cinfo_sub(nh, "/camera_info", 1);
+	message_filters::Subscriber<PointCloud2> cloud_sub(nh, "/cloud", 10);
+	message_filters::Subscriber<Image> image_sub(nh, "/image", 10);
+	message_filters::Subscriber<CameraInfo> cinfo_sub(nh, "/camera_info", 10);
 	
 	typedef sync_policies::ApproximateTime<PointCloud2, Image, CameraInfo> MySyncPolicy;
 	Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), cloud_sub, image_sub, cinfo_sub);
