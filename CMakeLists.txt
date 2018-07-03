@@ -198,6 +198,8 @@ add_executable(rm_ground_division calibration/rm_ground_division.cpp)
 ## Save Cloud
 add_executable(save_data savecloud/save_data.cpp)
 add_executable(message_filters_test savecloud/message_filters_test.cpp)
+add_executable(transform_publisher savecloud/transform_publisher.cpp)
+add_executable(transform_broadcast savecloud/transform_broadcast.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -337,6 +339,19 @@ target_link_libraries(message_filters_test
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
+
+target_link_libraries(transform_publisher
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+
+target_link_libraries(transform_broadcast
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+
 
 #############
 ## Install ##
