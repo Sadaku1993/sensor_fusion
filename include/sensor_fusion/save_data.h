@@ -80,7 +80,7 @@ class SaveData{
         ros::Publisher emergency_pub;
 
         ros::Publisher global_pub;
-        ros::Publisher transform_pub;
+        // ros::Publisher transform_pub;
         ros::Publisher node_pub;
 
         //Frame
@@ -253,7 +253,7 @@ SaveData::SaveData()
 
     emergency_pub = nh.advertise<Bool>("/emergency_stop", 10);
     global_pub = nh.advertise<PointCloud2>("/cloud/global", 10);
-    transform_pub = nh.advertise<geometry_msgs::Transform>("/transform", 10);
+    // transform_pub = nh.advertise<geometry_msgs::Transform>("/transform", 10);
     node_pub = nh.advertise<sensor_fusion::Node>("/node", 10);
 
     // odom

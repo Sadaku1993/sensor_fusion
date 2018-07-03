@@ -24,6 +24,8 @@ Listener::Listener()
 {
     nh.getParam("target_frame", target_frame);
     nh.getParam("source_frame", source_frame);
+
+	sub = nh.subscribe("/transform", 10, &Listener::callback, this);
 }
 
 void Listener::callback(const geometry_msgs::TransformConstPtr msg)

@@ -37,6 +37,10 @@ void Transform::mainloop()
         listener.waitForTransform(target_frame, source_frame, time, ros::Duration(0.02));
         listener.lookupTransform(target_frame, source_frame, time, transform);
 
+		geometry_msgs::Transform transform_msg;
+		tf::transformTFToMsg(transform, transform_msg);
+		pub.publish(transform_msg);
+
         // SHOW TF
         tf::Vector3 v = transform.getOrigin();
         double x = transform.getOrigin().x();
@@ -53,9 +57,6 @@ void Transform::mainloop()
         ros::Duration(0.02).sleep();
     }
 
-    geometry_msgs::Transform transform_msg;
-    tf::transformTFToMsg(transform, transform_msg);
-    pub.publish(transform_msg);
 }
 
 int main(int argc, char**argv)

@@ -145,9 +145,9 @@ void SaveData::transform_listener()
 		ros::Duration(0.02).sleep();
 	}
 	// Publish Transform
-    geometry_msgs::Transform transform;
-	tf::transformTFToMsg(global_transform, transform);
-	transform_pub.publish(transform);
+    // geometry_msgs::Transform transform;
+	// tf::transformTFToMsg(global_transform, transform);
+	// transform_pub.publish(transform);
 }
 
 // savepointに到達したかを判定し, emergency_flagによりsq2を停止
