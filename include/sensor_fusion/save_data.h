@@ -271,7 +271,7 @@ SaveData::SaveData()
     distance = 0.0;
 
     //save cloud
-    save_flag = true;
+    save_flag = false;
     count = 0;
 	node_num = 0;
 
