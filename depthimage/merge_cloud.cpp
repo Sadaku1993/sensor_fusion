@@ -43,19 +43,37 @@ int file_count_boost(const boost::filesystem::path& root) {
 void load(CloudAPtr& cloud, int count)
 {
     string file_name = FILE_PATH + to_string(count) + ".pcd";
+    cout<<"-----Load :" <<file_name<<endl;
     
-    if (pcl::io::loadPCDFile<pcl::PointXYZRGBNormal> (file_name, *cloud) == -1) //* load the file
+    if (pcl::io::loadPCDFile<PointA> (file_name, *cloud) == -1) //* load the file
     {
-        PCL_ERROR ("Couldn't read file\n");
+        PCL_ERROR ("-----Couldn't read file\n");
     }
-    cout<<"Loaded"<<endl;
 }
+
+bool check_node(int count)
+{
+    CloudAPtr cloud(new CloudA);
+
+    string file_name = FILE_PATH + to_string(count) + ".pcd";
+    
+    if (pcl::io::loadPCDFile<PointA> (file_name, *cloud) == -1) //* load the file
+    {
+        printf("Node %d is none\n\n", count);
+        return false;
+    }
+    else{
+        printf("Node : %d\n", count);
+        return true;
+    }
+}
+
 
 void save(CloudAPtr cloud, int count)
 {
     string file_name=to_string(count);
-    pcl::io::savePCDFileASCII(FILE_PATH+file_name+".pcd", *cloud);
-    printf("saved %d\n", int(cloud->points.size()));
+    pcl::io::savePCDFileASCII(MERGE_PATH+file_name+".pcd", *cloud);
+    printf("---------Save:%d Size: %d\n\n", count, int(cloud->points.size()));
 }
 
 void merge()
@@ -64,9 +82,12 @@ void merge()
     printf("PCD File Size : %d\n", size);
 
     for(int i=0;i<size-MERGE_SIZE;i++){
-        CloudAPtr merge_cloud;
+        
+        if(!check_node(i)) continue;
+
+        CloudAPtr merge_cloud(new CloudA);
         for(int j=0;j<MERGE_SIZE;j++){
-            CloudAPtr load_cloud;
+            CloudAPtr load_cloud(new CloudA);
             load(load_cloud, i+j);
             *merge_cloud += *load_cloud;
         }
