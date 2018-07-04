@@ -22,14 +22,6 @@ ros::Publisher pub_center;
 ros::Publisher pub_left;
 ros::Publisher pub_right;
 
-bool pc_ = false;
-pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_(new pcl::PointCloud<pcl::PointXYZ>);
-void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
-{
-    pc_ = true;
-    fromROSMsg(*msg,*pcl_);
-}
-
 void area(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
 {
     pcl::PointCloud<pcl::PointXYZ> pcl_center;
@@ -74,25 +66,25 @@ void area(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
 
 }
 
+void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
+{
+	pcl::PointCloud<pcl::PointXYZ>::Ptr pcl(new pcl::PointCloud<pcl::PointXYZ>);
+    fromROSMsg(*msg,*pcl);
+	area(pcl);
+}
 
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "zed_bridge");
     ros::NodeHandle n;
 
-    // ros::Subscriber pc_callback = n.subscribe("/sq_lidar/points/saved",10,pcCallback);
     ros::Subscriber pc_callback = n.subscribe("/cloud",10,pcCallback);
 
     pub_center = n.advertise<sensor_msgs::PointCloud2>("/cloud/center",10);
     pub_left   = n.advertise<sensor_msgs::PointCloud2>("/cloud/left",10);
     pub_right  = n.advertise<sensor_msgs::PointCloud2>("/cloud/right",10);
 
-    ros::Rate rate(60);
-    while(ros::ok())
-    {
-        if(pc_) area(pcl_);
-        ros::spinOnce();
-        rate.sleep();
-    }
-    return 0;
+	ros::spin();
+
+	return 0;
 }
