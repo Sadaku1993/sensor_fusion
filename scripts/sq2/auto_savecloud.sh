@@ -56,7 +56,7 @@ gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sq_local_planner sq2_local_pat
 sleep 1s
 
 ###### velocity publisher
-gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sq1_extra sq2_run_test.launch" --geometry=50x12+900+250
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sq1_extra sq2_sensor_fusion.launch" --geometry=50x12+900+250
 sleep 1s
 
 ###### Imu Complement
