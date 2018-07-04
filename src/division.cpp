@@ -12,6 +12,7 @@ division sqlidar pointcloud
 #include<pcl_ros/point_cloud.h>
 #include<pcl/point_cloud.h>
 #include<pcl/point_types.h>
+#include<omp.h>
 #define MIN(x,y) ((x) < (y) ? (x) : (y))
 #define MAX(x,y) ((x) > (y) ? (x) : (y))
 #define cell_size 0.3
@@ -31,6 +32,8 @@ void area(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
     int size = cloud->size();
     printf("size:%d\n",size);
 
+// omp_set_num_threads(4);
+// #pragma omp parallel for
     for(int i=0;i<size;i++)
     {
         int x = ((grid_dimentions/2)+cloud->points[i].x/cell_size);

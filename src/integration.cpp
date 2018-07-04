@@ -60,9 +60,9 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "integration");
     ros::NodeHandle nh;
 
-	message_filters::Subscriber<PointCloud2> zed0(nh, "/sq_lidar/points/center", 1);
-	message_filters::Subscriber<PointCloud2> zed1(nh, "/sq_lidar/points/right" , 1);
-	message_filters::Subscriber<PointCloud2> zed2(nh, "/sq_lidar/points/left"  , 1);
+	message_filters::Subscriber<PointCloud2> zed0(nh, "/sq_lidar/points/center", 10);
+	message_filters::Subscriber<PointCloud2> zed1(nh, "/sq_lidar/points/right" , 10);
+	message_filters::Subscriber<PointCloud2> zed2(nh, "/sq_lidar/points/left"  , 10);
 	
 	typedef sync_policies::ApproximateTime<PointCloud2, PointCloud2, PointCloud2> MySyncPolicy;
 	Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), zed0, zed1, zed2);
