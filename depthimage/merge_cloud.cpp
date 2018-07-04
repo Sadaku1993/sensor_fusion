@@ -1,3 +1,4 @@
+
 /*
  * Concatenete PointCloud
  *
@@ -76,9 +77,7 @@ void merge()
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "merge_cloud");
-    ros::NodeHandle nh("~");
-
-    nh.geParam("size", MERGE_PATH);
+    ros::NodeHandle n;
 
     merge();
 
