@@ -77,7 +77,7 @@ class SaveData{
         ros::Subscriber zed1_optical_flow_sub;
         ros::Subscriber zed2_optical_flow_sub;
 
-        ros::Publisher emergency_pub;
+        ros::Publisher stop_pub;
 
         ros::Publisher global_pub;
         // ros::Publisher transform_pub;
@@ -131,7 +131,7 @@ class SaveData{
 		int node_num;
 
         // Stop
-        Bool emergency_flag;
+        Bool stop_flag;
         bool arrival;
 		int fail_count;
 		int trial_count;
@@ -251,7 +251,7 @@ SaveData::SaveData()
 	zed1_sync.registerCallback(boost::bind(&SaveData::zed1_callback, this, _1, _2));
 	zed2_sync.registerCallback(boost::bind(&SaveData::zed2_callback, this, _1, _2));
 
-    emergency_pub = nh.advertise<Bool>("/emergency_stop", 10);
+    stop_pub = nh.advertise<Bool>("/save_stop", 10);
     global_pub = nh.advertise<PointCloud2>("/cloud/global", 10);
     // transform_pub = nh.advertise<geometry_msgs::Transform>("/transform", 10);
     node_pub = nh.advertise<sensor_fusion::Node>("/node", 10);
@@ -276,7 +276,7 @@ SaveData::SaveData()
 	node_num = 0;
 
     // stop
-    emergency_flag.data = false;
+    stop_flag.data = false;
     arrival = false;
 
     // ZED

@@ -150,20 +150,20 @@ void SaveData::transform_listener()
 	// transform_pub.publish(transform);
 }
 
-// savepointに到達したかを判定し, emergency_flagによりsq2を停止
+// savepointに到達したかを判定し, stop_flagによりsq2を停止
 bool SaveData::check_savepoint()
 {
     if(threshold < distance){
         // cout<<"arrive save point!!! Publish Stop Flag!!!"<<endl;
-        emergency_flag.data = true;
-        emergency_pub.publish(emergency_flag);
+        stop_flag.data = true;
+        stop_pub.publish(stop_flag);
         return true;
     }
     else{
         // cout<<"move to save point!!!"<<endl;
 		// printf("distance:%.2f / %.2f\n", distance, threshold);
-        emergency_flag.data = false;
-        emergency_pub.publish(emergency_flag);
+        stop_flag.data = false;
+        stop_pub.publish(stop_flag);
         return false;
     }
 }
