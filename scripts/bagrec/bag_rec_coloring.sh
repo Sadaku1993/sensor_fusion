@@ -30,4 +30,4 @@ echo $ZED2 &
 echo $COLORED &
 echo $TF &
 
-/opt/ros/kinetic/bin/rosbag record $ODOM $IMU $COLORED $ZED0 $ZED1 $ZED2 -O /home/amsl/$TIME.bag
+/opt/ros/kinetic/bin/rosbag record $ODOM $IMU $CLOUD $COLORED $ZED0 $ZED1 $ZED2 -O /home/amsl/$TIME.bag
