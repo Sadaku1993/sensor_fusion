@@ -31,8 +31,9 @@ echo $ZED0 &
 echo $ZED1 &
 echo $ZED2 &
 echo $FLOW &
+echo $DIFF_IMAGE &
 echo $NODE &
 echo $TRANSFORM &
 echo $TF &
 
-/opt/ros/kinetic/bin/rosbag record $CLOUD $CLOUD_GLOBAL $ODOM $IMU $ZED0 $ZED1 $ZED2 $FLOW $NODE $TRANSFORM -O /home/amsl/$TIME.bag
+/opt/ros/kinetic/bin/rosbag record $CLOUD $CLOUD_GLOBAL $ODOM $IMU $ZED0 $ZED1 $ZED2 $DIFF_IMAGE $NODE $TRANSFORM -O /home/amsl/$TIME.bag
