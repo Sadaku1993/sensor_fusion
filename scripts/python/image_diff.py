@@ -14,8 +14,8 @@ import math
 
 class DiffImage(object):
     def __init__(self):
-        self.image_sub = rospy.Subscriber("/usb_cam/image_raw", Image   , self.ImageCallback)
-        self.bool_sub  = rospy.Subscriber("/stop" , Bool    , self.BoolCallback)
+        self.image_sub = rospy.Subscriber("/image", Image   , self.ImageCallback)
+        self.bool_sub  = rospy.Subscriber("/save_stop" , Bool    , self.BoolCallback)
         self.odom_sub  = rospy.Subscriber("/odom" , Odometry, self.OdomCallback)
 
         self.pub = rospy.Publisher('/move', Bool, queue_size=10)
