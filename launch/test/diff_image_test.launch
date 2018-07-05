@@ -12,7 +12,7 @@
 
     <!--Diff Image-->
     <node pkg="sensor_fusion" type="image_diff_test.py" name="image_diff_zed0" output="screen">
-        <param name="diff_count" type="int"    value="20" />
+        <param name="diff_count" type="int"    value="30" />
         <param name="threshold"  type="double" value="0.1" />
         <remap from="image" to="/zed0/left/image_rect_color" />
         <remap from="diff_image/compressed"   to="/zed0/diff_image/compressed" />
