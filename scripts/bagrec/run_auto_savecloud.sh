@@ -20,9 +20,13 @@ sleep 1s
 
 # Launch Zed 
 gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion sq2_zed.launch' --geometry=50x12+250+0 &
-gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/zed/opticalflow_zed0.sh' --geometry=50x12+250+250 &
-gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/zed/opticalflow_zed1.sh' --geometry=50x12+250+500 &
-gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/zed/opticalflow_zed2.sh' --geometry=50x12+250+750 &
+# gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/zed/opticalflow_zed0.sh' --geometry=50x12+250+250 &
+# gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/zed/opticalflow_zed1.sh' --geometry=50x12+250+500 &
+# gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/zed/opticalflow_zed2.sh' --geometry=50x12+250+750 &
+gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/zed/diff_image_zed0.sh' --geometry=50x12+250+250 &
+gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/zed/diff_image_zed1.sh' --geometry=50x12+250+500 &
+gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/zed/diff_image_zed2.sh' --geometry=50x12+250+750 &
+
 sleep 1s
 
 # republish

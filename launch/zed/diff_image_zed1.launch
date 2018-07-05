@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+    <!--Launch Zed Wrapper-->
+	<include file="$(find zed_wrapper)/launch/zed1.launch"/>
+
+    <!--Down sampling-->
+    <node pkg="sensor_fusion" type="camera_downsample" name="camera_downsample_zed1">
+        <param name="ds_size" type="double" value="0.20" />
+        <remap from="/cloud" to="/zed1/point_cloud/cloud_registered" />
+        <remap from="/output" to="/zed1/ds_cloud" />
+    </node>
+
+    <!--Diff Image-->
+    <node pkg="sensor_fusion" type="image_diff.py" name="image_diff_zed1" output="screen">
+        <param name="diff_count" type="int" valude="20" />
+        <param name="threshold" type="float" value="0.3" />
+        <remap from="image" to="/zed1/left/image_rect_color" />
+        <remap from="diff_image/compressed"   to="/zed1/diff_image/compressed" />
+        <remap from="move" to="/zed1/move" />
+    </node>
+
+</launch>
