@@ -36,10 +36,10 @@ class DiffImage(object):
             self.cv_image = CvBridge().imgmsg_to_cv2(msg, "bgr8")
             
             if self.stop_flag and self.velocity < 0.01:
-                print("Arrive Save Point ---> Start Diff Image")
+                # print("Arrive Save Point ---> Start Diff Image")
                 self.DiffImage()
             else:
-                print("Waiting Stop")
+                # print("Waiting Stop")
                 self.Reset()
            
         except:
@@ -53,11 +53,11 @@ class DiffImage(object):
 
     def DiffImage(self):
         if self.first_flag:
-            print("----first Image")
+            # print("----first Image")
             self.back_img = np.zeros_like(self.cv_image, np.float32)
             self.first_flag = False
             
-        print("----Count : {}".format(self.count))
+        # print("----Count : {}".format(self.count))
         f_img = self.cv_image.astype(np.float32)
         diff_img = cv2.absdiff(f_img, self.back_img)
 
@@ -65,7 +65,7 @@ class DiffImage(object):
         pixcel_diff = diff_img_sum > 100
  
         rate = float(np.sum(pixcel_diff))/(f_img.shape[0]*f_img.shape[1])
-        print("----Diff Pixcel:{:>4} Image Pixcel:{:>4} Rate:{:>.4}".format(np.sum(pixcel_diff), f_img.shape[0]*f_img.shape[1], rate))
+        # print("----Diff Pixcel:{:>4} Image Pixcel:{:>4} Rate:{:>.4}".format(np.sum(pixcel_diff), f_img.shape[0]*f_img.shape[1], rate))
  
         booling_img = cv2.cvtColor(diff_img, cv2.COLOR_RGB2GRAY) > 50
         tmp_img = np.ones_like(booling_img, np.float32) * booling_img
@@ -74,16 +74,16 @@ class DiffImage(object):
  
  
         if self.count < self.diff_count:
-            print("----CalcTime")
+            print("Count:{:>3} CalcTime Rate:{:>.4}".format(count, rate))
             self.move.data = False
             self.pub.publish(self.move)
         elif self.diff_count < self.count and self.threshold < rate:
-            print("----World is Modeing")
+            print("Count:{:>3} Moving Rate:{:>.4}".format(count, rate))
             self.move.data = True
             self.pub.publish(self.move)
             self.Reset()
         else:
-            print("----World is Stop")
+            print("Count:{:>3} Stop Rate:{:>.4}".format(count, rate))
             self.move.data = False
             self.pub.publish(self.move)
 
