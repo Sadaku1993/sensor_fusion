@@ -85,7 +85,7 @@ class DiffImage(object):
         print("start")
         
         rospy.init_node("diff_image")
-        self.diff_count = rospy.get_param("~diff_count", 20)
+        self.diff_count = rospy.get_param("~diff_count", 30)
         self.threshold = rospy.get_param("`threshold", 0.02)
 
         rospy.spin()
