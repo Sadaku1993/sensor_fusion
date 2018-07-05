@@ -70,7 +70,7 @@ class DiffImage(object):
         booling_img = cv2.cvtColor(diff_img, cv2.COLOR_RGB2GRAY) > 50
         tmp_img = np.ones_like(booling_img, np.float32) * booling_img
         moving_img = self.cv_image * cv2.cvtColor(tmp_img, cv2.COLOR_GRAY2RGB)
-        cv2.accumulateWeighted(f_img, self.back_img, 0.1)
+        cv2.accumulateWeighted(f_img, self.back_img, 0.2)
  
  
         if self.count < self.diff_count:
