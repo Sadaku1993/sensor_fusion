@@ -3,7 +3,7 @@
 	<node pkg="sensor_fusion" type="save_data" name="save_data" output="screen">
 		<param name="threshold"     type="double"   value="3.0" />
 		<param name="save_count"    type="int"      value="1000" />
-		<param name="trial_count"   type="int"      value="30" />
+		<param name="trial_count"   type="int"      value="50" />
 		<param name="global_frame"  type="string"   value="/map" />
         <param name="laser_frame"   type="string"   value="/centerlaser" />
         <param name="zed0_frame"    type="string"   value="/zed0/zed_left_camera" />

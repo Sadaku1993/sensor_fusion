@@ -62,7 +62,7 @@ class DiffImage(object):
         diff_img = cv2.absdiff(f_img, self.back_img)
 
         diff_img_sum = np.sum(diff_img, axis=2)
-        pixcel_diff = diff_img_sum > 100
+        pixcel_diff = diff_img_sum > 50
  
         rate = float(np.sum(pixcel_diff))/(f_img.shape[0]*f_img.shape[1])
         # print("----Diff Pixcel:{:>4} Image Pixcel:{:>4} Rate:{:>.4}".format(np.sum(pixcel_diff), f_img.shape[0]*f_img.shape[1], rate))
@@ -108,7 +108,7 @@ class DiffImage(object):
         
         rospy.init_node("diff_image")
         self.diff_count = rospy.get_param("~diff_count", 20)
-        self.threshold = rospy.get_param("`threshold", 0.3)
+        self.threshold = rospy.get_param("`threshold", 0.025)
 
         rospy.spin()
 
