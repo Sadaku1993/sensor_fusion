@@ -52,16 +52,16 @@ class DiffImage(object):
  
  
         if self.count < self.diff_count:
-            print("Count:{:>3} Move:{:>4} CalcTime Rate:{:>.4}".format(self.count, np.sum(pixcel_diff), rate))
+            print("Count:{:>3} Calc :{:>4} Rate:{:>.4}".format(self.count, np.sum(pixcel_diff), rate))
             self.move.data = False
             self.pub.publish(self.move)
         elif self.diff_count < self.count and self.threshold < rate:
-            print("Count:{:>3} Move:{:>4} Moving Rate:{:>.4}".format(self.count, np.sum(pixcel_diff), rate))
+            print("Count:{:>3} Move :{:>4} Rate:{:>.4}".format(self.count, np.sum(pixcel_diff), rate))
             self.move.data = True
             self.pub.publish(self.move)
             self.Reset()
         else:
-            print("Count:{:>3} Move:{:>4} Stop Rate:{:>.4}".format(self.count, np.sum(pixcel_diff), rate))
+            print("Count:{:>3} Stop :{:>4} Rate:{:>.4}".format(self.count, np.sum(pixcel_diff), rate))
             self.move.data = False
             self.pub.publish(self.move)
 
