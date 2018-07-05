@@ -180,7 +180,7 @@ void SaveData::save_data()
     {
         // cout<<"Stand by OK!!!!!"<<endl;
 
-        if(zed0_data && zed1_data && zed2_data){
+        if(!zed0_data && !zed1_data && !zed2_data){
 			// cout<<"   world is stop"<<endl;
 			save_flag = true;
 		}
