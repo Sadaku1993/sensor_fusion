@@ -259,12 +259,12 @@ void SaveData::save_process()
     *zed_cloud += *zed2_cloud;
 
     // Normal Estimation
-    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr normal_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
-    normal_estimation(zed_cloud, normal_cloud);
+    // pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr normal_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
+    // normal_estimation(zed_cloud, normal_cloud);
    
     // Transform Pointcloud for global
-    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr global_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
-    global_pointcloud(normal_cloud, global_cloud);
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr global_cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
+    global_pointcloud(zed_cloud, global_cloud);
     
     // Publish PointCloud
     pub_cloud(global_cloud, global_frame, global_pub);
@@ -403,27 +403,6 @@ void SaveData::inverse_pointcloud(ColorCloudAPtr cloud,
     printf("---x:%.2f y:%.2f z:%.2f roll:%.2f pitch:%.2f yaw:%.2f\n", x, y, z, roll, pitch, yaw);
 }
 
-
-void SaveData::global_pointcloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud, 
-                                 pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& global_cloud)
-{
-    cout<<"Transform for Global"<<endl;
-	tf::Transform transform;
-    double x   = global_transform.getOrigin().x();
-    double y   = global_transform.getOrigin().y();
-    double z   = global_transform.getOrigin().z();
-    double q_x = global_transform.getRotation().x();
-    double q_y = global_transform.getRotation().y();
-    double q_z = global_transform.getRotation().z();
-    double q_w = global_transform.getRotation().w();
-    transform.setOrigin(tf::Vector3(x, y, z));
-    transform.setRotation(tf::Quaternion(q_x, q_y, q_z, q_w));
-    double roll, pitch, yaw;
-    tf::Matrix3x3(tf::Quaternion(q_x, q_y, q_z, q_w)).getRPY(roll ,pitch, yaw);
-    printf("---x:%.2f y:%.2f z:%.2f roll:%.2f pitch:%.2f yaw:%.2f\n", x, y, z, roll, pitch, yaw);
-    pcl_ros::transformPointCloud(*cloud, *global_cloud, transform);
-}
-
 void SaveData::normal_estimation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud, 
                                  pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& normal_cloud)
 {
@@ -473,7 +452,28 @@ void SaveData::normal_estimation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,
 	}
 }
 
-void SaveData::pub_cloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud, 
+void SaveData::global_pointcloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud, 
+                                 pcl::PointCloud<pcl::PointXYZRGB>::Ptr& global_cloud)
+{
+    cout<<"Transform for Global"<<endl;
+	tf::Transform transform;
+    double x   = global_transform.getOrigin().x();
+    double y   = global_transform.getOrigin().y();
+    double z   = global_transform.getOrigin().z();
+    double q_x = global_transform.getRotation().x();
+    double q_y = global_transform.getRotation().y();
+    double q_z = global_transform.getRotation().z();
+    double q_w = global_transform.getRotation().w();
+    transform.setOrigin(tf::Vector3(x, y, z));
+    transform.setRotation(tf::Quaternion(q_x, q_y, q_z, q_w));
+    double roll, pitch, yaw;
+    tf::Matrix3x3(tf::Quaternion(q_x, q_y, q_z, q_w)).getRPY(roll ,pitch, yaw);
+    printf("---x:%.2f y:%.2f z:%.2f roll:%.2f pitch:%.2f yaw:%.2f\n", x, y, z, roll, pitch, yaw);
+    pcl_ros::transformPointCloud(*cloud, *global_cloud, transform);
+}
+
+
+void SaveData::pub_cloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud, 
                          string frame, 
                          ros::Publisher pub)
 {
@@ -485,10 +485,10 @@ void SaveData::pub_cloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
     pub.publish(pc2);
 }
 
-void SaveData::savePCDFile(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud, 
+void SaveData::savePCDFile(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud, 
                            int count)
 {
-	pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr save_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr save_cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
 	pcl::copyPointCloud(*cloud, *save_cloud);
  
 	save_cloud->width = 1;
@@ -500,4 +500,3 @@ void SaveData::savePCDFile(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
 	pcl::io::savePCDFile("/home/amsl/PCD/Save/"+file_name+".pcd", *save_cloud);
     printf("Num:%d saved %d\n", count, int(cloud->points.size()));
 }
-

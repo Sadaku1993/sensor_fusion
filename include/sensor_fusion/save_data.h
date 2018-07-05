@@ -52,12 +52,6 @@ typedef pcl::PointXYZRGB ColorPointA;
 typedef pcl::PointCloud<ColorPointA> ColorCloudA;
 typedef pcl::PointCloud<ColorPointA>::Ptr ColorCloudAPtr;
 
-typedef pcl::PointXYZRGBNormal NormalPointA;
-typedef pcl::PointCloud<NormalPointA> NormalCloudA;
-typedef pcl::PointCloud<NormalPointA>::Ptr NormalCloudAPtr;
-
-#include <sensor_fusion/create_matrix.h>
-
 using namespace std;
 using namespace std_msgs;
 using namespace nav_msgs;
@@ -209,14 +203,14 @@ class SaveData{
         void normal_estimation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,
                                pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& normal_cloud);
 
-        void global_pointcloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
-                               pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& global_cloud);
+        void global_pointcloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,
+                               pcl::PointCloud<pcl::PointXYZRGB>::Ptr& global_cloud);
 
-        void pub_cloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
+        void pub_cloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,
                        string frame,
                        ros::Publisher pub);
 
-		void savePCDFile(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud, 
+		void savePCDFile(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud, 
                          int count);
  
 };
@@ -258,16 +252,6 @@ SaveData::SaveData()
 
     // odom
     odom_flag = false;
-    init_odom.header.frame_id = "/odom";
-    init_odom.child_frame_id = "/base_link";
-    init_odom.pose.pose.position.x = 0.0;
-    init_odom.pose.pose.position.y = 0.0;
-    init_odom.pose.pose.position.z = 0.0;
-    init_odom.pose.pose.orientation.x = 0.0;
-    init_odom.pose.pose.orientation.y = 0.0;
-    init_odom.pose.pose.orientation.z = 0.0;
-    init_odom.pose.pose.orientation.w = 0.0;
-    odom = init_odom;
     distance = 0.0;
 
     //save cloud
