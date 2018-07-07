@@ -76,7 +76,7 @@ gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion savecloud.launch
 sleep 1s
 
 # bagrec
-gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/bagrec/bag_rec_savecloud.sh' --geometry=50x12+1200+500 &
+gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/bagrec/bag_rec_auto_savecloud.sh' --geometry=50x12+1200+500 &
 sleep 1s
 
 
