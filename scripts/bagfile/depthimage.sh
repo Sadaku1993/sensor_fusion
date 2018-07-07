@@ -25,7 +25,7 @@ gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion republish.launch
 sleep 1s
 
 # bag
-gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-07-05-20-14-38.bag --clock -l" --geometry=50x12+2000+500 &
+gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-07-07-17-25-01.bag --clock -l" --geometry=50x12+2000+500 &
 sleep 1s
 
 # rviz

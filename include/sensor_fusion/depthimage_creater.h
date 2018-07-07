@@ -42,6 +42,11 @@
 #include "Eigen/Dense"
 #include "Eigen/LU"
 
+#include <omp.h>
+
+#include <boost/thread/thread.hpp>
+// #include <boost/shared_ptr.hpp>
+
 using namespace std;
 
 typedef struct{
@@ -54,7 +59,9 @@ class DepthImage{
         image_transport::ImageTransport it;
 
         ros::Subscriber node_sub;
-        image_transport::Publisher image_pub;
+        image_transport::Publisher zed0_pub;
+        image_transport::Publisher zed1_pub;
+        image_transport::Publisher zed2_pub;
 
         //  Frame
         string global_frame;
@@ -66,6 +73,9 @@ class DepthImage{
         // MAP File Path
         string FILE_PATH;
         pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr map;
+
+        // local cloud area
+        int threshold;
 
     public:
         DepthImage();
@@ -80,11 +90,20 @@ class DepthImage{
 
         void depthimage_creater(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
                                 sensor_msgs::ImageConstPtr image_msg,
-                                sensor_msgs::CameraInfoConstPtr cinfo_msg);
+                                sensor_msgs::CameraInfoConstPtr cinfo_msg,
+                                image_transport::Publisher image_pub);
+        
+        void LocalCloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
+                        pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& local_cloud);
+
+        void inverseCloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
+                          pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& inverse_cloud,
+                          tf::Transform transform);
+
+        void main();
 
 
-        void loadPCDFile(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
-                         string file_path);
+        void loadPCDFile(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud);
 
         COLOR GetColor(double v, double vmin, double vmax);
 };
@@ -100,10 +119,14 @@ DepthImage::DepthImage()
     nh.getParam("zed2_frame"  , zed2_frame);
 
     nh.getParam("file_path", FILE_PATH);
+
+    nh.getParam("threshold", threshold);
     
     node_sub = nh.subscribe("/node", 10, &DepthImage::nodeCallback, this);
 
-    image_pub = it.advertise("/depthimage", 10);
+    zed0_pub = it.advertise("/zed0_depthimage", 10);
+    zed1_pub = it.advertise("/zed1_depthimage", 10);
+    zed2_pub = it.advertise("/zed2_depthimage", 10);
 
 }
 

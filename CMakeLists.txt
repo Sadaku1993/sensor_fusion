@@ -178,6 +178,8 @@ add_executable(coloringcloud coloring/coloringcloud.cpp)
 add_executable(merge_cloud depthimage/merge_cloud.cpp)
 add_executable(normal_estimation_local depthimage/normal_estimation_local.cpp)
 add_executable(depthimage_creater depthimage/depthimage_creater.cpp)
+add_executable(pcd_integrater depthimage/pcd_integrater.cpp)
+add_executable(map_load depthimage/map_load.cpp)
 
 ## Calibration
 add_executable(pointcloud2image calibration/pointcloud2image.cpp)
@@ -339,6 +341,16 @@ target_link_libraries(normal_estimation_local
   ${PCL_LIBRARIES}
 )
 target_link_libraries(depthimage_creater
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(pcd_integrater
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(map_load
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}

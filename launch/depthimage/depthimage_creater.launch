@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+	<node pkg="sensor_fusion" type="depthimage_creater" name="depthimage_creater" output="screen">
+        <!--Frame-->
+        <param name="global_frame" type="string" value="map" />
+        <param name="laser_frame"  type="string" value="centerlaser" />
+        <param name="zed0_frame"   type="string" value="zed0/zed_left_camera" />
+        <param name="zed1_frame"   type="string" value="zed1/zed_left_camera" />
+        <param name="zed2_frame"   type="string" value="zed2/zed_left_camera" />
+        
+        <!--Path-->
+        <param name="file_path" type="string" value="/home/amsl/PCD/SQ2/20180707/Map/map.pcd" />
+
+        <!--Threshold-->
+        <param name="threshold" type="int" value="200" />
+
+    </node>
+</launch>

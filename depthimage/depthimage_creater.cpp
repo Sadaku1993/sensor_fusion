@@ -23,5 +23,9 @@ int main(int argc, char** argv)
 
     DepthImage di;
 
+    di.main();
+
+    ros::spin();
+
     return 0;
 }
