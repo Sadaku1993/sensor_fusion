@@ -49,6 +49,11 @@ void DepthImage::nodeCallback(const sensor_fusion::NodeConstPtr msg)
 
     // Laser座標系を中心としてthreshold以内の点群をMapから取得
     LocalCloud(local_map, pickup_cloud);
+    sensor_msgs::PointCloud2 local_map_pc2;
+    pcl::toROSMsg(*pickup_cloud, local_map_pc2);
+    local_map_pc2.header.frame_id = laser_frame;
+    local_map_pc2.header.stamp = ros::Time::now();
+    local_map_pub.publish(local_map_pc2);
 
     // laser座標系に変換したMapデータをカメラ座標に変換
     transform_pointcloud(pickup_cloud, zed0_cloud, zed0_transform, zed0_frame, laser_frame);
@@ -124,10 +129,11 @@ void DepthImage::LocalCloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
                             pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& local_cloud)
 {
     for(size_t i=0;i<cloud->points.size();i++){
-        if(0<=cloud->points[i].x && cloud->points[i].x<=threshold 
-           && 0<=cloud->points[i].y && cloud->points[i].y<=threshold)
+        if(-threshold<=cloud->points[i].x && cloud->points[i].x<=threshold 
+           && -threshold<=cloud->points[i].y && cloud->points[i].y<=threshold)
             local_cloud->points.push_back(cloud->points[i]);
     }
+    cout<<"----Cloal Map Size:"<<local_cloud->points.size()<<endl;
 }
 
 void DepthImage::inverseCloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,

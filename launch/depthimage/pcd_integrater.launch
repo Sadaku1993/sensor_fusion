@@ -2,7 +2,7 @@
 <launch>
 	<node pkg="sensor_fusion" type="pcd_integrater" name="pcd_integrater" output="screen">
 		<param name="search_radius"  type="double" value="0.20" />
-        <param name="FILE_PATH"      type="string" value="/home/amsl/PCD/SQ2/20180707/Normal/" />
-        <param name="INTEGRATE_PATH" type="string" value="/home/amsl/PCD/SQ2/20180707/Map/" />
+        <param name="FILE_PATH"      type="string" value="/home/amsl/PCD/SQ2/20180707_2/Normal/" />
+        <param name="INTEGRATE_PATH" type="string" value="/home/amsl/PCD/SQ2/20180707_2/Map/" />
     </node>
 </launch>

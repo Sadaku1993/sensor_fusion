@@ -44,46 +44,12 @@ $catkin_make
 ```
 
 ## How to Run
-### Calibration SQ Lidar and ZED
-Under review
 
-### Launch Sensor Node
-```
-$roslaunch sq1_extra run_joy_for_bag.launch
-```
-```
-$ssh 192.168.0.130
-$export ROS_MASTER_URI=http://192.168.0.142:11311
-$roslaunch zed-wrapper zed0.launch
-```
-```
-$ssh 192.168.0.131
-$export ROS_MASTER_URI=http://192.168.0.142:11311
-$roslaunch zed-wrapper zed1.launch
-```
-```
-$ssh 192.168.0.132
-$export ROS_MASTER_URI=http://192.168.0.142:11311
-$roslaunch zed-wrapper zed2.launch
-```
-
-### Launch Preprocess Node
-```
-$roslaunch sensor_fusion run.launch
-```
-
-### Launch DepthImage and ColoredCloud
-```
-$roslaunch sensor_fusion zed0.launch
-$roslaunch sensor_fusion zed1.launch
-$roslaunch sensor_fusion zed2.launch
-```
-
-## Run All Node (for amsl)
-```
-$roscd scripts/sensor_fusion
-$./run.sh
-```
-
-## How to calibration lidar and camera
+## Calibration SQ LiDAR and ZED
 Watch [calibration](https://github.com/Sadaku1993/sensor_fusion/tree/master/calibration)
+
+## Coloring LiDAR PointCloud Using ZED
+Watch [coloring](https://github.com/Sadaku1993/sensor_fusion/tree/master/coloring)
+
+## DepthImage Using LiDAR Points
+Watch [depthimage](https://github.com/Sadaku1993/sensor_fusion/tree/master/depthimage)

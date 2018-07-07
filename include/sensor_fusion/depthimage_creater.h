@@ -59,6 +59,9 @@ class DepthImage{
         image_transport::ImageTransport it;
 
         ros::Subscriber node_sub;
+
+        ros::Publisher local_map_pub;
+
         image_transport::Publisher zed0_pub;
         image_transport::Publisher zed1_pub;
         image_transport::Publisher zed2_pub;
@@ -123,6 +126,8 @@ DepthImage::DepthImage()
     nh.getParam("threshold", threshold);
     
     node_sub = nh.subscribe("/node", 10, &DepthImage::nodeCallback, this);
+
+    local_map_pub = nh.advertise<sensor_msgs::PointCloud2>("local_map", 10);
 
     zed0_pub = it.advertise("/zed0_depthimage", 10);
     zed1_pub = it.advertise("/zed1_depthimage", 10);

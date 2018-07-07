@@ -9,10 +9,10 @@
         <param name="zed2_frame"   type="string" value="zed2/zed_left_camera" />
         
         <!--Path-->
-        <param name="file_path" type="string" value="/home/amsl/PCD/SQ2/20180707/Map/map.pcd" />
+        <param name="file_path" type="string" value="/home/amsl/PCD/SQ2/20180707_2/Map/map.pcd" />
 
         <!--Threshold-->
-        <param name="threshold" type="int" value="200" />
+        <param name="threshold" type="int" value="10" />
 
     </node>
 </launch>
