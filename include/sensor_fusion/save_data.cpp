@@ -222,7 +222,10 @@ void SaveData::save_process()
     sensor_fusion::Node node;
     node.header.frame_id = global_frame;
     node.node = node_num;
-	tf::transformTFToMsg(global_transform, node.transform);
+	tf::transformTFToMsg(global_transform, node.laser_transform);
+	tf::transformTFToMsg(zed0_transform, node.zed0_transform);
+	tf::transformTFToMsg(zed1_transform, node.zed1_transform);
+	tf::transformTFToMsg(zed2_transform, node.zed2_transform);
 	node.zed0_image = *zed0_image;
 	node.zed0_cinfo = *zed0_cinfo;
 	node.zed1_image = *zed1_image;

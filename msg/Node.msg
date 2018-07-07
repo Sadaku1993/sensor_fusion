@@ -2,7 +2,10 @@ std_msgs/Header header
 
 int64 node
 
-geometry_msgs/Transform transform
+geometry_msgs/Transform laser_transform
+geometry_msgs/Transform zed0_transform
+geometry_msgs/Transform zed1_transform
+geometry_msgs/Transform zed2_transform
 
 sensor_msgs/PointCloud2 cloud
 

@@ -15,7 +15,7 @@ class NormalEstimation{
         ros::NodeHandle nh;
 
         string FILE_PATH;
-        string FINISH_PATH;
+        string NORMAL_PATH;
         double search_radius;
 
     public:
@@ -38,7 +38,7 @@ NormalEstimation::NormalEstimation()
 {
     nh.getParam("search_radius", search_radius);
     nh.getParam("FILE_PATH"    , FILE_PATH);
-    nh.getParam("FINISHE_PATH" , FINISH_PATH);
+    nh.getParam("NORMAL_PATH" , NORMAL_PATH);
 }
 
 int NormalEstimation::file_count_boost(const boost::filesystem::path& root) {
@@ -83,15 +83,22 @@ void NormalEstimation::load(pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud, int c
 
 void NormalEstimation::save(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud, int count)
 {
-    string file_name=to_string(count);
-    pcl::io::savePCDFileASCII(FINISH_PATH+file_name+".pcd", *cloud);
-    printf("---------Save:%d Size: %d\n\n", count, int(cloud->points.size()));
+    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr save_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
+    pcl::copyPointCloud(*cloud, *save_cloud);
+
+    save_cloud->width = 1;
+    save_cloud->height = save_cloud->points.size();
+
+    string file_name=NORMAL_PATH+to_string(count)+".pcd";
+
+    pcl::io::savePCDFileASCII(file_name, *save_cloud);
+    cout<<"-----Save :" <<file_name <<endl;
 }
 
 void NormalEstimation::normal_estimation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,
                                          pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& cloud_normal)
 {
-	cout<<"Normal Estimation"<<endl;
+	cout<<"-----Normal Estimation"<<endl;
     pcl::NormalEstimation<pcl::PointXYZRGB, pcl::Normal> ne;
     ne.setInputCloud(cloud);
     pcl::search::KdTree<pcl::PointXYZRGB>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZRGB> ());

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+	<node pkg="sensor_fusion" type="normal_estimation_local" name="normal_estimation_local" output="screen">
+		<param name="search_radius" type="double" value="0.20" />
+        <param name="FILE_PATH"   type="string" value="/home/amsl/PCD/SQ2/20180705_2/Save/" />
+        <param name="NORMAL_PATH" type="string" value="/home/amsl/PCD/SQ2/20180705_2/Normal/" />
+    </node>
+</launch>
