@@ -66,6 +66,10 @@ class DepthImage{
         image_transport::Publisher zed1_pub;
         image_transport::Publisher zed2_pub;
 
+        ros::Publisher zed0_raw_pub;
+        ros::Publisher zed1_raw_pub;
+        ros::Publisher zed2_raw_pub;
+
         //  Frame
         string global_frame;
         string laser_frame;
@@ -94,7 +98,8 @@ class DepthImage{
         void depthimage_creater(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
                                 sensor_msgs::ImageConstPtr image_msg,
                                 sensor_msgs::CameraInfoConstPtr cinfo_msg,
-                                image_transport::Publisher image_pub);
+                                image_transport::Publisher image_pub,
+                                ros::Publisher image_raw_pub);
         
         void LocalCloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
                         pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& local_cloud);
@@ -132,7 +137,10 @@ DepthImage::DepthImage()
     zed0_pub = it.advertise("/zed0_depthimage", 10);
     zed1_pub = it.advertise("/zed1_depthimage", 10);
     zed2_pub = it.advertise("/zed2_depthimage", 10);
-
+    
+    zed0_raw_pub = nh.advertise<sensor_msgs::Image>("/zed0_raw", 10);
+    zed1_raw_pub = nh.advertise<sensor_msgs::Image>("/zed1_raw", 10);
+    zed2_raw_pub = nh.advertise<sensor_msgs::Image>("/zed2_raw", 10);
 }
 
 

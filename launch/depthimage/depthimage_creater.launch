@@ -12,7 +12,7 @@
         <param name="file_path" type="string" value="/home/amsl/PCD/SQ2/20180707_2/Map/map.pcd" />
 
         <!--Threshold-->
-        <param name="threshold" type="int" value="10" />
+        <param name="threshold" type="int" value="100" />
 
     </node>
 </launch>

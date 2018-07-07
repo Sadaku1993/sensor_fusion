@@ -43,8 +43,6 @@ $cd ..
 $catkin_make
 ```
 
-## How to Run
-
 ## Calibration SQ LiDAR and ZED
 Watch [calibration](https://github.com/Sadaku1993/sensor_fusion/tree/master/calibration)
 

@@ -61,9 +61,9 @@ void DepthImage::nodeCallback(const sensor_fusion::NodeConstPtr msg)
     transform_pointcloud(pickup_cloud, zed2_cloud, zed2_transform, zed2_frame, laser_frame);
 
     // DepthImageを作成
-    depthimage_creater(zed0_cloud, zed0_image, zed0_cinfo, zed0_pub);
-    depthimage_creater(zed1_cloud, zed1_image, zed1_cinfo, zed1_pub);
-    depthimage_creater(zed2_cloud, zed2_image, zed2_cinfo, zed2_pub);
+    depthimage_creater(zed0_cloud, zed0_image, zed0_cinfo, zed0_pub, zed0_raw_pub);
+    depthimage_creater(zed1_cloud, zed1_image, zed1_cinfo, zed1_pub, zed1_raw_pub);
+    depthimage_creater(zed2_cloud, zed2_image, zed2_cinfo, zed2_pub, zed2_raw_pub);
 
     cout<<"----Finish"<<endl;
 
@@ -91,8 +91,12 @@ void DepthImage::transform_pointcloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::P
 void DepthImage::depthimage_creater(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
                                     sensor_msgs::ImageConstPtr image_msg,
                                     sensor_msgs::CameraInfoConstPtr cinfo_msg,
-                                    image_transport::Publisher image_pub)
+                                    image_transport::Publisher image_pub,
+                                    ros::Publisher image_raw_pub)
 {
+    // Visualize用
+    sensor_msgs::Image tmp_image = *image_msg;
+
     cv_bridge::CvImageConstPtr cv_img_ptr;
     try{
         cv_img_ptr = cv_bridge::toCvShare(image_msg);
@@ -106,6 +110,46 @@ void DepthImage::depthimage_creater(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr
 
     image_geometry::PinholeCameraModel cam_model;
     cam_model.fromCameraInfo(cinfo_msg);
+
+
+//     double distance[cv_img_ptr->image.rows][cv_img_ptr->image.cols];
+//     memset(&distance, threshold, cv_img_ptr->image.rows*cv_img_ptr->image.cols);
+// 
+//     for(pcl::PointCloud<pcl::PointXYZRGBNormal>::iterator pt=cloud->points.begin(); pt<cloud->points.end(); pt++)
+//     {
+//         if ((*pt).x<0) continue;
+//         cv::Point3d pt_cv(-(*pt).y, -(*pt).z, (*pt).x);
+//         cv::Point2d uv;
+//         uv = cam_model.project3dToPixel(pt_cv);
+// 
+//         if(uv.x>0 && uv.x < image.cols && uv.y > 0 && uv.y < image.rows){
+//             double range = sqrt( pow((*pt).x, 2.0) + pow((*pt).y, 2.0) + pow((*pt).z, 2.0));
+//             if(range<threshold){
+//                 distance[int(uv.y)][int(uv.x)] = range;
+//             }
+//         }
+//     }
+//     
+//     for(int y=0; y<image.rows; y++){
+//         for(int x=0; x<image.cols; x++){
+//             double range = distance[y][x];
+//             if(0.01<range && range<threshold){
+//                 COLOR c = GetColor(int(range/50*255.0), 0, 255);
+//                 cv::Point2d uv;
+//                 uv.x = x;
+//                 uv.y = y;
+//                 cv::circle(image, uv, 3, cv::Scalar(int(255*c.b),int(255*c.g),int(255*c.r)), -1);
+//             }
+//         }
+//     }
+//     
+// 
+    cv::Mat gray_image(cv_img_ptr->image.rows, cv_img_ptr->image.cols, CV_8UC1);
+    for(int y=0; y<gray_image.rows; y++){
+        for(int x=0; x<gray_image.cols; x++){
+            gray_image.at<unsigned char>(y, x) = 0.0;
+        }
+    }
     
     for(pcl::PointCloud<pcl::PointXYZRGBNormal>::iterator pt=cloud->points.begin(); pt<cloud->points.end(); pt++)
     {
@@ -116,13 +160,35 @@ void DepthImage::depthimage_creater(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr
 
         if(uv.x>0 && uv.x < image.cols && uv.y > 0 && uv.y < image.rows){
             double range = sqrt( pow((*pt).x, 2.0) + pow((*pt).y, 2.0) + pow((*pt).z, 2.0));
-            COLOR c = GetColor(int(range/20*255.0), 0, 255);
-            cv::circle(image, uv, 3, cv::Scalar(int(255*c.b),int(255*c.g),int(255*c.r)), -1);
+
+            if(range<threshold){
+                gray_image.at<unsigned char>(int(uv.y), int(uv.x)) = range;
+                cv::circle(gray_image, uv, 3, cv::Scalar(range, range, range) , -1);
+            }
+        }
+    }
+
+#pragma omp parallel for
+    for(int y=0; y<gray_image.rows; y++){
+        for(int x=0; x<gray_image.cols; x++){
+            double range = gray_image.at<unsigned char>(y, x);
+            if(0.01<range && range<threshold){
+                COLOR c = GetColor(int(range/50*255.0), 0, 255);
+                cv::Point2d uv;
+                uv.x = x;
+                uv.y = y;
+                cv::circle(image, uv, 3, cv::Scalar(int(255*c.b),int(255*c.g),int(255*c.r)), -1);
+                // image.at<cv::Vec3b>(y, x)[0] = 255*c.b;
+                // image.at<cv::Vec3b>(y, x)[1] = 255*c.g;
+                // image.at<cv::Vec3b>(y, x)[2] = 255*c.r;
+            }
         }
     }
 
 	sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
 	image_pub.publish(msg);
+
+	image_raw_pub.publish(tmp_image);
 }
 
 void DepthImage::LocalCloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
