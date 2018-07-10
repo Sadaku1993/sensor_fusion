@@ -14,5 +14,10 @@
         <!--Threshold-->
         <param name="threshold" type="int" value="100" />
 
+        <!--Min Max-->
+        <param name="cell_size"         type="double"   value="1.0" />
+        <param name="grid_dimentions"   type="int"      value="200" />
+        <param name="height_threshold"  type="double"   value="0.3" />
+
     </node>
 </launch>

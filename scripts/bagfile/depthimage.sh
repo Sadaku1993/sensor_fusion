@@ -18,10 +18,23 @@ sleep 1s
 
 # Republish
 gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion republish.launch" --geometry=50x12+0+900 &
+sleep 1s
+
+# TF
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion sq2_zed.launch" --geometry=50x12+600+0 &
+sleep 1s
+
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed0_dumy_tf.launch" --geometry=50x12+600+300 &
+sleep 1s
+
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed1_dumy_tf.launch" --geometry=50x12+600+600 &
+sleep 1s
+
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed2_dumy_tf.launch" --geometry=50x12+600+900 &
 sleep 90s
 
 # bag
-gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-07-07-23-50-02.bag -r 1" --geometry=50x12+2000+500 &
+gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-07-07-23-50-02.bag -r 0.5" --geometry=50x12+2000+500 &
 sleep 1s
 
 # rviz

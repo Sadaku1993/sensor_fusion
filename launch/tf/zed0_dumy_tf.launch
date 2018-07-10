@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <launch>
     <arg name="stdout" default="screen" />
-    <node pkg="tf" type="static_transform_publisher" name="zed0_dumy_tf" args="0.0 0.10 0 0 0 0 /zed0/zed_center /zed0/zed_left_camera 100"/>
+    <node pkg="tf" type="static_transform_publisher" name="zed0_dumy_tf" args="0.0 0.06 0 0 0 0 /zed0/zed_center /zed0/zed_left_camera 100"/>
 </launch>
