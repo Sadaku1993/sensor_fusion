@@ -29,6 +29,8 @@ void DepthImage::nodeCallback(const sensor_fusion::NodeConstPtr msg)
     *zed2_cinfo = msg->zed2_cinfo;
 
     pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr local_map(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
+    CloudAPtr obstacle_cloud(new CloudA);
+    CloudAPtr ground_cloud(new CloudA);
     
     pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr pickup_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
     pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr zed0_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
@@ -37,16 +39,13 @@ void DepthImage::nodeCallback(const sensor_fusion::NodeConstPtr msg)
 
     // 保存したMapの座標系はGlobal(Map)座標系になっている
     // laser_transform(global -- laser)の逆行列を使って laser座標系に変換する
-    inverseCloud(map, local_map, laser_transform);
+    inverseCloud(obstacle_map, obstacle_cloud, laser_transform);
+    inverseCloud(ground_map,   ground_cloud,   laser_transform);
+    // inverseCloud(map, local_map, laser_transform);
 
     // Laser座標系を中心としてthreshold以内の点群をMapから取得
     LocalCloud(local_map, pickup_cloud);
-    sensor_msgs::PointCloud2 local_map_pc2;
-    pcl::toROSMsg(*pickup_cloud, local_map_pc2);
-    local_map_pc2.header.frame_id = laser_frame;
-    local_map_pc2.header.stamp = ros::Time::now();
-    local_map_pub.publish(local_map_pc2);
-
+    
     // laser座標系に変換したMapデータをカメラ座標に変換
     transform_pointcloud(pickup_cloud, zed0_cloud, zed0_transform, zed0_frame, laser_frame);
     // transform_pointcloud(pickup_cloud, zed1_cloud, zed1_transform, zed1_frame, laser_frame);
@@ -54,13 +53,13 @@ void DepthImage::nodeCallback(const sensor_fusion::NodeConstPtr msg)
 
     // DepthImageを作成
     cout<<"----zed0"<<endl;
-    depthimage_creater(zed0_cloud, zed0_image, zed0_cinfo, zed0_frame, zed0_pub, zed0_raw_pub, zed0_cloud_pub);
+    depthimage_creater(zed0_cloud, zed0_image, zed0_cinfo, zed0_frame, zed0_pub, zed0_raw_pub, zed0_rmground_pub, zed0_cluster_pub, zed0_cloud_pub);
     
     // cout<<"----zed1"<<endl;
-    // depthimage_creater(zed1_cloud, zed1_image, zed1_cinfo, zed1_frame, zed1_pub, zed1_raw_pub, zed1_cloud_pub);
+    // depthimage_creater(zed1_cloud, zed1_image, zed1_cinfo, zed1_frame, zed1_pub, zed1_raw_pub, zed1_cluster_pub, zed1_cloud_pub);
     
     // cout<<"----zed2"<<endl;
-    // depthimage_creater(zed2_cloud, zed2_image, zed2_cinfo, zed2_frame, zed2_pub, zed2_raw_pub, zed2_cloud_pub);
+    // depthimage_creater(zed2_cloud, zed2_image, zed2_cinfo, zed2_frame, zed2_pub, zed2_raw_pub, zed2_cluster_pub, zed2_cloud_pub);
 
     cout<<"----Finish"<<endl;
 
@@ -91,6 +90,8 @@ void DepthImage::depthimage_creater(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr
                                     string target_frame,
                                     image_transport::Publisher image_pub,
                                     ros::Publisher image_raw_pub,
+                                    ros::Publisher rmground_pub,
+                                    ros::Publisher cluster_pub,
                                     ros::Publisher cloud_pub)
 {
     // Visualize用
@@ -143,10 +144,15 @@ void DepthImage::depthimage_creater(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr
     pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr rm_ground_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
     pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr ground_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
     constructFullClouds(reference_cloud, rm_ground_cloud, ground_cloud);
+    CloudPublisher(rm_ground_cloud, target_frame, rmground_pub); // for Visualize
 
     // Clusteringを行う
     vector<Clusters> cluster_array;
     clustering(rm_ground_cloud, cluster_array);
+    CloudAPtr cluster_cloud(new CloudA);
+    for(size_t i=0;i<cluster_array.size();i++)
+        *cluster_cloud += cluster_array[i].points;
+    CloudPublisher(cluster_cloud, target_frame, cluster_pub);
 
     // IOUを計算
     CloudAPtr iou_cloud(new CloudA);
@@ -177,13 +183,6 @@ void DepthImage::depthimage_creater(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr
      image_pub.publish(msg);
 
      image_raw_pub.publish(tmp_image);
-
-     sensor_msgs::PointCloud2 pc2;
-     pcl::toROSMsg(*rm_ground_cloud, pc2);
-     //pcl::toROSMsg(*reference_cloud, pc2);
-     pc2.header.frame_id = target_frame;
-     pc2.header.stamp = ros::Time::now();
-     cloud_pub.publish(pc2);
 }
 
 void DepthImage::LocalCloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
@@ -219,6 +218,7 @@ void DepthImage::inverseCloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud
 
 
 // Min Max法により地面除去を行う
+// 今はMin-Maxを使わず高さ情報で切ってしまっている 
 void DepthImage::constructFullClouds(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
                                      pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& rm_ground,
                                      pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& ground)
@@ -230,14 +230,19 @@ void DepthImage::constructFullClouds(pcl::PointCloud<pcl::PointXYZRGBNormal>::Pt
     memset(&max,  0, grid_dimentions*grid_dimentions); 
     memset(&init, 0, grid_dimentions*grid_dimentions);
 
-#pragma omp parallel for
     for(size_t i=0;i<cloud->points.size();i++)
     {
         int x = (grid_dimentions/2)+cloud->points[i].x/cell_size;
         int y = (grid_dimentions/2)+cloud->points[i].y/cell_size;
 
-        if(x<=0 && x<grid_dimentions && 
-                y<=0 && y<grid_dimentions)
+        // Noise Filter
+        if(cloud->points[i].z < -2.0 || 20.0 < cloud->points[i].z)
+            continue;
+
+        // 前方の点群しか参照しないため,
+        // xはgrid_dimentions/2よりも大きいところを参照する
+        if(grid_dimentions/2<x && x<grid_dimentions && 
+                0<=y && y<grid_dimentions)
         {
             if(!init[x][y]){
                 min[x][y] = cloud->points[i].z;
@@ -258,12 +263,10 @@ void DepthImage::constructFullClouds(pcl::PointCloud<pcl::PointXYZRGBNormal>::Pt
         
         if(grid_dimentions/2<=x && x<grid_dimentions && 0<=y && y<grid_dimentions)
         {
-            // if(height_threshold<max[x][y]-min[x][y] && init[x][y])
-            if(height_threshold<cloud->points[i].z)
-            {
+            if(height_threshold<max[x][y]-min[x][y] && fabs(cloud->points[i].normal_z)<0.8)
                 rm_ground->points.push_back(cloud->points[i]);
+            else
                 ground->points.push_back(cloud->points[i]);
-            }
         }
     }
     cout<<"----Remove Ground (Min Max): "<<rm_ground->points.size()<<endl; 
@@ -410,29 +413,109 @@ void DepthImage::iou(vector<Clusters> cluster_array,
     }
 
     for(int i=0;i<int(clusters.size());i++)
-        printf("    ID:%2d x:%.2f y:%.2f z:%.2f W:%.2f H:%.2f D:%.2f Distance:%.2f\n", 
-               i, 
-               clusters[i].data.x, clusters[i].data.y, clusters[i].data.z, 
-               clusters[i].data.width, clusters[i].data.height, clusters[i].data.depth,
-               distance[i]);
+        printf("    ID:%2d x:%.2f y:%.2f z:%.2f W:%.2f H:%.2f D:%.2f Distance:%.2f min:%.2f %.2f %.2f max:%.2f %.2f %.2f\n", 
+               i, clusters[i].data.x, clusters[i].data.y, clusters[i].data.z, 
+               clusters[i].data.width,    clusters[i].data.height,   clusters[i].data.depth, distance[i], 
+               clusters[i].data.min_p[0], clusters[i].data.min_p[1], clusters[i].data.min_p[2],
+               clusters[i].data.max_p[0], clusters[i].data.max_p[1], clusters[i].data.max_p[2]);
+
+    double iou[int(clusters.size())][int(clusters.size())] = {};
+    memset(&iou, 0, clusters.size()*clusters.size());
+
+    image_geometry::PinholeCameraModel cam_model;
+    cam_model.fromCameraInfo(cinfo_msg);
+
+    for(int i=0;i<int(clusters.size());i++){
+        cv::Point3d cv_min(-clusters[i].data.min_p[1], -clusters[i].data.min_p[2], clusters[i].data.min_p[0]);
+        cv::Point3d cv_max(-clusters[i].data.max_p[1], -clusters[i].data.max_p[2], clusters[i].data.max_p[0]);
+
+        cv::Point2d uv_min = cam_model.project3dToPixel(cv_min);
+        cv::Point2d uv_max = cam_model.project3dToPixel(cv_max);
+
+        printf("%.2f %.2f %.2f %.2f \n", uv_min.x, uv_min.y, uv_max.x, uv_max.y);
+    }
+
+
+    for(int i=0;i<int(clusters.size());i++){
+        for(int j=0;j<int(clusters.size());j++){
+            cv::Point3d cv_i_min(-clusters[i].data.min_p[1], -clusters[i].data.min_p[2], clusters[i].data.min_p[0]);
+            cv::Point3d cv_i_max(-clusters[i].data.max_p[1], -clusters[i].data.max_p[2], clusters[i].data.max_p[0]);
+            cv::Point3d cv_j_min(-clusters[j].data.min_p[1], -clusters[j].data.min_p[2], clusters[j].data.min_p[0]);
+            cv::Point3d cv_j_max(-clusters[j].data.max_p[1], -clusters[j].data.max_p[2], clusters[j].data.max_p[0]);
+
+            cv::Point2d uv_i_min = cam_model.project3dToPixel(cv_i_min);
+            cv::Point2d uv_i_max = cam_model.project3dToPixel(cv_i_max);
+            cv::Point2d uv_j_min = cam_model.project3dToPixel(cv_j_min);
+            cv::Point2d uv_j_max = cam_model.project3dToPixel(cv_j_max);
+
+            ROI ROI_I, ROI_J;
+
+            ROI_I.x_offset = uv_i_min.x;
+            ROI_I.y_offset = uv_i_min.y;
+            ROI_I.width    = uv_i_max.x - uv_i_min.x;
+            ROI_I.height   = uv_i_max.y - uv_i_max.y;
+
+            ROI_J.x_offset = uv_j_min.x;
+            ROI_J.y_offset = uv_j_min.y;
+            ROI_J.width    = uv_j_max.x - uv_j_min.x;
+            ROI_J.height   = uv_j_max.y - uv_j_max.y;
+
+            // printf("I:%d %.2f %.2f %.2f %.2f\n", i, ROI_I.x_offset, ROI_I.y_offset, ROI_I.width, ROI_I.height);
+            // printf("J:%d %.2f %.2f %.2f %.2f\n", j, ROI_J.x_offset, ROI_J.y_offset, ROI_J.width, ROI_J.height);
+
+            cv::Rect RECT_I(ROI_I.x_offset, ROI_I.y_offset, ROI_I.width, ROI_I.height);
+            cv::Rect RECT_J(ROI_J.x_offset, ROI_J.y_offset, ROI_J.width, ROI_J.height);
+
+            cv::Rect RECT_OVERLAP = RECT_I & RECT_J;
+
+            int AREA_I          = RECT_I.width * RECT_I.height;
+            int AREA_J          = RECT_J.width * RECT_J.height;
+            int AREA_OVERLAP    = RECT_OVERLAP.width * RECT_OVERLAP.height;
+            
+            if(0.0<AREA_OVERLAP){
+                int AREA_UNION = AREA_I + AREA_J - AREA_OVERLAP;
+                iou[i][j] = AREA_OVERLAP / AREA_UNION;
+            }
+        }
+    }
+    for(int i=0;i<int(clusters.size());i++){
+        for(int j=0;j<int(clusters.size());j++)
+            printf("%.2f ", iou[i][j]);
+        printf("\n");
+    }
+
+
 }
 
 
 void DepthImage::main()
 {
-    loadPCDFile(map);
+    loadPCDFile(obstacle_map, OBSTACLE_PATH);
+    loadPCDFile(ground_map,   GROUND_PATH);
     cout<<"Start"<<endl;
 }
 
-void DepthImage::loadPCDFile(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud)
+void DepthImage::loadPCDFile(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud, string file_path)
 {
-    cout<<"Load :" <<FILE_PATH<<endl;
+    cout<<"Load :" <<file_path<<endl;
     
-    if (pcl::io::loadPCDFile<pcl::PointXYZRGBNormal> (FILE_PATH, *cloud) == -1) //* load the file
+    if (pcl::io::loadPCDFile<pcl::PointXYZRGBNormal> (file_path, *cloud) == -1) //* load the file
     {
         PCL_ERROR ("-----Couldn't read file\n");
     }
 }
+
+void DepthImage::CloudPublisher(CloudAPtr cloud,
+                                string target_frame,
+                                ros::Publisher pub)
+{
+     sensor_msgs::PointCloud2 pc2;
+     pcl::toROSMsg(*cloud, pc2);
+     pc2.header.frame_id = target_frame;
+     pc2.header.stamp = ros::Time::now();
+     pub.publish(pc2);
+}
+
 
 COLOR DepthImage::GetColor(double v, double vmin, double vmax)
 {

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+	<node pkg="sensor_fusion" type="map_load" name="map_load" output="screen">
+        <param name="FILE_PATH" type="string" value="/home/amsl/PCD/SQ2/20180711/Map/map.pcd"/>
+        <param name="FRAME" type="string" value="/map" />
+    </node>
+</launch>

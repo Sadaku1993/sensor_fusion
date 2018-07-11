@@ -8,8 +8,8 @@ source /home/amsl/.bashrc
 gnome-terminal -e "/opt/ros/kinetic/bin/roscore" --geometry=50x12+0+0 &
 sleep 1s
 
-# DepthImage Creater
-gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion depthimage_creater.launch" --geometry=50x12+0+300 &
+# Map Visualizer
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion map_publisher.launch" --geometry=50x12+0+300 &
 sleep 1s
 
 # Transform 
@@ -20,21 +20,25 @@ sleep 1s
 gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion republish.launch" --geometry=50x12+0+900 &
 sleep 1s
 
+# DepthImage Creater
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion depthimage_creater.launch" --geometry=50x12+600+0 &
+sleep 1s
+
 # TF
-gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion sq2_zed.launch" --geometry=50x12+600+0 &
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion sq2_zed.launch" --geometry=50x12+1200+0 &
 sleep 1s
 
-gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed0_dumy_tf.launch" --geometry=50x12+600+300 &
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed0_dumy_tf.launch" --geometry=50x12+1200+300 &
 sleep 1s
 
-gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed1_dumy_tf.launch" --geometry=50x12+600+600 &
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed1_dumy_tf.launch" --geometry=50x12+1200+600 &
 sleep 1s
 
-gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed2_dumy_tf.launch" --geometry=50x12+600+900 &
-sleep 90s
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed2_dumy_tf.launch" --geometry=50x12+1200+900 &
+sleep 60s
 
 # bag
-gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-07-07-23-50-02.bag -r 0.5" --geometry=50x12+2000+500 &
+gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-07-07-23-50-02.bag -r 1.0" --geometry=50x12+2000+500 &
 sleep 1s
 
 # rviz

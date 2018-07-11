@@ -16,6 +16,7 @@ class Integrate{
 
         string FILE_PATH;
         string INTEGRATRE_PATH;
+        string MAP_NAME;
 
     public:
         Integrate();
@@ -31,6 +32,7 @@ Integrate::Integrate()
 {
     nh.getParam("FILE_PATH", FILE_PATH);
     nh.getParam("INTEGRATE_PATH", INTEGRATRE_PATH);
+    nh.getParam("MAP_NAME", MAP_NAME);
 }
 
 int Integrate::file_count_boost(const boost::filesystem::path& root) {
@@ -64,7 +66,7 @@ void Integrate::save(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud)
     save_cloud->width = 1;
     save_cloud->height = save_cloud->points.size();
 
-    string file_name=INTEGRATRE_PATH+"map.pcd";
+    string file_name=INTEGRATRE_PATH+MAP_NAME;
 
     pcl::io::savePCDFileASCII(file_name, *save_cloud);
     cout<<"-----Save :" <<file_name <<endl;

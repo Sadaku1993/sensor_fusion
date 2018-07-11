@@ -86,14 +86,19 @@ struct Clusters{
     CloudA points;
 };
 
+struct ROI{
+    double x_offset;
+    double y_offset;
+    double width;
+    double height;
+};
+
 class DepthImage{
     private:
         ros::NodeHandle nh;
         image_transport::ImageTransport it;
 
         ros::Subscriber node_sub;
-
-        ros::Publisher local_map_pub;
 
         image_transport::Publisher zed0_pub;
         image_transport::Publisher zed1_pub;
@@ -107,6 +112,10 @@ class DepthImage{
         ros::Publisher zed1_rmground_pub;
         ros::Publisher zed2_rmground_pub;
 
+        ros::Publisher zed0_cluster_pub;
+        ros::Publisher zed1_cluster_pub;
+        ros::Publisher zed2_cluster_pub;
+
         ros::Publisher zed0_cloud_pub;
         ros::Publisher zed1_cloud_pub;
         ros::Publisher zed2_cloud_pub;
@@ -119,8 +128,10 @@ class DepthImage{
         string zed2_frame;
         
         // MAP File Path
-        string FILE_PATH;
-        CloudAPtr map;
+        string OBSTACLE_PATH;
+        string GROUND_PATH;
+        CloudAPtr obstacle_map;
+        CloudAPtr ground_map;
 
         // local cloud area
         int threshold;
@@ -147,6 +158,8 @@ class DepthImage{
                                 string target_frame,
                                 image_transport::Publisher image_pub,
                                 ros::Publisher image_raw_pub,
+                                ros::Publisher rmground_pub,
+                                ros::Publisher cluster_pub,
                                 ros::Publisher cloud_pub);
         
         void LocalCloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
@@ -172,14 +185,18 @@ class DepthImage{
 
         void main();
 
-        void loadPCDFile(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud);
+        void loadPCDFile(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud, string file_path);
+
+        void CloudPublisher (CloudAPtr cloud, string target_frame, ros::Publisher pub);
 
         COLOR GetColor(double v, double vmin, double vmax);
 };
 
 DepthImage::DepthImage()
-    : nh("~"), it(nh), map(new pcl::PointCloud<pcl::PointXYZRGBNormal>)
-
+    : nh("~"), 
+      it(nh), 
+      obstacle_map(new CloudA),
+      ground_map(new CloudA)
 {
     nh.getParam("global_frame", global_frame);
     nh.getParam("laser_frame" , laser_frame);
@@ -187,7 +204,8 @@ DepthImage::DepthImage()
     nh.getParam("zed1_frame"  , zed1_frame);
     nh.getParam("zed2_frame"  , zed2_frame);
 
-    nh.getParam("file_path", FILE_PATH);
+    nh.getParam("obstacle_path", OBSTACLE_PATH);
+    nh.getParam("ground_path",GROUND_PATH);
 
     nh.getParam("threshold", threshold);
 
@@ -196,8 +214,6 @@ DepthImage::DepthImage()
     nh.getParam("height_threshold", height_threshold);
     
     node_sub = nh.subscribe("/node", 10, &DepthImage::nodeCallback, this);
-
-    local_map_pub = nh.advertise<sensor_msgs::PointCloud2>("local_map", 10);
 
     zed0_pub = it.advertise("/zed0_depthimage", 10);
     zed1_pub = it.advertise("/zed1_depthimage", 10);
@@ -211,6 +227,10 @@ DepthImage::DepthImage()
     zed1_rmground_pub = nh.advertise<sensor_msgs::PointCloud2>("/zed1_rmground", 10);
     zed2_rmground_pub = nh.advertise<sensor_msgs::PointCloud2>("/zed2_rmground", 10);
 
+    zed0_cluster_pub = nh.advertise<sensor_msgs::PointCloud2>("/zed0_cluster", 10);
+    zed1_cluster_pub = nh.advertise<sensor_msgs::PointCloud2>("/zed1_cluster", 10);
+    zed2_cluster_pub = nh.advertise<sensor_msgs::PointCloud2>("/zed2_cluster", 10);   
+        
     zed0_cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/zed0_reference_cloud", 10);
     zed1_cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/zed1_reference_cloud", 10);
     zed2_cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/zed2_reference_cloud", 10);

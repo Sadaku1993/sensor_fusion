@@ -9,7 +9,9 @@
         <param name="zed2_frame"   type="string" value="zed2/zed_left_camera" />
         
         <!--Path-->
-        <param name="file_path" type="string" value="/home/amsl/PCD/SQ2/20180707_2/Map/map.pcd" />
+        <param name="obstacle_path" type="string" value="/home/amsl/PCD/SQ2/20180711/Map/obstacle_map.pcd" />
+        <param name="ground_path" type="string" value="/home/amsl/PCD/SQ2/20180711/Map/ground_map.pcd" />
+
 
         <!--Threshold-->
         <param name="threshold" type="int" value="100" />
@@ -17,7 +19,7 @@
         <!--Min Max-->
         <param name="cell_size"         type="double"   value="1.0" />
         <param name="grid_dimentions"   type="int"      value="200" />
-        <param name="height_threshold"  type="double"   value="0.3" />
+        <param name="height_threshold"  type="double"   value="1.0" />
 
     </node>
 </launch>

@@ -8,6 +8,9 @@
 #include <pcl/point_cloud.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
+#include <pcl/filters/extract_indices.h>
+#include <pcl/filters/voxel_grid.h>
+
 #include <pcl/visualization/pcl_visualizer.h>
 
 #include <pcl_ros/point_cloud.h>
@@ -15,15 +18,15 @@
 using namespace std;
 
 
-// string FILE_PATH = "/home/amsl/PCD/SQ2/20180707/Map/map.pcd";
-string FILE_PATH = "/home/amsl/PCD/Map/d_kan_around_si2017_gicp_ds.pcd";
+string FILE_PATH = "/home/amsl/PCD/SQ2/20180707/Map/map.pcd";
+// string FILE_PATH = "/home/amsl/PCD/Map/d_kan_around_si2017_gicp_ds.pcd";
 string FRAME = "/map";
 
-void loadPCDFile(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud)
+void loadPCDFile(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud)
 {
     cout<<"Load :" <<FILE_PATH<<endl;
     
-    if (pcl::io::loadPCDFile<pcl::PointXYZINormal> (FILE_PATH, *cloud) == -1) //* load the file
+    if (pcl::io::loadPCDFile<pcl::PointXYZRGBNormal> (FILE_PATH, *cloud) == -1) //* load the file
     {
         PCL_ERROR ("-----Couldn't read file\n");
     }
@@ -45,19 +48,29 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "map_load");
 
     ros::NodeHandle nh("~");
+    nh.getParam("FILE_PATH", FILE_PATH);
+    nh.getParam("FRAME", FRAME);
+
     ros::Rate rate(1);
 
-    ros::Publisher pub = nh.advertise<sensor_msgs::PointCloud2>("/cloud", 10);
+    ros::Publisher pub = nh.advertise<sensor_msgs::PointCloud2>("/local_map", 10);
 
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZINormal>);
+    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
     loadPCDFile(cloud);
 
-    
+    //Downsample//
+    pcl::VoxelGrid<pcl::PointXYZRGBNormal> vg;  
+    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr ds_cloud (new pcl::PointCloud<pcl::PointXYZRGBNormal>);  
+    vg.setInputCloud (cloud);  
+    vg.setLeafSize (0.5f, 0.5f, 0.5f);
+    vg.filter (*ds_cloud);
+    cout<<"----DownSampling:"<<ds_cloud->points.size()<<endl;
+
 
     while(ros::ok())
     {
         sensor_msgs::PointCloud2 pc2;
-        pcl::toROSMsg(*cloud, pc2);
+        pcl::toROSMsg(*ds_cloud, pc2);
         pc2.header.frame_id = FRAME;
         pc2.header.stamp = ros::Time::now();
         pub.publish(pc2);
