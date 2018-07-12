@@ -62,12 +62,12 @@ class DiffImage(object):
         diff_img = cv2.absdiff(f_img, self.back_img)
 
         diff_img_sum = np.sum(diff_img, axis=2)
-        pixcel_diff = diff_img_sum > 50
+        pixcel_diff = diff_img_sum > 25
  
         rate = float(np.sum(pixcel_diff))/(f_img.shape[0]*f_img.shape[1])
         # print("----Diff Pixcel:{:>4} Image Pixcel:{:>4} Rate:{:>.4}".format(np.sum(pixcel_diff), f_img.shape[0]*f_img.shape[1], rate))
  
-        booling_img = cv2.cvtColor(diff_img, cv2.COLOR_RGB2GRAY) > 50
+        booling_img = cv2.cvtColor(diff_img, cv2.COLOR_RGB2GRAY) > 25
         tmp_img = np.ones_like(booling_img, np.float32) * booling_img
         moving_img = self.cv_image * cv2.cvtColor(tmp_img, cv2.COLOR_GRAY2RGB)
         cv2.accumulateWeighted(f_img, self.back_img, 0.2)
