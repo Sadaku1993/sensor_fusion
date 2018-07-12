@@ -211,16 +211,16 @@ void DepthImage::depthimage_creater(CloudAPtr obstacle_cloud,
     }}}*/
 
     // Clusteringを行う
-    vector<Clusters> cluster_array;
-    clustering(reference_obstacle_cloud, cluster_array);
-    CloudAPtr cluster_cloud(new CloudA);
-    for(size_t i=0;i<cluster_array.size();i++)
-        *cluster_cloud += cluster_array[i].points;
-    CloudPublisher(cluster_cloud, target_frame, cluster_pub);
+    // vector<Clusters> cluster_array;
+    // clustering(reference_obstacle_cloud, cluster_array);
+    // CloudAPtr cluster_cloud(new CloudA);
+    // for(size_t i=0;i<cluster_array.size();i++)
+    //     *cluster_cloud += cluster_array[i].points;
+    // CloudPublisher(cluster_cloud, target_frame, cluster_pub);
 
     // IOUを計算
-    CloudAPtr iou_cloud(new CloudA);
-    iou(cluster_array, cinfo_msg, iou_cloud);
+    // CloudAPtr iou_cloud(new CloudA);
+    // iou(cluster_array, cinfo_msg, iou_cloud);
 
 /*{{{
 #pragma omp parallel for
