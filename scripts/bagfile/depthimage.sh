@@ -38,7 +38,7 @@ gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed2_dumy_tf.lau
 sleep 60s
 
 # bag
-gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-07-07-23-50-02.bag -r 1.0" --geometry=50x12+2000+500 &
+gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-07-11-19-02-50.bag -r 1.0" --geometry=50x12+2000+500 &
 sleep 1s
 
 # rviz

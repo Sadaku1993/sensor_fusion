@@ -28,32 +28,52 @@ void DepthImage::nodeCallback(const sensor_fusion::NodeConstPtr msg)
     *zed1_cinfo = msg->zed1_cinfo;
     *zed2_cinfo = msg->zed2_cinfo;
 
-    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr local_map(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
+    CloudAPtr local_cloud(new CloudA);
     CloudAPtr obstacle_cloud(new CloudA);
     CloudAPtr ground_cloud(new CloudA);
-    
-    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr pickup_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
-    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr zed0_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
-    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr zed1_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
-    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr zed2_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
+    CloudAPtr integrate_cloud(new CloudA);
+
+    CloudAPtr pickup_cloud(new CloudA);
+    CloudAPtr pickup_cloud_obstacle(new CloudA);
+    CloudAPtr pickup_cloud_ground(new CloudA);
+
+    CloudAPtr zed0_cloud(new CloudA);
+    CloudAPtr zed0_cloud_obstacle(new CloudA);
+    CloudAPtr zed0_cloud_ground(new CloudA);
+
+    CloudAPtr zed1_cloud(new CloudA);
+    CloudAPtr zed1_cloud_obstacle(new CloudA);
+    CloudAPtr zed1_cloud_ground(new CloudA);
+
+    CloudAPtr zed2_cloud(new CloudA);
+    CloudAPtr zed2_cloud_obstacle(new CloudA);
+    CloudAPtr zed2_cloud_ground(new CloudA);
 
     // 保存したMapの座標系はGlobal(Map)座標系になっている
     // laser_transform(global -- laser)の逆行列を使って laser座標系に変換する
     inverseCloud(obstacle_map, obstacle_cloud, laser_transform);
     inverseCloud(ground_map,   ground_cloud,   laser_transform);
-    // inverseCloud(map, local_map, laser_transform);
+    *local_cloud += *obstacle_cloud;
+    *local_cloud += *ground_cloud;
 
     // Laser座標系を中心としてthreshold以内の点群をMapから取得
-    LocalCloud(local_map, pickup_cloud);
+    LocalCloud(local_cloud, pickup_cloud);
+    LocalCloud(obstacle_cloud, pickup_cloud_obstacle);
+    LocalCloud(ground_cloud, pickup_cloud_ground);
     
     // laser座標系に変換したMapデータをカメラ座標に変換
-    transform_pointcloud(pickup_cloud, zed0_cloud, zed0_transform, zed0_frame, laser_frame);
+    transform_pointcloud(pickup_cloud_obstacle, zed0_cloud_obstacle, zed0_transform, zed0_frame, laser_frame);
+    transform_pointcloud(pickup_cloud_ground  , zed0_cloud_ground  , zed0_transform, zed0_frame, laser_frame);
+
+    // transform_pointcloud(pickup_cloud, zed0_cloud, zed0_transform, zed0_frame, laser_frame);
     // transform_pointcloud(pickup_cloud, zed1_cloud, zed1_transform, zed1_frame, laser_frame);
     // transform_pointcloud(pickup_cloud, zed2_cloud, zed2_transform, zed2_frame, laser_frame);
 
     // DepthImageを作成
     cout<<"----zed0"<<endl;
-    depthimage_creater(zed0_cloud, zed0_image, zed0_cinfo, zed0_frame, zed0_pub, zed0_raw_pub, zed0_rmground_pub, zed0_cluster_pub, zed0_cloud_pub);
+    depthimage_creater(zed0_cloud_obstacle, zed0_cloud_ground,
+                       zed0_image, zed0_cinfo, zed0_frame,
+                       zed0_pub, zed0_raw_pub, zed0_cluster_pub, zed0_cloud_pub);
     
     // cout<<"----zed1"<<endl;
     // depthimage_creater(zed1_cloud, zed1_image, zed1_cinfo, zed1_frame, zed1_pub, zed1_raw_pub, zed1_cluster_pub, zed1_cloud_pub);
@@ -84,21 +104,27 @@ void DepthImage::transform_pointcloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::P
     trans_cloud->header.frame_id = target_frame;
 }
 
-void DepthImage::depthimage_creater(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
+void DepthImage::depthimage_creater(CloudAPtr obstacle_cloud,
+                                    CloudAPtr ground_cloud,
                                     sensor_msgs::ImageConstPtr image_msg,
                                     sensor_msgs::CameraInfoConstPtr cinfo_msg,
                                     string target_frame,
                                     image_transport::Publisher image_pub,
                                     ros::Publisher image_raw_pub,
-                                    ros::Publisher rmground_pub,
                                     ros::Publisher cluster_pub,
                                     ros::Publisher cloud_pub)
 {
+    CloudAPtr integrate_cloud(new CloudA);
+    *integrate_cloud += *obstacle_cloud;
+    *integrate_cloud += *ground_cloud;
+
     // Visualize用
     sensor_msgs::Image tmp_image = *image_msg;
     
     // カメラの画角内の点群を参照点群として取得
-    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr reference_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
+    CloudAPtr reference_cloud(new CloudA);
+    CloudAPtr reference_obstacle_cloud(new CloudA);
+    CloudAPtr reference_ground_cloud(new CloudA);
     
     cv_bridge::CvImageConstPtr cv_img_ptr;
     try{
@@ -114,6 +140,49 @@ void DepthImage::depthimage_creater(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr
     image_geometry::PinholeCameraModel cam_model;
     cam_model.fromCameraInfo(cinfo_msg);
 
+    // カメラの画角内の点群を参照点として取得
+    for(pcl::PointCloud<pcl::PointXYZRGBNormal>::iterator pt=obstacle_cloud->points.begin(); pt<obstacle_cloud->points.end(); pt++)
+    {
+        if ((*pt).x<0) continue;
+        cv::Point3d pt_cv(-(*pt).y, -(*pt).z, (*pt).x);
+        cv::Point2d uv;
+        uv = cam_model.project3dToPixel(pt_cv);
+
+        if(uv.x>0 && uv.x < image.cols && uv.y > 0 && uv.y < image.rows)
+            reference_obstacle_cloud->points.push_back(*pt);
+    }
+
+    for(pcl::PointCloud<pcl::PointXYZRGBNormal>::iterator pt=ground_cloud->points.begin(); pt<ground_cloud->points.end(); pt++)
+    {
+        if ((*pt).x<0) continue;
+        cv::Point3d pt_cv(-(*pt).y, -(*pt).z, (*pt).x);
+        cv::Point2d uv;
+        uv = cam_model.project3dToPixel(pt_cv);
+
+        if(uv.x>0 && uv.x < image.cols && uv.y > 0 && uv.y < image.rows)
+            reference_ground_cloud->points.push_back(*pt);
+    }
+
+    // 参照点群を可視化
+    // *reference_cloud += *reference_obstacle_cloud;
+    // *reference_cloud += *reference_ground_cloud;
+    for(size_t i=0;i<reference_obstacle_cloud->points.size();i++){
+        PointA p = reference_obstacle_cloud->points[i];
+        p.r = 255;
+        p.g = 0;
+        p.b = 0;
+        reference_cloud->points.push_back(p);
+    }
+    for(size_t i=0;i<reference_ground_cloud->points.size();i++){
+        PointA p = reference_ground_cloud->points[i];
+        p.r = 0;
+        p.g = 0;
+        p.b = 255;
+        reference_cloud->points.push_back(p);
+    }
+    
+
+    /*{{{
     double distance[cv_img_ptr->image.rows][cv_img_ptr->image.cols];
     memset(&distance, threshold, cv_img_ptr->image.rows*cv_img_ptr->image.cols);
 
@@ -139,16 +208,11 @@ void DepthImage::depthimage_creater(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr
             reference_cloud->points.push_back(*pt);
         }
     }
-
-    // Min Maxにより地面除去
-    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr rm_ground_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
-    pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr ground_cloud(new pcl::PointCloud<pcl::PointXYZRGBNormal>);
-    constructFullClouds(reference_cloud, rm_ground_cloud, ground_cloud);
-    CloudPublisher(rm_ground_cloud, target_frame, rmground_pub); // for Visualize
+    }}}*/
 
     // Clusteringを行う
     vector<Clusters> cluster_array;
-    clustering(rm_ground_cloud, cluster_array);
+    clustering(reference_obstacle_cloud, cluster_array);
     CloudAPtr cluster_cloud(new CloudA);
     for(size_t i=0;i<cluster_array.size();i++)
         *cluster_cloud += cluster_array[i].points;
@@ -158,31 +222,152 @@ void DepthImage::depthimage_creater(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr
     CloudAPtr iou_cloud(new CloudA);
     iou(cluster_array, cinfo_msg, iou_cloud);
 
- 
+/*{{{
 #pragma omp parallel for
-     for(int y=0; y<image.rows; y++){
-         for(int x=0; x<image.cols; x++){
-             double range = distance[y][x];
-             if(range<threshold){
-                 COLOR c = GetColor(int(range/50*255.0), 0, 255);
-                 cv::Point2d uv;
-                 uv.x = x;
-                 uv.y = y;
-                 cv::circle(image, uv, 3, cv::Scalar(int(255*c.b),int(255*c.g),int(255*c.r)), -1);
-             }
-             else
-             {
-                 image.at<cv::Vec3b>(y, x)[0] = 0;
-                 image.at<cv::Vec3b>(y, x)[1] = 0;
-                 image.at<cv::Vec3b>(y, x)[2] = 0;
-             }
-         }
-     }
+    for(int y=0; y<image.rows; y++){
+        for(int x=0; x<image.cols; x++){
+            double range = distance[y][x];
+            if(range<threshold){
+                COLOR c = GetColor(int(range/50*255.0), 0, 255);
+                cv::Point2d uv;
+                uv.x = x;
+                uv.y = y;
+                cv::circle(image, uv, 3, cv::Scalar(int(255*c.b),int(255*c.g),int(255*c.r)), -1);
+            }
+            else
+            {
+                image.at<cv::Vec3b>(y, x)[0] = 0;
+                image.at<cv::Vec3b>(y, x)[1] = 0;
+                image.at<cv::Vec3b>(y, x)[2] = 0;
+            }
+        }
+    }
+}}}*/
+ 
+    double distance[cv_img_ptr->image.rows][cv_img_ptr->image.cols];
+    bool obstacle_init[cv_img_ptr->image.rows][cv_img_ptr->image.cols];
+    bool ground_init[cv_img_ptr->image.rows][cv_img_ptr->image.cols];
 
-     sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
-     image_pub.publish(msg);
+    memset(&distance, 0, cv_img_ptr->image.rows*cv_img_ptr->image.cols);
+    memset(&obstacle_init, false, cv_img_ptr->image.rows*cv_img_ptr->image.cols);
+    memset(&ground_init, false, cv_img_ptr->image.rows*cv_img_ptr->image.cols);
 
-     image_raw_pub.publish(tmp_image);
+#pragma omp parallel for
+    for(pcl::PointCloud<pcl::PointXYZRGBNormal>::iterator pt=reference_obstacle_cloud->points.begin(); pt<reference_obstacle_cloud->points.end(); pt++)
+    {
+        double range = sqrt( pow((*pt).x, 2.0) + pow((*pt).y, 2.0) + pow((*pt).z, 2.0));
+
+        cv::Point3d pt_cv(-(*pt).y, -(*pt).z, (*pt).x);
+        cv::Point2d uv;
+        uv = cam_model.project3dToPixel(pt_cv);
+        
+        for(int i=-1;i<=1;i++){
+            for(int j=-1;j<=1;j++){
+                int x = uv.x + i;
+                int y = uv.y + j;
+                if(0<x && x<image.cols && 0<y && y<image.rows)
+                {
+                    if(!obstacle_init[y][x])
+                    {
+                        distance[y][x] = range; 
+                        obstacle_init[y][x] = true;
+                    }   
+                    else{
+                        if(range<distance[y][x])
+                            distance[y][x] = range;
+                    }
+                }
+            }
+        }
+
+        /*{{{
+        int x = uv.x;
+        int y = uv.y;
+
+        if(!obstacle_init[y][x])
+        {
+            distance[y][x] = range; 
+            obstacle_init[y][x] = true;
+        }   
+        else{
+            if(range<distance[y][x])
+                distance[y][x] = range;
+        }
+        }}}*/
+    }
+
+#pragma omp parallel for
+    for(pcl::PointCloud<pcl::PointXYZRGBNormal>::iterator pt=reference_ground_cloud->points.begin(); pt<reference_ground_cloud->points.end(); pt++)
+    {
+        double range = sqrt( pow((*pt).x, 2.0) + pow((*pt).y, 2.0) + pow((*pt).z, 2.0));
+
+        cv::Point3d pt_cv(-(*pt).y, -(*pt).z, (*pt).x);
+        cv::Point2d uv;
+        uv = cam_model.project3dToPixel(pt_cv);
+
+        for(int i=-1;i<=1;i++){
+            for(int j=-1;j<=1;j++){
+                int x = uv.x + i;
+                int y = uv.y + j;
+                if(0<x && x<image.cols && 0<y && y<image.rows)
+                {
+                    if(!obstacle_init[y][x])
+                    {
+                        if(!ground_init[y][x])
+                        {
+                            distance[y][x] = range;
+                            ground_init[y][x] = true;
+                        }
+                        else if(range<distance[y][x])
+                            distance[y][x] = range;
+                    }
+                }
+            }
+        }
+        
+        /*{{{
+        int x = uv.x;
+        int y = uv.y;
+
+        if(!obstacle_init[y][x])
+        {
+            if(!ground_init[y][x])
+            {
+                distance[y][x] = range;
+                ground_init[y][x] = true;
+            }
+            else if(range<distance[y][x])
+                distance[y][x] = range;
+        }
+        }}}*/
+    }
+
+
+#pragma omp parallel for
+    for(int y=0; y<image.rows; y++){
+        for(int x=0; x<image.cols; x++){
+            if(obstacle_init[y][x] || ground_init[y][x]){
+                double range = distance[y][x];
+                COLOR c = GetColor(int(range/50*255.0), 0, 255);
+                image.at<cv::Vec3b>(y, x)[0] = 255*c.b;
+                image.at<cv::Vec3b>(y, x)[1] = 255*c.g;
+                image.at<cv::Vec3b>(y, x)[2] = 255*c.r;
+            }
+            else{
+                image.at<cv::Vec3b>(y, x)[0] = 0;
+                image.at<cv::Vec3b>(y, x)[1] = 0;
+                image.at<cv::Vec3b>(y, x)[2] = 0;
+            }
+        }
+    }
+
+    // Publish Cloud
+    CloudPublisher(reference_cloud, target_frame, cloud_pub);
+    // Publish DepthImage 
+    sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
+    image_pub.publish(msg);
+    // Publish Raw Image
+    image_raw_pub.publish(tmp_image);
 }
 
 void DepthImage::LocalCloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
@@ -214,62 +399,6 @@ void DepthImage::inverseCloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud
 
     cout<<setprecision(3)<<"----Laser Frame --> Gloabl Frame" 
         <<" x:"<<x<<" y:"<<y<<" z:"<<z<<" roll:"<<roll<<" pitch:"<<pitch<<" yaw:"<<yaw<<endl;
-}
-
-
-// Min Max法により地面除去を行う
-// 今はMin-Maxを使わず高さ情報で切ってしまっている 
-void DepthImage::constructFullClouds(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
-                                     pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& rm_ground,
-                                     pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& ground)
-{
-    float min[grid_dimentions][grid_dimentions];
-    float max[grid_dimentions][grid_dimentions];
-    bool init[grid_dimentions][grid_dimentions];
-    memset(&min,  0, grid_dimentions*grid_dimentions);
-    memset(&max,  0, grid_dimentions*grid_dimentions); 
-    memset(&init, 0, grid_dimentions*grid_dimentions);
-
-    for(size_t i=0;i<cloud->points.size();i++)
-    {
-        int x = (grid_dimentions/2)+cloud->points[i].x/cell_size;
-        int y = (grid_dimentions/2)+cloud->points[i].y/cell_size;
-
-        // Noise Filter
-        if(cloud->points[i].z < -2.0 || 20.0 < cloud->points[i].z)
-            continue;
-
-        // 前方の点群しか参照しないため,
-        // xはgrid_dimentions/2よりも大きいところを参照する
-        if(grid_dimentions/2<x && x<grid_dimentions && 
-                0<=y && y<grid_dimentions)
-        {
-            if(!init[x][y]){
-                min[x][y] = cloud->points[i].z;
-                max[x][y] = cloud->points[i].z;
-                init[x][y] = true;
-            }
-            else{
-                min[x][y] = MIN(min[x][y], cloud->points[i].z);
-                max[x][y] = MAX(max[x][y], cloud->points[i].z);
-            }
-        }
-    }
-
-    for(size_t i=0;i<cloud->points.size();i++)
-    {
-        int x = (grid_dimentions/2)+cloud->points[i].x/cell_size;
-        int y = (grid_dimentions/2)+cloud->points[i].y/cell_size;
-        
-        if(grid_dimentions/2<=x && x<grid_dimentions && 0<=y && y<grid_dimentions)
-        {
-            if(height_threshold<max[x][y]-min[x][y] && fabs(cloud->points[i].normal_z)<0.8)
-                rm_ground->points.push_back(cloud->points[i]);
-            else
-                ground->points.push_back(cloud->points[i]);
-        }
-    }
-    cout<<"----Remove Ground (Min Max): "<<rm_ground->points.size()<<endl; 
 }
 
 // PointCloudの情報をClusterに格納

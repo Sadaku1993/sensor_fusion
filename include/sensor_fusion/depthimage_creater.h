@@ -152,13 +152,13 @@ class DepthImage{
                                   string target_frame,
                                   string source_frame);
 
-        void depthimage_creater(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
+        void depthimage_creater(CloudAPtr obstacle_cloud,
+                                CloudAPtr ground_cloud,
                                 sensor_msgs::ImageConstPtr image_msg,
                                 sensor_msgs::CameraInfoConstPtr cinfo_msg,
                                 string target_frame,
                                 image_transport::Publisher image_pub,
                                 ros::Publisher image_raw_pub,
-                                ros::Publisher rmground_pub,
                                 ros::Publisher cluster_pub,
                                 ros::Publisher cloud_pub);
         
@@ -168,10 +168,6 @@ class DepthImage{
         void inverseCloud(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
                           pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& inverse_cloud,
                           tf::Transform transform);
-
-        void constructFullClouds(pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr cloud,
-                                 pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& rm_ground,
-                                 pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr& ground);
 
         void getClusterInfo(CloudA cloud,
                             Cluster& cluster);
