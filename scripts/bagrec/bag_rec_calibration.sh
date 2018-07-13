@@ -11,9 +11,9 @@ TIME=$(date +%Y-%m-%d-%H-%M-%S)
 CLOUD="/cloud/tf"
 ODOM="/odom"
 IMU="/imu/data"
-ZED0="/zed0/left/image_rect_color/compressed /zed0/left/camera_info /zed0/ds_cloud"
-ZED1="/zed1/left/image_rect_color/compressed /zed1/left/camera_info /zed1/ds_cloud"
-ZED2="/zed2/left/image_rect_color/compressed /zed2/left/camera_info /zed2/ds_cloud"
+ZED0="/zed0/left/image_rect_color/compressed /zed0/left/camera_info /zed0/ds_cloud  /zed0/depth/depth_registered/compressedDepth"
+ZED1="/zed1/left/image_rect_color/compressed /zed1/left/camera_info /zed1/ds_cloud  /zed1/depth/depth_registered/compressedDepth"
+ZED2="/zed2/left/image_rect_color/compressed /zed2/left/camera_info /zed2/ds_cloud  /zed2/depth/depth_registered/compressedDepth"
 TF="/tf /tf_static"
 
 echo $TIME &
