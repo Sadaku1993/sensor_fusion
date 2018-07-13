@@ -30,15 +30,9 @@ using namespace message_filters;
 
 ros::Publisher pub;
 
-PointCloud2 pc_msg;
 
-void pc_callback(const PointCloud2ConstPtr msg)
-{
-    pc_msg = *msg;
-}
-
-
-void callback(const ImageConstPtr& image_msg,
+void callback(const PointCloud2ConstPtr& pc_msg,
+              const ImageConstPtr& image_msg,
               const CameraInfoConstPtr& cinfo_msg)
 {
     cout<<"ALL GREEN"<<endl;
@@ -61,11 +55,11 @@ void callback(const ImageConstPtr& image_msg,
     // Coloring Step
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr area(new pcl::PointCloud<pcl::PointXYZRGB>);
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::fromROSMsg(pc_msg, *cloud);
-	cloud->header.frame_id = pc_msg.header.frame_id;
+    pcl::fromROSMsg(*pc_msg, *cloud);
+	cloud->header.frame_id = pc_msg->header.frame_id;
 	
 	cout<<"Input Size : "<<cloud->points.size()
-		<<" Frame : "<<pc_msg.header.frame_id<<endl;
+		<<" Frame : "<<pc_msg->header.frame_id<<endl;
     for(pcl::PointCloud<pcl::PointXYZ>::iterator pt = cloud->points.begin(); pt < cloud->points.end(); pt++)
     {
         if ((*pt).x<0) continue;
@@ -91,7 +85,7 @@ void callback(const ImageConstPtr& image_msg,
 
     PointCloud2 output;
     pcl::toROSMsg(*area, output);
-    output.header.frame_id = pc_msg.header.frame_id;
+    output.header.frame_id = pc_msg->header.frame_id;
     output.header.stamp = ros::Time::now();
     pub.publish(output);
 }
@@ -101,14 +95,13 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "coloring");
     ros::NodeHandle nh;
 
-    ros::Subscriber cloud_sub = nh.subscribe("/cloud", 10, pc_callback);
-
+	message_filters::Subscriber<PointCloud2> cloud_sub(nh, "/cloud", 10);
 	message_filters::Subscriber<Image> image_sub(nh, "/image", 10);
 	message_filters::Subscriber<CameraInfo> cinfo_sub(nh, "/camera_info", 10);
 	
-	typedef sync_policies::ApproximateTime<Image, CameraInfo> MySyncPolicy;
-	Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), image_sub, cinfo_sub);
-	sync.registerCallback(boost::bind(&callback, _1, _2));
+	typedef sync_policies::ApproximateTime<PointCloud2, Image, CameraInfo> MySyncPolicy;
+	Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), cloud_sub, image_sub, cinfo_sub);
+	sync.registerCallback(boost::bind(&callback, _1, _2, _3));
 
 	pub = nh.advertise<sensor_msgs::PointCloud2>("/output", 10);
 
