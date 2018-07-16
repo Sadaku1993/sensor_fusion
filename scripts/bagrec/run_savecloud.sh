@@ -4,9 +4,9 @@ source /home/amsl/ros_catkin_ws/devel/setup.bash
 
 source /home/amsl/.bashrc
 
-# Launch SQ Lidar
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sq1_extra run_sq2_for_joy.launch' --geometry=50x12+0+0 &
-sleep 1s
+#roscore
+gnome-terminal -e "/opt/ros/kinetic/bin/roscore" --geometry=50x12+0+0
+sleep 3s
 
 # Launch Zed 
 gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/zed/downsample_zed0.sh' --geometry=50x12+0+250 &
@@ -46,6 +46,10 @@ sleep 1s
 gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion integration.launch' --geometry=50x12+750+250 &
 sleep 1s
 
+###### Imu Complement
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch kari_complement imu_complement.launch" --geometry=50x12+1250+0 ##for si
+sleep 1s
+
 ###### localization ##########
 gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch kari_localization map_alignment.launch" --geometry=50x12+750+500 ##for si
 sleep 1s
@@ -69,15 +73,13 @@ sleep 1s
 gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sq1_extra sq2_run_test.launch" --geometry=50x12+1000+750
 sleep 1s
 
-###### Imu Complement
-gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch kari_complement imu_complement.launch" --geometry=50x12+1250+0 ##for si
-sleep 1s
-
 # transform
 gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion transform_publisher.launch' --geometry=50x12+1250+250 &
 sleep 1s
 
 ####rviz########
 gnome-terminal -e "/opt/ros/kinetic/bin/rosrun rviz rviz -d /home/amsl/.rviz/auto_savecloud.rviz" --geometry=50x12+1250+500 &
-sleep 1s
+sleep 5s
 
+# bagrec
+# gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/bagrec/bag_rec_savecloud.sh' --geometry=50x12+1200+500 &
