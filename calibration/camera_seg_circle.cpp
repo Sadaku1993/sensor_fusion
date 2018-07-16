@@ -11,7 +11,7 @@
 #include <sensor_fusion/kd_tree.h>
 
 #define RADIUS 0.10
-#define K 100
+#define K 10
 #define MAX_COUNT 10
 
 using namespace std;
