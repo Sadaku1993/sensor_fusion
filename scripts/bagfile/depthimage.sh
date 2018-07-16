@@ -9,8 +9,8 @@ gnome-terminal -e "/opt/ros/kinetic/bin/roscore" --geometry=50x12+0+0 &
 sleep 1s
 
 # Map Visualizer
-gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion map_publisher.launch" --geometry=50x12+0+300 &
-sleep 1s
+# gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion map_publisher.launch" --geometry=50x12+0+300 &
+# sleep 1s
 
 # Transform 
 gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion transform_listener.launch" --geometry=50x12+0+600 &
@@ -22,6 +22,10 @@ sleep 1s
 
 # DepthImage Creater
 gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion depthimage_creater.launch" --geometry=50x12+600+0 &
+sleep 1s
+
+#Viewer
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion reference_viewer.launch" --geometry=50x12+600+300 &
 sleep 1s
 
 # TF
@@ -38,9 +42,9 @@ gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed2_dumy_tf.lau
 sleep 60s
 
 # bag
-gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/depthimage/2018-07-17-01-08-13.bag -r 0.5" --geometry=50x12+2000+500 &
+gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/depthimage/2018-07-17-01-08-13.bag -r 1.0" --geometry=50x12+2000+500 &
 
-# 夜間 PCD 20180713
+# 朝 PCD 20180713
 # gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-07-13-06-53-13.bag -r 1.0" --geometry=50x12+2000+500 &
 sleep 1s
 

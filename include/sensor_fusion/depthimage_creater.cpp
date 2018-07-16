@@ -366,7 +366,8 @@ void DepthImage::depthimage_creater(CloudAPtr obstacle_cloud,
 
     
     // Publish Cloud
-    CloudPublisher(reference_cloud, target_frame, cloud_pub);
+    // CloudPublisher(reference_cloud, target_frame, cloud_pub);
+    
     // Publish DepthImage 
     sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
     image_pub.publish(msg);

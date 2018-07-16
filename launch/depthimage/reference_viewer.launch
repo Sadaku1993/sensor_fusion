@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+	<node pkg="sensor_fusion" type="reference_viewer" name="reference_viewer" output="screen">
+        <!--Frame-->
+        <param name="global_frame" type="string" value="map" />
+        <param name="laser_frame"  type="string" value="centerlaser" />
+        <param name="zed0_frame"   type="string" value="zed0/zed_left_camera" />
+        <param name="zed1_frame"   type="string" value="zed1/zed_left_camera" />
+        <param name="zed2_frame"   type="string" value="zed2/zed_left_camera" />
+        
+        <!--Path-->
+        <param name="obstacle_path" type="string" value="/home/amsl/PCD/SQ2/20180717/Map/obstacle_map.pcd" />
+        <param name="ground_path"   type="string" value="/home/amsl/PCD/SQ2/20180717/Map/ground_map.pcd" />
+
+        <!--Threshold-->
+        <param name="threshold" type="int" value="100" />
+
+    </node>
+</launch>
