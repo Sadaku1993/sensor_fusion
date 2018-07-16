@@ -36,7 +36,7 @@ sleep 1s
 
 # bag
 # center camera
-gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/calibration/2018-07-14-18-53-42.bag --clock -l" --geometry=50x12+2000+500 &
+gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/calibration/2018-07-16-13-14-03.bag --clock -l" --geometry=50x12+2000+500 &
 # gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/2018-06-15-21-42-06.bag --clock -l" --geometry=50x12+2000+500 &
 sleep 1s
 

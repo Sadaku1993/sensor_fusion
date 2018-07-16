@@ -5,10 +5,10 @@
     <!--Plane Segmentation-->
     <param name="min_x" type="double" value="0"   />
     <param name="max_x" type="double" value="4.0" />
-    <param name="min_y" type="double" value="-0.7"/>
+    <param name="min_y" type="double" value="-0.6"/>
     <param name="max_y" type="double" value="0.5" />
-    <param name="min_z" type="double" value="-0.4"/>
-    <param name="max_z" type="double" value="0.5" />
+    <param name="min_z" type="double" value="-0.40"/>
+    <param name="max_z" type="double" value="0.45" />
     <param name="distance"    type="double" value="0.05" />
     
     <node pkg="sensor_fusion" type="camera_seg_plane" name="camera_seg_plane" output="screen">

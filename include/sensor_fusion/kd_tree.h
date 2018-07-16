@@ -18,8 +18,8 @@ void neighbors_with_radius_Search(CloudAPtr cloud,
 {
     printf("Reference Point ( %.3f %.3f %.3f )\n", point.x, point.y, point.z);
     
-    // pointを中心に100パーティクルをばらまく
-    for(int i=0;i<100;i++)
+    // pointを中心に1000パーティクルをばらまく
+    for(int i=0;i<1000;i++)
     {
         PointA searchPoint;
         searchPoint.x = point.x + 0.00005 * (rand()%1024 - 512);

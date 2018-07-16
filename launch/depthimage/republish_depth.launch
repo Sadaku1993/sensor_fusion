@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+    <node name="republish_depth0" type="republish" pkg="image_transport" output="screen" 
+          args="compressed in:=/zed0/depth/depth_registered/compressedDepth raw out:=/zed0/depth/depth_registered/republish" />
+    <node name="republish_depth1" type="republish" pkg="image_transport" output="screen" 
+          args="compressed in:=/zed1/depth/depth_registered/compressedDepth raw out:=/zed1/depth/depth_registered/republish" />
+    <node name="republish_depth2" type="republish" pkg="image_transport" output="screen" 
+          args="compressed in:=/zed2/depth/depth_registered/compressedDepth raw out:=/zed2/depth/depth_registered/republish" />
+</launch>
