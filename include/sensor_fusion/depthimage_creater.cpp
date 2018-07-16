@@ -81,6 +81,9 @@ void DepthImage::nodeCallback(const sensor_fusion::NodeConstPtr msg)
     // cout<<"----zed2"<<endl;
     // depthimage_creater(zed2_cloud, zed2_image, zed2_cinfo, zed2_frame, zed2_pub, zed2_raw_pub, zed2_cluster_pub, zed2_cloud_pub);
 
+    // Publish Local Map
+    // CloudPublisher(local_cloud, laser_frame, local_cloud_pub);
+
     cout<<"----Finish"<<endl;
 
 }
@@ -361,6 +364,7 @@ void DepthImage::depthimage_creater(CloudAPtr obstacle_cloud,
         }
     }
 
+    
     // Publish Cloud
     CloudPublisher(reference_cloud, target_frame, cloud_pub);
     // Publish DepthImage 

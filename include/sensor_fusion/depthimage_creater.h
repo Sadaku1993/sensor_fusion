@@ -120,6 +120,8 @@ class DepthImage{
         ros::Publisher zed1_cloud_pub;
         ros::Publisher zed2_cloud_pub;
 
+        ros::Publisher local_cloud_pub;
+
         //  Frame
         string global_frame;
         string laser_frame;
@@ -230,6 +232,8 @@ DepthImage::DepthImage()
     zed0_cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/zed0_reference_cloud", 10);
     zed1_cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/zed1_reference_cloud", 10);
     zed2_cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/zed2_reference_cloud", 10);
+
+    local_cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/local_map", 10);
 }
 
 
