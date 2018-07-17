@@ -13,9 +13,9 @@ CLOUD_GLOBAL="/cloud/global"
 ODOM="/odom"
 IMU="/imu/data"
 
-ZED0="/zed0/left/image_rect_color/compressed /zed0/left/camera_info /zed0/depth/depth_registered/compressedDepth"
-ZED1="/zed1/left/image_rect_color/compressed /zed1/left/camera_info /zed1/depth/depth_registered/compressedDepth"
-ZED2="/zed2/left/image_rect_color/compressed /zed2/left/camera_info /zed2/depth/depth_registered/compressedDepth"
+ZED0="/zed0/left/image_rect_color/compressed /zed0/left/camera_info /zed0/depth/depth_registered"
+ZED1="/zed1/left/image_rect_color/compressed /zed1/left/camera_info /zed1/depth/depth_registered"
+ZED2="/zed2/left/image_rect_color/compressed /zed2/left/camera_info /zed2/depth/depth_registered"
 
 #ZED0="/zed0/left/image_rect_color/compressed /zed0/right/image_rect_color/compressed /zed0/left/camera_info  "
 #ZED1="/zed1/left/image_rect_color/compressed /zed1/right/image_rect_color/compressed /zed1/left/camera_info  "
