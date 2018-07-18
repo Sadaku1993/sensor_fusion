@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <launch>
 	<node pkg="sensor_fusion" type="pcd_integrater" name="pcd_integrater" output="screen">
-        <param name="FILE_PATH"      type="string" value="/home/amsl/PCD/SQ2/20180717_2/GROUND/" />
-        <param name="INTEGRATE_PATH" type="string" value="/home/amsl/PCD/SQ2/20180717_2/Map/" />
+        <param name="FILE_PATH"      type="string" value="/home/amsl/PCD/SQ2/SII/20180718/GROUND/" />
+        <param name="INTEGRATE_PATH" type="string" value="/home/amsl/PCD/SQ2/SII/20180718/Map/" />
         <param name="MAP_NAME"       type="string" value="ground_map.pcd"/>
     </node>
 </launch>
