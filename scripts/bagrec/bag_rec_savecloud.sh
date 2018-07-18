@@ -9,6 +9,7 @@ trap hander SIGINT
 
 TIME=$(date +%Y-%m-%d-%H-%M-%S)
 CLOUD="/cloud/tf"
+LCL="/cloud/lcl"
 ODOM="/odom"
 IMU="/imu/data"
 
@@ -25,6 +26,7 @@ TF="/tf /tf_static"
 
 echo $TIME &
 echo $CLOUD &
+echo $LCL &
 echo $ODOM &
 echo $IMU &
 echo $ZED0 &
@@ -35,4 +37,4 @@ echo $COLORED &
 echo $TRANSFORM &
 echo $TF &
 
-/opt/ros/kinetic/bin/rosbag record $CLOUD $ODOM $IMU $ZED0 $ZED1 $ZED2 $COLORED $TRANSFORM -O /home/amsl/$TIME.bag
+/opt/ros/kinetic/bin/rosbag record $CLOUD $LCL $ODOM $IMU $ZED0 $ZED1 $ZED2 $COLORED $TRANSFORM -O /home/amsl/$TIME.bag
