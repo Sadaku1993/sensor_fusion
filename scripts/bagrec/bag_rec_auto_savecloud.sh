@@ -49,4 +49,4 @@ echo $NODE &
 echo $TRANSFORM &
 echo $TF &
 
-/opt/ros/kinetic/bin/rosbag record $CLOUD $CLOUD_GLOBAL $ODOM $IMU $ZED0 $ZED1 $ZED2 $ZED0_DEPTH $NODE $TRANSFORM -O /home/amsl/$TIME.bag
+/opt/ros/kinetic/bin/rosbag record $CLOUD $CLOUD_GLOBAL $ODOM $IMU $ZED0 $ZED0_DEPTH $NODE $TRANSFORM -O /home/amsl/$TIME.bag
