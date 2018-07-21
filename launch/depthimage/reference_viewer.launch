@@ -9,8 +9,8 @@
         <param name="zed2_frame"   type="string" value="zed2/zed_left_camera" />
         
         <!--Path-->
-        <param name="obstacle_path" type="string" value="/home/amsl/PCD/SQ2/SII/morning_v1/Map/obstacle_map.pcd" />
-        <param name="ground_path"   type="string" value="/home/amsl/PCD/SQ2/SII/morning_v1/Map/ground_map.pcd" />
+        <param name="obstacle_path" type="string" value="/home/amsl/PCD/SQ2/SII/20180721_night_low/Map/obstacle_map.pcd" />
+        <param name="ground_path"   type="string" value="/home/amsl/PCD/SQ2/SII/20180721_night_low/Map/ground_map.pcd" />
 
         <!--Threshold-->
         <param name="threshold" type="int" value="100" />
