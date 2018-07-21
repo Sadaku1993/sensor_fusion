@@ -42,9 +42,6 @@ gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion zed2_dumy_tf.lau
 sleep 60s
 
 # bag
-# gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/SII/depthimage/perfect_night.bag -r 1.0" --geometry=50x12+2000+500 &
-# gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/depthimage/2018-07-17-01-08-13.bag -r 1.0" --geometry=50x12+2000+500 &
-# gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/SII/depthimage/morning_v1.bag -r 1.0" --geometry=50x12+2000+500 &
 gnome-terminal -e "/opt/ros/kinetic/bin/rosbag play /home/amsl/bagfiles/sq2/SII/depthimage/20180721_night_low.bag -r 1.0" --geometry=50x12+2000+500 &
 
 # 朝 PCD 20180713
