@@ -2,7 +2,7 @@
 <launch>
 	<node pkg="sensor_fusion" type="normal_estimation_local" name="normal_estimation_local" output="screen">
 		<param name="search_radius" type="double" value="0.20" />
-        <param name="FILE_PATH"   type="string" value="/home/amsl/PCD/SQ2/SII/20180721_night_low/Save/" />
-        <param name="NORMAL_PATH" type="string" value="/home/amsl/PCD/SQ2/SII/20180721_night_low/Normal/" />
+        <param name="FILE_PATH"   type="string" value="/home/amsl/PCD/SQ2/SII/20180722_morning_low/Save/" />
+        <param name="NORMAL_PATH" type="string" value="/home/amsl/PCD/SQ2/SII/20180722_morning_low/Normal/" />
     </node>
 </launch>

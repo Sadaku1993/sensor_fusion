@@ -199,6 +199,7 @@ add_executable(sq_rm_ground_min_max calibration/sq_rm_ground_min_max.cpp)
 add_executable(save_points calibration/save_points.cpp)
 add_executable(rm_ground_division calibration/rm_ground_division.cpp)
 
+add_executable(evaluate calibration/evaluate.cpp)
 
 
 ## Save Cloud
@@ -367,6 +368,12 @@ target_link_libraries(reference_viewer
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
+target_link_libraries(evaluate
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+
 
 ## SaveCloud
 target_link_libraries(save_data

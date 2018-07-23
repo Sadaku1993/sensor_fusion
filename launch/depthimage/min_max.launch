@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <launch>
 	<node pkg="sensor_fusion" type="min_max" name="min_max" output="screen">
-        <param name="FILE_PATH"         type="string" value="/home/amsl/PCD/SQ2/SII/20180721_night_low/Normal/" />
-        <param name="RM_GROUND_PATH"    type="string" value="/home/amsl/PCD/SQ2/SII/20180721_night_low/RM_GROUND/" />
-        <param name="GROUND_PATH"       type="string" value="/home/amsl/PCD/SQ2/SII/20180721_night_low/GROUND/" />
+        <param name="FILE_PATH"         type="string" value="/home/amsl/PCD/SQ2/SII/20180722_morning_low/Normal/" />
+        <param name="RM_GROUND_PATH"    type="string" value="/home/amsl/PCD/SQ2/SII/20180722_morning_low/RM_GROUND/" />
+        <param name="GROUND_PATH"       type="string" value="/home/amsl/PCD/SQ2/SII/20180722_morning_low/GROUND/" />
         <param name="grid_dimentions"   type="int"    value="100" />
         <param name="cell_size"         type="double" value="1.0" />
         <param name="height_threshold"  type="double" value="0.5" />

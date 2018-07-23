@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 	<node pkg="sensor_fusion" type="map_load" name="map_load" output="screen">
-        <param name="FILE_PATH" type="string" value="/home/amsl/PCD/SQ2/20180717/Map/map.pcd"/>
+        <param name="FILE_PATH" type="string" value="/home/amsl/PCD/SQ2/SII/20180722_morning_low/Map/map.pcd"/>
         <param name="FRAME" type="string" value="/map" />
     </node>
 </launch>

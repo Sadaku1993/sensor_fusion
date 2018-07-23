@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     pcl::VoxelGrid<pcl::PointXYZRGBNormal> vg;  
     pcl::PointCloud<pcl::PointXYZRGBNormal>::Ptr ds_cloud (new pcl::PointCloud<pcl::PointXYZRGBNormal>);  
     vg.setInputCloud (cloud);  
-    vg.setLeafSize (0.5f, 0.5f, 0.5f);
+    vg.setLeafSize (0.01f, 0.01f, 0.01f);
     vg.filter (*ds_cloud);
     cout<<"----DownSampling:"<<ds_cloud->points.size()<<endl;
 
