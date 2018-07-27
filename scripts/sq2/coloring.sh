@@ -4,6 +4,10 @@ source /home/amsl/ros_catkin_ws/devel/setup.bash
 
 source /home/amsl/.bashrc
 
+# rviz
+gnome-terminal -e '/opt/ros/kinetic/bin/rosrun rviz rviz -d /home/amsl/.rviz/coloring.rviz' --geometry=50x12+1200+750 &
+sleep 1s
+
 # Launch SQ Lidar
 gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sq1_extra run_sq2_for_joy.launch' --geometry=50x12+0+0 &
 sleep 1s
@@ -48,5 +52,5 @@ gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion integration.laun
 sleep 4s
 
 # rviz
-gnome-terminal -e '/opt/ros/kinetic/bin/rosrun rviz rviz -d /home/amsl/.rviz/coloring.rviz' --geometry=50x12+1200+750 &
-sleep 1s
+# gnome-terminal -e '/opt/ros/kinetic/bin/rosrun rviz rviz -d /home/amsl/.rviz/coloring.rviz' --geometry=50x12+1200+750 &
+# sleep 1s

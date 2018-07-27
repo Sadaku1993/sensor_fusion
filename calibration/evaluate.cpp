@@ -93,15 +93,18 @@ void evaluate(T_ptr cloud)
 #pragma omp parallel for
     for(size_t i=0;i<cloud->points.size();i++)
     {
-        if(200<cloud->points[i].r && 200<cloud->points[i].g && 200<cloud->points[i].b)
+        if(160<cloud->points[i].r && 160<cloud->points[i].g && 160<cloud->points[i].b)
             correct++;
         else
             error++;
     }
     
-    printf("Size    : %d\n", size);
-    printf("correct : %d %.2f\n", correct, double(correct/size));
-    printf("error   : %d %.2f\n", error,   double(error/size));
+	for(size_t i=0;i<cloud->points.size();i++)
+    	printf("----R:%d G:%df B:%d\n", cloud->points[i].r, cloud->points[i].g, cloud->points[i].b);
+
+    printf("----Size    : %d\n", size);
+    printf("----correct : %d %.2f\n", correct, double(correct/size));
+    printf("----error   : %d %.2f\n", error,   double(error/size));
 }
 
 // Publish PointCloud
@@ -120,6 +123,8 @@ void CloudPublisher(T_ptr cloud,
 template<typename T_ptr, typename T_c>
 void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 {
+	cout<<"Callback"<<endl;
+
     // Callback PointCloud
     T_ptr input(new T_c);
     pcl::fromROSMsg(*msg, *input);
@@ -135,7 +140,8 @@ void pcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
         pickup_cloud(input, area);
     
     // evaluate
-    evaluate(area);
+    if(0<area->points.size())
+		evaluate(area);
 
     // Publish PointCloud
     CloudPublisher(obstacle, msg->header.frame_id, pub_obstacle);

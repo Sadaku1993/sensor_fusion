@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <launch>
 	<!--Calibration-->
-    <node pkg="sensor_fusion" type="lidar_seg_plane" name="lidar_seg_plane" output="screen">
-        <param name="min_x"     type="double" value="0"   />
-        <param name="max_x"     type="double" value="2.0" />
-        <param name="min_y"     type="double" value="-0.70"/>
-        <param name="max_y"     type="double" value="0.70" />
-        <param name="min_z"     type="double" value="-0.50"/>
+    <node pkg="sensor_fusion" type="evaluate" name="evaluate" output="screen">
+        <param name="min_x"     type="double" value="2.9"   />
+        <param name="max_x"     type="double" value="3.2" />
+        <param name="min_y"     type="double" value="-0.10"/>
+        <param name="max_y"     type="double" value="0.10" />
+        <param name="min_z"     type="double" value="-1.05"/>
         <param name="max_z"     type="double" value="0.5" />
         <param name="threshold" type="double" value="0.15" />
         <param name="grid_dimentions" type="int" value="60" />
         <param name="cell_size" type="double" value="1.0" />
 
-        <remap from="/cloud"        to="/sq_lidar/points/colored" />
+		<remap from="/cloud"        to="/sq_lidar/colored" />
 	</node>
 </launch>
