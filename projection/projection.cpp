@@ -86,6 +86,8 @@ void callback(const ImageConstPtr& image_msg,
     }
     cv::Mat image(cv_img_ptr->image.rows, cv_img_ptr->image.cols, cv_img_ptr->image.type());
     image = cv_bridge::toCvShare(image_msg)->image;
+
+	cv::Mat image_copy = image.clone();
     
     // camera info
     image_geometry::PinholeCameraModel cam_model_;
@@ -95,10 +97,8 @@ void callback(const ImageConstPtr& image_msg,
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr area(new pcl::PointCloud<pcl::PointXYZRGB>);
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromROSMsg(pc_msg, *cloud);
-	cloud->header.frame_id = pc_msg.header.frame_id;
+	// cloud->header.frame_id = pc_msg.header.frame_id;
 	
-	cout<<"Input Size : "<<cloud->points.size()
-		<<" Frame : "<<pc_msg.header.frame_id<<endl;
     for(pcl::PointCloud<pcl::PointXYZ>::iterator pt = cloud->points.begin(); pt < cloud->points.end(); pt++)
     {
         if ((*pt).x<0) continue;
@@ -121,7 +121,7 @@ void callback(const ImageConstPtr& image_msg,
 			//Image
 			double range = sqrt( pow((*pt).x, 2.0) + pow((*pt).y, 2.0) + pow((*pt).z, 2.0));
 			COLOUR c = GetColour(int(range/20*255.0), 0, 255);
-			cv::circle(image, uv, 3, cv::Scalar(int(255*c.b),int(255*c.g),int(255*c.r)), -1);
+			cv::circle(image_copy, uv, 3, cv::Scalar(int(255*c.b),int(255*c.g),int(255*c.r)), -1);
 		}
 	}
 	// Publish PointCloud
@@ -131,7 +131,7 @@ void callback(const ImageConstPtr& image_msg,
     output.header.stamp = ros::Time::now();
     cloud_pub.publish(output);
 	// Publish Image
-	sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
+	sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image_copy).toImageMsg();
 	image_pub.publish(msg);
 }
 
