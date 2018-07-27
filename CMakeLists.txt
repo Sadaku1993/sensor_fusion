@@ -163,7 +163,6 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(camera_downsample src/camera_downsample.cpp)
-add_executable(depthimage src/depthimage.cpp)
 add_executable(division src/division.cpp)
 add_executable(division_one_shot src/division_one_shot.cpp)
 add_executable(integration src/integration.cpp)
@@ -173,6 +172,9 @@ add_executable(odom2baselink src/imu_complement.cpp)
 
 ## coloringcloud
 add_executable(coloringcloud coloring/coloringcloud.cpp)
+
+## projection
+add_executable(projection projection/projection.cpp)
 
 ## Depth Image
 add_executable(merge_cloud depthimage/merge_cloud.cpp)
@@ -225,11 +227,6 @@ target_link_libraries(camera_downsample
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
-target_link_libraries(depthimage
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
 target_link_libraries(division
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
@@ -263,6 +260,12 @@ target_link_libraries(coloringcloud
   ${PCL_LIBRARIES}
 )
 
+# projection
+target_link_libraries(projection
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
 
 # calibration
 target_link_libraries(pointcloud2image
