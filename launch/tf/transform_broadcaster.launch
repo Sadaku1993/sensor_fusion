@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<launch>
+    <!--Transform Publisher-->
+    <node pkg="sensor_fusion" type="transform_publisher" name="transform_publisher_zed0">
+        <param name="target_frame" type="string" value="zed0/zed_left_camera" />
+        <param name="source_frame" type="string" value="centerlaser" />
+        <remap from="/transform"   to="/zed0/transform" />
+    </node>
+
+    <node pkg="sensor_fusion" type="transform_publisher" name="transform_publisher_zed1">
+        <param name="target_frame" type="string" value="zed1/zed_left_camera" />
+        <param name="source_frame" type="string" value="centerlaser" />
+        <remap from="/transform"   to="/zed1/transform" />
+    </node>
+    
+    <node pkg="sensor_fusion" type="transform_publisher" name="transform_publisher_zed2">
+        <param name="target_frame" type="string" value="zed2/zed_left_camera" />
+        <param name="source_frame" type="string" value="centerlaser" />
+        <remap from="/transform"   to="/zed2/transform" />
+    </node>
+</launch>
