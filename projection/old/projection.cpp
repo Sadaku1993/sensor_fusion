@@ -158,19 +158,19 @@ void colouring(sensor_msgs::PointCloud2 pc_msg, const sensor_msgs::CameraInfoCon
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "depthimage");
-    ros::NodeHandle n;
+    ros::NodeHandle nh("~");
 	
-	n.getParam("target_frame",TARGET_FRAME);
-	n.getParam("source_frame",SOURCE_FRAME);
-	n.getParam("debug", DEBUG);
+	nh.getParam("target_frame",TARGET_FRAME);
+	nh.getParam("source_frame",SOURCE_FRAME);
+	nh.getParam("debug", DEBUG);
 
-    image_transport::ImageTransport it(n);
+    image_transport::ImageTransport it(nh);
     tf::TransformListener listener;
     tf::StampedTransform transform;
 
-    ros::Subscriber pc_sub    = n.subscribe("/cloud", 10, pcCallback); 
-    ros::Subscriber cinfo_sub = n.subscribe("/camera_info", 10, cameraCallback);
-    ros::Subscriber image_sub = n.subscribe("/image", 10, imageCallback);
+    ros::Subscriber pc_sub    = nh.subscribe("/cloud", 10, pcCallback); 
+    ros::Subscriber cinfo_sub = nh.subscribe("/camera_info", 10, cameraCallback);
+    ros::Subscriber image_sub = nh.subscribe("/image", 10, imageCallback);
 	image_pub = it.advertise("/depthimage", 10);
 
     ros::Rate rate(10);
