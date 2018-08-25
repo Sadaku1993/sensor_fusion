@@ -212,6 +212,7 @@ add_executable(transform_broadcast savecloud/transform_broadcast.cpp)
 
 ## paper
 add_executable(pcd_saver paper/pcd_saver.cpp)
+add_executable(threshold paper/threshold.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -413,6 +414,12 @@ target_link_libraries(pcd_saver
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
+target_link_libraries(threshold
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+
 
 #############
 ## Install ##

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+	<node pkg="sensor_fusion" type="threshold" name="threshold">
+		<param name="min_threshold" type="double" value="2.0" />
+		<param name="max_threshold" type="double" value="30.0" />
+		<remap from="/cloud"  to="/cloud/tf" />
+		<remap from="/output" to="/cloud/tf/threshold" />
+	</node>
+
+	<node pkg="sensor_fusion" type="laser_transform_pointcloud" name="laser_transform_pointcloud_papser" >
+		<param name="target_frame" type="string" value="odom"/>
+		<remap from="/cloud"    to="/cloud/tf/threshold" />
+		<remap from="/cloud/tf" to="/cloud/odom"/>
+	</node>
+</launch>

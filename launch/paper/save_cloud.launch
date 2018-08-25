@@ -3,6 +3,6 @@
     <node name="pcd_saver" pkg="sensor_fusion" type="pcd_saver" output= "screen">
         <param name="save_count" type="int" value="1000"/>
         <param name="file_path"  type="string" value="/home/amsl/PCD/SII/"/>
-        <remap from="/cloud" to="/cloud/lcl" />
+        <remap from="/cloud" to="/cloud/odom" />
     </node>
 </launch>

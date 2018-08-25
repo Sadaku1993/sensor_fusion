@@ -84,7 +84,7 @@ void SAVER::save_pointcloud(const sensor_msgs::PointCloud2ConstPtr msg)
     pcl::fromROSMsg(*msg, *input_cloud);
     for(size_t i=0;i<input_cloud->points.size();i++){
         double distance = sqrt(pow(input_cloud->points[i].x, 2)+ pow(input_cloud->points[i].y, 2) + pow(input_cloud->points[i].z, 2));
-        if(distance < 30)
+        if(2.0<distance && distance < 30)
             threshold_cloud->points.push_back(input_cloud->points[i]);
     }
 
