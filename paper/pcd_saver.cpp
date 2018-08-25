@@ -111,7 +111,7 @@ void SAVER::savePCDFile(CloudAPtr cloud,
 	save_cloud->height = save_cloud->points.size();
 
     string file_name = to_string(count);
-	pcl::io::savePCDFile(file_path+"/"+file_name+".pcd", *save_cloud);
+	pcl::io::savePCDFile(file_path+file_name+".pcd", *save_cloud);
     printf("Num:%d saved %d\n", count, int(cloud->points.size()));
 }
 
