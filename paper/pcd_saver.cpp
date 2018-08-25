@@ -56,17 +56,18 @@ void SAVER::Callback(const sensor_msgs::PointCloud2ConstPtr msg)
         char text[50];
         printf("are you ready?(y/n):");
         scanf("%s", text);
-        if(text=="y" || text=="yes"){
+        
+        if(text[0]=='y'){
             flag = true;
             printf("\n");
         }
-        else if(text=="n" || text=="no"){
+        else if(text[0]=='n'){
             flag = false;
             printf("\n");
         }
         else{
             flag = false;
-            printf(" prease input yes/no\n");
+            printf("prease input y/n\n");
         }
     }
 
