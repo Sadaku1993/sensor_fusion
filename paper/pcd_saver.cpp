@@ -44,6 +44,7 @@ SAVER::SAVER()
 {
     nh.getParam("save_count", save_count);
     nh.getParam("file_path" , file_path);
+	sub = nh.subscribe("/cloud", 10, &SAVER::Callback, this);
     count = 0;
     number = 0;
     flag = false;
