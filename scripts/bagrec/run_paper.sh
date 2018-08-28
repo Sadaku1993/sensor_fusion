@@ -30,7 +30,7 @@ sleep 1s
 gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion laser_transform_pointcloud.launch' --geometry=50x12+250+0 &
 sleep 1s
 
-# Transform PointCloud from /centerlaser_ to /odom
+# threshold
 gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion laser_transform_pointcloud_paper.launch' --geometry=50x12+250+0 &
 sleep 1s
 

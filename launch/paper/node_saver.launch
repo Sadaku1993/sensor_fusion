@@ -8,7 +8,7 @@
 		<param name="child_frame"  type="string" value="base_link" />
         <param name="laser_frame"  type="string" value="centerlaser" />
         <param name="camera_frame" type="string" value="camera_color_optical_frame" />
-		<remap from="/cloud" to="/cloud/tf" />
+        <remap from="/cloud" to="/cloud/tf/threshold" />
 		<remap from="/image" to="/camera/color/image_raw" />
 		<remap from="/cinfo" to="/camera/color/camera_info" />
 		<remap from="/flag"  to="/save_flag" />

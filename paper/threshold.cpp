@@ -24,9 +24,6 @@ void Callback(const sensor_msgs::PointCloud2ConstPtr msg)
 	pc2.header.frame_id = msg->header.frame_id;
 	pc2.header.stamp = ros::Time::now();
 	pub.publish(pc2);
-
-	std::cout<<"frame:"<<msg->header.frame_id<<
-			   " size:"<<threshold_cloud->points.size()<<std::endl;
 }
 
 int main(int argc, char** argv)
