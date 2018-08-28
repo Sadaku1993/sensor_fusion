@@ -78,6 +78,7 @@ add_message_files(
   ClusterArray.msg
   Data.msg
   Node.msg
+  NodeInfo.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -213,6 +214,8 @@ add_executable(transform_broadcast savecloud/transform_broadcast.cpp)
 ## paper
 add_executable(pcd_saver paper/pcd_saver.cpp)
 add_executable(threshold paper/threshold.cpp)
+add_executable(pub_saveflag paper/pub_saveflag.cpp)
+add_executable(node_saver paper/node_saver.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -415,6 +418,16 @@ target_link_libraries(pcd_saver
   ${PCL_LIBRARIES}
 )
 target_link_libraries(threshold
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(pub_saveflag
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(node_saver
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
