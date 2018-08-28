@@ -31,7 +31,7 @@ gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion laser_transform_
 sleep 1s
 
 # threshold
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion threshold.launch' --geometry=50x12+250+0 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion threshold.launch' --geometry=50x12+250+250 &
 sleep 1s
 
 # lcl
@@ -60,4 +60,4 @@ gnome-terminal -e "/opt/ros/kinetic/bin/rosrun rviz rviz -d /home/amsl/.rviz/rea
 sleep 5s
 
 # bagrec
-gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/bagrec/bag_rec_paper.sh' --geometry=50x12+1200+500 &
+# gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/bagrec/bag_rec_paper.sh' --geometry=50x12+1200+500 &
