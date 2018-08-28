@@ -31,19 +31,23 @@ gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion laser_transform_
 sleep 1s
 
 # threshold
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion laser_transform_pointcloud_paper.launch' --geometry=50x12+250+0 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion laser_transform_pointcloud_paper.launch' --geometry=50x12+250+250 &
 sleep 1s
 
 # lcl
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion lcl.launch' --geometry=50x12+250+250 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion lcl.launch' --geometry=50x12+250+500 &
+sleep 1s
+
+# transform publisher
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion odom_to_baselink.launch' --geometry=50x12+250+750 &
 sleep 1s
 
 # save flag
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion pub_saveflag.launch' --geometry=50x12+250+500 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion pub_saveflag.launch' --geometry=50x12+500+0 &
 sleep 1s
 
 # save node 
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion node_saver.launch' --geometry=50x12+250+750 &
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion node_saver.launch' --geometry=50x12+500+250 &
 sleep 1s
 # gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion save_cloud.launch' --geometry=50x12+250+500 &
 
