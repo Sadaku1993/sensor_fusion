@@ -49,7 +49,8 @@ class Saver{
         geometry_msgs::Transform tf;
         // frame
         string global_frame;
-        string laser_frame;
+        string child_frame;
+		string laser_frame;
         string camera_frame;
         // publisher
         ros::Publisher pub;
@@ -95,6 +96,7 @@ Saver::Saver()
     nh.getParam("save_num", save_num);
     nh.getParam("file_path", file_path);
     nh.getParam("global_frame", global_frame);
+	nh.getParam("child_frame" , child_frame);
     nh.getParam("laser_frame" , laser_frame);
     nh.getParam("camera_frame", camera_frame);
     // callback
@@ -144,6 +146,7 @@ void Saver::saver(const sensor_msgs::PointCloud2ConstPtr msg)
 
 	if(count == save_num){
 		cout<<"Num:"<<node_num<<" Success Save PointCloud!!! Next Node"<<endl;
+		saveNode();
         savePCDFile(save_cloud, node_num);
         node_num++;
 		reset();
@@ -175,7 +178,8 @@ void Saver::saveNode()
     ninfo.node = node_num;
     ninfo.image = *camera_image;
     ninfo.cinfo = *camera_info;
-    ninfo.transform = tf; //global frame to laser frame
+	transform_listener();
+	ninfo.transform = tf;
     pcl::toROSMsg(*save_cloud, ninfo.cloud);
     ninfo.cloud.header.frame_id = laser_frame;
     pub.publish(ninfo);
@@ -186,12 +190,12 @@ void Saver::transform_listener()
 {
     try{
         ros::Time now = ros::Time::now();
-        global_listener.waitForTransform(global_frame, laser_frame, now, ros::Duration(0.02));
-        global_listener.lookupTransform(global_frame, laser_frame,  now, global_transform);
+        global_listener.waitForTransform(global_frame, child_frame, now, ros::Duration(1.0));
+        global_listener.lookupTransform(global_frame, child_frame,  now, global_transform);
     }
     catch (tf::TransformException ex){
         ROS_ERROR("%s",ex.what());
-        ros::Duration(0.02).sleep();
+        ros::Duration(1.0).sleep();
     }
 	tf::transformTFToMsg(global_transform, tf);
 }

@@ -1,12 +1,15 @@
 <?xml version="1.0"?>
 <launch>
-    <node name="pcd_saver" pkg="sensor_fusion" type="pcd_saver" output= "screen">
+    <node name="node_saver" pkg="sensor_fusion" type="node_saver" output= "screen">
         <param name="save_num  "   type="int" value="1000"/>
         <param name="file_path"    type="string" value="/home/amsl/PCD/SII/"/>
-        <param name="global_path"  type="string" value="odom" />
+		<param name="global_frame" type="string" value="odom" />
+		<param name="child_frame"  type="string" value="base_link" />
         <param name="laser_frame"  type="string" value="centerlaser" />
         <param name="camera_frame" type="string" value="camera_color_optical_frame" />
-        <remap from="/cloud" to="/cloud/tf" />
-        <remap from="/flag"  to="/save_flag" />
+		<remap from="/cloud" to="/cloud/tf" />
+		<remap from="/image" to="/camera/color/image_raw" />
+		<remap from="/cinfo" to="/camera/color/camera_info" />
+		<remap from="/flag"  to="/save_flag" />
     </node>
 </launch>
