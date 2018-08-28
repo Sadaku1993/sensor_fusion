@@ -60,6 +60,7 @@ class Saver{
         int node_num;
         bool is_save;
         string file_path;
+        string image_path;
         CloudAPtr save_cloud;
         
     public:
@@ -77,6 +78,7 @@ class Saver{
         // save process
         void saver(const sensor_msgs::PointCloud2ConstPtr msg);
         void savePCDFile(CloudAPtr cloud, int count);
+        void saveImage(sensor_msgs::ImageConstPtr image_msg, int count);
         void saveNode();
         // transform listener
         void transform_listener();
@@ -94,7 +96,8 @@ Saver::Saver()
 {
     // load param
     nh.getParam("save_num", save_num);
-    nh.getParam("file_path", file_path);
+    nh.getParam("file_path",  file_path);
+    nh.getParam("image_path", image_path);
     nh.getParam("global_frame", global_frame);
 	nh.getParam("child_frame" , child_frame);
     nh.getParam("laser_frame" , laser_frame);
@@ -145,9 +148,10 @@ void Saver::saver(const sensor_msgs::PointCloud2ConstPtr msg)
 	}
 
 	if(count == save_num){
-		cout<<"Num:"<<node_num<<" Success Save PointCloud!!! Next Node"<<endl;
 		saveNode();
         savePCDFile(save_cloud, node_num);
+        saveImage(camera_image, node_num);
+        printf("Num:%3d Susceed Save!!! Next Node\n\n", node_num);
         node_num++;
 		reset();
 	}
@@ -167,7 +171,27 @@ void Saver::savePCDFile(CloudAPtr cloud,
 
     string file_name = to_string(count);
 	pcl::io::savePCDFile(file_path+file_name+".pcd", *save_cloud);
-    printf("Num:%d saved %d\n", count, int(cloud->points.size()));
+    printf("Save PCD File (size:%d)\n", int(cloud->points.size()));
+}
+
+// saveImage
+void Saver::saveImage(sensor_msgs::ImageConstPtr image_msg,
+                      int count)
+{
+    cv_bridge::CvImageConstPtr cv_img_ptr;
+    try{
+        cv_img_ptr = cv_bridge::toCvShare(image_msg);
+    }catch (cv_bridge::Exception& e){
+        ROS_ERROR("cv_bridge exception: %s", e.what());
+        return;
+    }
+
+    cv::Mat image(cv_img_ptr->image.rows, cv_img_ptr->image.cols, cv_img_ptr->image.type());
+    image = cv_bridge::toCvShare(image_msg)->image;
+
+    string file_name = to_string(count);
+    cv::imwrite(image_path+file_name+".jpg", image);
+    printf("Save Image File (cols:%d rows:%d)\n", image.cols, image.rows);
 }
 
 // save Node
