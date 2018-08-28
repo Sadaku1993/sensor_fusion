@@ -34,7 +34,7 @@ void Transform::mainloop()
 {
     try{
         ros::Time time = ros::Time::now();
-        listener.waitForTransform(target_frame, source_frame, time, ros::Duration(0.02));
+        listener.waitForTransform(target_frame, source_frame, time, ros::Duration(0.1));
         listener.lookupTransform(target_frame, source_frame, time, transform);
 
 		geometry_msgs::Transform transform_msg;
@@ -54,7 +54,7 @@ void Transform::mainloop()
     }
     catch (tf::TransformException ex){
         ROS_ERROR("%s", ex.what());
-        ros::Duration(0.02).sleep();
+        ros::Duration(0.1).sleep();
     }
 
 }

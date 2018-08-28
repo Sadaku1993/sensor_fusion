@@ -10,8 +10,8 @@ gnome-terminal -e "/opt/ros/kinetic/bin/roscore" --geometry=50x12+0+0
 sleep 1s
 
 # sq1_extra
-# gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sq1_extra sensor_fusion_sii.launch' --geometry=50x12+0+250 & 
-gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sq1_extra run_sq2_for_joy.launch' --geometry=50x12+0+250 & 
+gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sq1_extra sensor_fusion_sii.launch' --geometry=50x12+0+250 & 
+# gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sq1_extra run_sq2_for_joy.launch' --geometry=50x12+0+250 & 
 sleep 1s
 
 # realsense
@@ -52,12 +52,11 @@ sleep 1s
 # gnome-terminal -e '/opt/ros/kinetic/bin/roslaunch sensor_fusion save_cloud.launch' --geometry=50x12+250+500 &
 
 ###### Imu Complement
-# gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion imu_complement.launch" --geometry=50x12+500+0 &
-# sleep 1s
+gnome-terminal -e "/opt/ros/kinetic/bin/roslaunch sensor_fusion imu_complement.launch" --geometry=50x12+500+0 &
+sleep 1s
 
 ####rviz########
 gnome-terminal -e "/opt/ros/kinetic/bin/rosrun rviz rviz -d /home/amsl/.rviz/realsense.rviz" --geometry=50x12+1250+500 &
-sleep 5s
 
 # bagrec
-gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/bagrec/bag_rec_paper.sh' --geometry=50x12+1200+500 &
+# gnome-terminal -e '/home/amsl/ros_catkin_ws/src/sensor_fusion/scripts/bagrec/bag_rec_paper.sh' --geometry=50x12+1200+500 &

@@ -31,4 +31,4 @@ echo $ZED1 &
 echo $ZED2 &
 echo $DEPTH &
 
-/opt/ros/kinetic/bin/rosbag record $CLOUD $ODOM $IMU $LCL $ZED0 $ZED1 $ZED2 $DEPTH -O /home/amsl/$TIME.bag
+/opt/ros/kinetic/bin/rosbag record $ODOM $IMU -O /home/amsl/$TIME.bag
