@@ -14,7 +14,8 @@
 	<param name="ndt_topic" value="/sq_ndt_data" />
 	<param name="ekf_topic" value="/ekf_NDT" />
 	<!-- <param name="publish_topic" value="/lcl_sq_ekf" /> -->
-	<param name="publish_topic" value="/lcl_ekf" />
+    <param name="publish_topic" value="/lcl_ekf" />
+    <param name="dyaw"   value="0.00121836" />
 
 	<!-- 0:odom 1:imu 2:ndt 3:ekf -->
 	<param name="estimate_result" value="1" />

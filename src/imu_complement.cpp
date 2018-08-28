@@ -67,6 +67,7 @@ class Complement{
 		string EKF_TOPIC;
 		string PUB_TOPIC;
 		int type;
+        double DYAW;
 	public:
 		Complement(ros::NodeHandle& n);
 		void odomCallback(const nav_msgs::Odometry::Ptr msg);
@@ -115,7 +116,7 @@ Complement::Complement(ros::NodeHandle &n) :
 	n.param("ekf_topic" ,EKF_TOPIC, {0});
 	n.param("publish_topic" ,PUB_TOPIC, {0});
 	n.param("estimate_result" ,type, 0);//choice
-
+    n.param("dyaw", DYAW, 0.0);
 
 
 	for(size_t i=0;i<N;i++){
@@ -202,7 +203,7 @@ Complement::imuCallback(const sensor_msgs::Imu::Ptr imu){
     lcl[1].yaw = yaw - yaw_first;
     lcl[1].roll = roll;
     
-    lcl[1].d_yaw = lcl[1].yaw - yaw_before;
+    lcl[1].d_yaw = lcl[1].yaw - yaw_before - DYAW;
     yaw_before = lcl[1].yaw;
 
     lcl[1].altering3();
