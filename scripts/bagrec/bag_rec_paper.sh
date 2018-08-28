@@ -12,7 +12,8 @@ CLOUD="/cloud/tf"
 LCL="/cloud/lcl"
 ODOM="/odom"
 IMU="/imu/data"
-REALSENSE="/camera/color/camera_info /camera/color/image_raw"
+REALSENSE="/camera/color/camera_info /camera/color/image_raw/compressed"
+NODE="/node"
 
 echo $TIME &
 echo $CLOUD &
@@ -20,5 +21,6 @@ echo $LCL &
 echo $ODOM &
 echo $IMU &
 echo $REALSENSE &
+echo $NODE &
 
-/opt/ros/kinetic/bin/rosbag record $CLOUD $LCL $ODOM $IMU $REALSENSE -O /home/amsl/$TIME.bag
+/opt/ros/kinetic/bin/rosbag record $CLOUD $LCL $ODOM $IMU $REALSENSE $NODE -O /home/amsl/$TIME.bag
