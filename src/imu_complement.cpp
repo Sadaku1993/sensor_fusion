@@ -203,7 +203,8 @@ Complement::imuCallback(const sensor_msgs::Imu::Ptr imu){
     lcl[1].yaw = yaw - yaw_first;
     lcl[1].roll = roll;
     
-    lcl[1].d_yaw = lcl[1].yaw - yaw_before - DYAW;
+    lcl[1].d_yaw = imu->angular_velocity.z - DYAW;
+    //lcl[1].d_yaw = lcl[1].yaw - yaw_before;
     yaw_before = lcl[1].yaw;
 
     lcl[1].altering3();
