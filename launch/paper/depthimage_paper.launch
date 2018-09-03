@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <node name="depthimage_for_paper" pkg="sensor_fusion" type="depthimage_for_paper" output="screen">
+        <param name="global_frame" type="string" value="odom" />
+        <param name="laser_frame"  type="string" value="centerlaser" />
+        <param name="camera_frame" type="string" value="camera_link" />
+        <param name="min_node"     type="int"    value="0" />
+        <param name="max_node"     type="int"    value="17" />
+    </node>
+</launch>

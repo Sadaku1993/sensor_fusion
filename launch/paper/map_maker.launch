@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <node name="map_maker" pkg="sensor_fusion" type="map_maker" output= "screen">
+        <param name="global_frame"  type="string"   value="odom" />
+        <param name="laser_frame"   type="string"   value="centerlaser" />
+        <param name="file_path"     type="string"   value="/home/amsl/SII/Map/" />
+        <param name="min_node"      type="int"      value="0" />
+        <param name="max_node"      type="int"      value="17" />
+    </node>
+</launch>

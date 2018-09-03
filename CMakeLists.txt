@@ -216,6 +216,8 @@ add_executable(pcd_saver paper/pcd_saver.cpp)
 add_executable(threshold paper/threshold.cpp)
 add_executable(pub_saveflag paper/pub_saveflag.cpp)
 add_executable(node_saver paper/node_saver.cpp)
+add_executable(map_maker paper/pcd_integrate.cpp)
+add_executable(depthimage_for_paper paper/depthimage_for_paper.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -428,6 +430,16 @@ target_link_libraries(pub_saveflag
   ${PCL_LIBRARIES}
 )
 target_link_libraries(node_saver
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(map_maker
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(depthimage_for_paper
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
