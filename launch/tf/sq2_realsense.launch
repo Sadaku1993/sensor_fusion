@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <launch>
 	<arg name="stdout" default="screen" />
-	<node pkg="tf" type="static_transform_publisher" name="laser_2_realsense" args="0.15 0 0 0 0 0 centerlaser camera_link 1000" />
+	<node pkg="tf" type="static_transform_publisher" name="laser_2_realsense" args="0.15 0 0 0 0 0 centerlaser camera0/camera_link 1000" />
 </launch>
 
