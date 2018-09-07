@@ -168,6 +168,7 @@ add_executable(division src/division.cpp)
 add_executable(division_one_shot src/division_one_shot.cpp)
 add_executable(integration src/integration.cpp)
 add_executable(laser_transform_pointcloud src/laser_transform_pointcloud.cpp)
+add_executable(camera_transform_pointcloud src/camera_transform_pointcloud.cpp)
 add_executable(lcl src/lcl.cpp)
 add_executable(odom2baselink src/imu_complement.cpp)
 
@@ -187,22 +188,22 @@ add_executable(min_max depthimage/min_max.cpp)
 add_executable(reference_viewer depthimage/reference_viewer.cpp)
 
 ## Calibration
-add_executable(pointcloud2image calibration/pointcloud2image.cpp)
-add_executable(lidar_seg_plane calibration/lidar_seg_plane.cpp)
-add_executable(lidar_seg_circle calibration/lidar_seg_circle.cpp)
-add_executable(camera_seg_plane calibration/camera_seg_plane.cpp)
-add_executable(camera_seg_circle calibration/camera_seg_circle.cpp)
-add_executable(sphere_fitting calibration/sphere_fitting.cpp)
-add_executable(icp_transform calibration/icp_transform.cpp)
-
-
-add_executable(detection_circle calibration/detection_circle.cpp)
-add_executable(sq_rm_ground calibration/sq_rm_ground.cpp)
-add_executable(sq_rm_ground_min_max calibration/sq_rm_ground_min_max.cpp)
-add_executable(save_points calibration/save_points.cpp)
-add_executable(rm_ground_division calibration/rm_ground_division.cpp)
-
-add_executable(evaluate calibration/evaluate.cpp)
+# add_executable(pointcloud2image calibration/pointcloud2image.cpp)
+# add_executable(lidar_seg_plane calibration/lidar_seg_plane.cpp)
+# add_executable(lidar_seg_circle calibration/lidar_seg_circle.cpp)
+# add_executable(camera_seg_plane calibration/camera_seg_plane.cpp)
+# add_executable(camera_seg_circle calibration/camera_seg_circle.cpp)
+# add_executable(sphere_fitting calibration/sphere_fitting.cpp)
+# add_executable(icp_transform calibration/icp_transform.cpp)
+# 
+# 
+# add_executable(detection_circle calibration/detection_circle.cpp)
+# add_executable(sq_rm_ground calibration/sq_rm_ground.cpp)
+# add_executable(sq_rm_ground_min_max calibration/sq_rm_ground_min_max.cpp)
+# add_executable(save_points calibration/save_points.cpp)
+# add_executable(rm_ground_division calibration/rm_ground_division.cpp)
+# 
+# add_executable(evaluate calibration/evaluate.cpp)
 
 
 ## Save Cloud
@@ -256,7 +257,17 @@ target_link_libraries(laser_transform_pointcloud
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
+target_link_libraries(camera_transform_pointcloud
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
 target_link_libraries(lcl
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(odom2baselink
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
@@ -277,72 +288,72 @@ target_link_libraries(projection
 )
 
 # calibration
-target_link_libraries(pointcloud2image
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(odom2baselink
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(lidar_seg_plane
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(lidar_seg_circle
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(camera_seg_plane
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(camera_seg_circle
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(sphere_fitting
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(icp_transform
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-
-target_link_libraries(detection_circle
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(sq_rm_ground  
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(sq_rm_ground_min_max  
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(save_points
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-target_link_libraries(rm_ground_division
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
+# target_link_libraries(pointcloud2image
+#   ${catkin_LIBRARIES}
+#   ${OpenCV_LIBRARIES}
+#   ${PCL_LIBRARIES}
+# )
+# target_link_libraries(lidar_seg_plane
+#   ${catkin_LIBRARIES}
+#   ${OpenCV_LIBRARIES}
+#   ${PCL_LIBRARIES}
+# )
+# target_link_libraries(lidar_seg_circle
+#   ${catkin_LIBRARIES}
+#   ${OpenCV_LIBRARIES}
+#   ${PCL_LIBRARIES}
+# )
+# target_link_libraries(camera_seg_plane
+#   ${catkin_LIBRARIES}
+#   ${OpenCV_LIBRARIES}
+#   ${PCL_LIBRARIES}
+# )
+# target_link_libraries(camera_seg_circle
+#   ${catkin_LIBRARIES}
+#   ${OpenCV_LIBRARIES}
+#   ${PCL_LIBRARIES}
+# )
+# target_link_libraries(sphere_fitting
+#   ${catkin_LIBRARIES}
+#   ${OpenCV_LIBRARIES}
+#   ${PCL_LIBRARIES}
+# )
+# target_link_libraries(icp_transform
+#   ${catkin_LIBRARIES}
+#   ${OpenCV_LIBRARIES}
+#   ${PCL_LIBRARIES}
+# )
+# 
+# target_link_libraries(detection_circle
+#   ${catkin_LIBRARIES}
+#   ${OpenCV_LIBRARIES}
+#   ${PCL_LIBRARIES}
+# )
+# target_link_libraries(sq_rm_ground  
+#   ${catkin_LIBRARIES}
+#   ${OpenCV_LIBRARIES}
+#   ${PCL_LIBRARIES}
+# )
+# target_link_libraries(sq_rm_ground_min_max  
+#   ${catkin_LIBRARIES}
+#   ${OpenCV_LIBRARIES}
+#   ${PCL_LIBRARIES}
+# )
+# target_link_libraries(save_points
+#   ${catkin_LIBRARIES}
+#   ${OpenCV_LIBRARIES}
+#   ${PCL_LIBRARIES}
+# )
+# target_link_libraries(rm_ground_division
+#   ${catkin_LIBRARIES}
+#   ${OpenCV_LIBRARIES}
+#   ${PCL_LIBRARIES}
+# )
+# target_link_libraries(evaluate
+#   ${catkin_LIBRARIES}
+#   ${OpenCV_LIBRARIES}
+#   ${PCL_LIBRARIES}
+# )
 
 ## Depth Image
 target_link_libraries(merge_cloud
@@ -380,11 +391,7 @@ target_link_libraries(reference_viewer
   ${OpenCV_LIBRARIES}
   ${PCL_LIBRARIES}
 )
-target_link_libraries(evaluate
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
+
 
 
 ## SaveCloud
