@@ -66,7 +66,6 @@ int main(int argc, char** argv)
     vg.filter (*ds_cloud);
     cout<<"----DownSampling:"<<ds_cloud->points.size()<<endl;
 
-
     while(ros::ok())
     {
         sensor_msgs::PointCloud2 pc2;
